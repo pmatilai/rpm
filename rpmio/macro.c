@@ -41,6 +41,7 @@ enum macroFlags_e {
     ME_PARSE	= (1 << 3),
     ME_FUNC	= (1 << 4),
     ME_QUOTED	= (1 << 5),
+    ME_ALIAS	= (1 << 6),
 };
 
 /*! The structure used to store a macro. */
@@ -140,6 +141,8 @@ static void pushMacro(rpmMacroContext mc,
 	const char * n, const char * o, const char * b, int level, int flags);
 static void popMacro(rpmMacroContext mc, const char * n);
 static int loadMacroFile(rpmMacroContext mc, const char * fn);
+static int pushAlias(rpmMacroContext mc,
+			const char *n, const char *o, const char *b);
 /* =============================================================== */
 
 static rpmMacroContext rpmmctxAcquire(rpmMacroContext mc)
@@ -162,7 +165,7 @@ static rpmMacroContext rpmmctxRelease(rpmMacroContext mc)
  * @param mc		macro context
  * @param name		macro name
  * @param namelen	no. of bytes
- * @param pos		found/insert position
+ * @retval pos		found/insert position
  * @return		address of slot in macro table with name (or NULL)
  */
 static rpmMacroEntry *
@@ -197,6 +200,30 @@ findEntry(rpmMacroContext mc, const char *name, size_t namelen, size_t *pos)
     if (cmp == 0)
 	return &mc->tab[i];
     return NULL;
+}
+
+static rpmMacroEntry *
+findAlias(rpmMacroContext mc, const char *name, size_t namelen, size_t *pos)
+{
+    const char *m = name;
+    size_t mlen = namelen;
+    rpmMacroEntry *mep = NULL;
+    int depth = 0;
+
+    while ((mep = findEntry(mc, m, mlen, pos))) {
+	if (!((*mep)->flags & ME_ALIAS))
+	    break;
+	/* XXX can't flag an error from here, just fail as not found */
+	if (++depth > max_macro_depth) {
+	    mep = NULL;
+	    break;
+	}
+	m = (*mep)->body;
+	mlen = strlen(m);
+
+    }
+
+    return mep;
 }
 
 /**
@@ -973,8 +1000,8 @@ freeArgs(rpmMacroBuf mb)
 	if (me->level < mb->level)
 	    continue;
 	/* Warn on defined but unused non-automatic, scoped macros */
-	if (!(me->flags & (ME_AUTO|ME_USED))) {
-	    rpmMacroBufErr(mb, 0, _("Macro %%%s defined but not used within scope\n"),
+	if (!(me->flags & (ME_AUTO|ME_USED|ME_ALIAS))) {
+	    rpmMacroBufErr(mb, 0, ("Macro %%%s defined but not used within scope\n"),
 			me->name);
 	    /* Only whine once */
 	    me->flags |= ME_USED;
@@ -1085,7 +1112,7 @@ grabArgs(rpmMacroBuf mb, const rpmMacroEntry me, ARGV_t *argvp,
 static void doBody(rpmMacroBuf mb, rpmMacroEntry me, ARGV_t argv, size_t *parsed)
 {
     if (*argv[1]) {
-	rpmMacroEntry *mep = findEntry(mb->mc, argv[1], 0, NULL);
+	rpmMacroEntry *mep = findAlias(mb->mc, argv[1], 0, NULL);
 	if (mep) {
 	    rpmMacroBufAppendStr(mb, (*mep)->body);
 	} else {
@@ -1391,6 +1418,25 @@ static void doRpmver(rpmMacroBuf mb, rpmMacroEntry me, ARGV_t argv, size_t *pars
     rpmMacroBufAppendStr(mb, VERSION);
 }
 
+static void doAlias(rpmMacroBuf mb, rpmMacroEntry me, ARGV_t argv, size_t *parsed)
+{
+    int ac = argvCount(argv);
+    rpmMacroEntry *mep = NULL;
+    if (ac == 2) {
+	mep = findAlias(mb->mc, argv[1], 0, NULL);
+	if (mep && !rstreq(argv[1], (*mep)->name))
+	    rpmMacroBufAppendStr(mb, (*mep)->name);
+    } else if (ac == 3) {
+	if (validName(mb, argv[1], strlen(argv[1]), "%alias")) {
+	    if (!pushAlias(mb->mc, argv[1], NULL, argv[2])) {
+		rpmMacroBufErr(mb, 1, _("Invalid alias on %%%s\n"), argv[2]);
+	    }
+	}
+    } else {
+	rpmMacroBufErr(mb, 1, _("invalid number of arguments for %%alias\n"));
+    }
+}
+
 static struct builtins_s {
     const char * name;
     macroFunc func;
@@ -1399,6 +1445,7 @@ static struct builtins_s {
 } const builtinmacros[] = {
     { "P",		doSP,		1,	0 },
     { "S",		doSP,		1,	0 },
+    { "alias",		doAlias,	-1,	0 },
     { "basename",	doFoo,		1,	0 },
     { "define",		doDef,		1,	ME_PARSE },
     { "dirname",	doFoo,		1,	0 },
@@ -1686,7 +1733,7 @@ expandMacro(rpmMacroBuf mb, const char *src, size_t slen)
 	    printMacro(mb, s, se);
 
 	/* Expand defined macros */
-	mep = findEntry(mb->mc, f, fn, NULL);
+	mep = findAlias(mb->mc, f, fn, NULL);
 	me = (mep ? *mep : NULL);
 
 	if (me) {
@@ -1889,6 +1936,19 @@ static void pushMacro(rpmMacroContext mc,
     return pushMacroAny(mc, n, o, b, NULL, NULL, 0, level, flags);
 }
 
+static int pushAlias(rpmMacroContext mc,
+			const char *n, const char *o, const char *b)
+{
+    int rc = 0;
+    rpmMacroEntry *mep = findAlias(mc, b, 0, NULL);
+    if (mep && strcmp(n, b)) {
+	/* Aliases are always on the level of the aliased macro */
+	pushMacro(mc, n, NULL, b, (*mep)->level, ME_ALIAS);
+	rc = 1;
+    }
+    return rc;
+}
+
 static void popMacro(rpmMacroContext mc, const char * n)
 {
     size_t pos;
@@ -2017,7 +2077,7 @@ int rpmExpandThisMacro(rpmMacroContext mc, const char *n,  ARGV_const_t args, ch
     int rc = 1; /* assume failure */
 
     mc = rpmmctxAcquire(mc);
-    mep = findEntry(mc, n, 0, NULL);
+    mep = findAlias(mc, n, 0, NULL);
     if (mep) {
 	rpmMacroBuf mb = mbCreate(mc, flags);
 	rc = expandThisMacro(mb, *mep, args, flags);
@@ -2063,7 +2123,7 @@ int rpmPushMacroFlags(rpmMacroContext mc,
 	      int level, rpmMacroFlags flags)
 {
     mc = rpmmctxAcquire(mc);
-    pushMacro(mc, n, o, b, level, flags & RPMMACRO_LITERAL ? ME_LITERAL : ME_NONE);
+    pushMacro(mc, n, o, b, level, flags & RPMMACRO_LITERAL ?  ME_LITERAL : ME_NONE);
     rpmmctxRelease(mc);
     return 0;
 }
@@ -2072,6 +2132,15 @@ int rpmPushMacro(rpmMacroContext mc,
 	      const char * n, const char * o, const char * b, int level)
 {
     return rpmPushMacroFlags(mc, n, o, b, level, RPMMACRO_DEFAULT);
+}
+
+int rpmPushMacroAlias(rpmMacroContext mc,
+	      const char * n, const char * o, const char * b)
+{
+    mc = rpmmctxAcquire(mc);
+    int rc = pushAlias(mc, n, o, b);
+    rpmmctxRelease(mc);
+    return rc;
 }
 
 int rpmPushMacroAux(rpmMacroContext mc,
@@ -2108,7 +2177,7 @@ int rpmMacroIsDefined(rpmMacroContext mc, const char *n)
 {
     int defined = 0;
     if ((mc = rpmmctxAcquire(mc)) != NULL) {
-	if (findEntry(mc, n, 0, NULL))
+	if (findAlias(mc, n, 0, NULL))
 	    defined = 1;
 	rpmmctxRelease(mc);
     }
@@ -2119,7 +2188,7 @@ int rpmMacroIsParametric(rpmMacroContext mc, const char *n)
 {
     int parametric = 0;
     if ((mc = rpmmctxAcquire(mc)) != NULL) {
-	rpmMacroEntry *mep = findEntry(mc, n, 0, NULL);
+	rpmMacroEntry *mep = findAlias(mc, n, 0, NULL);
 	if (mep && (*mep)->opts)
 	    parametric = 1;
 	rpmmctxRelease(mc);

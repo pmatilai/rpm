@@ -78,6 +78,22 @@ This is important inside parametric macros because otherwise the body could
 be referring to macros that are out of scope at the time of use, but also
 useful to avoid re-expansion of expensive macros.
 
+### Aliases (rpm >= 4.20)
+
+A macro alias can be declared as follows:
+
+```
+    %alias <name> <target>
+```
+
+A macro alias is just that: an another name for a macro. Aliases can point
+to any other macro type and using it behaves exactly as if accessing the
+original macro, parameters and all, with one exception: `%undefine <name>`
+undefines the alias, rather than the target macro. An alias always exists
+in the same scope as the target macro, so an alias defined on automatic
+or locally scoped macros inside parametric macros become automatically
+undefined when leaving the parametric macro.
+
 ## Writing a Macro
 
 Within the body of a macro, there are several constructs that permit
@@ -104,6 +120,7 @@ various common operations.
 | %define ...	   | define a macro
 | %undefine ...	   | undefine a macro
 | %global ...	   | define a macro whose body is available in global context
+| %alias ...       | define an alias on another macro or get alias definition | 4.20.0
 | %{load:...}	   | load a macro file | 4.12.0
 | %{expand:...}	   | like eval, expand ... to <body> and (re-)expand <body>
 | %{expr:...}	   | evaluate an [expression](#expression-expansion) | 4.15.0

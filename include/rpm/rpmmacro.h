@@ -128,6 +128,17 @@ int	rpmPushMacroFlags	(rpmMacroContext mc, const char * n,
 					rpmMacroFlags flags);
 
 /** \ingroup rpmmacro
+ * Push a macro alias
+ * @param mc		macro context (NULL uses global context).
+ * @param n		alias name
+ * @param o		(unused)
+ * @param b		alias target name
+ * @return		0 on success
+ */
+int rpmPushMacroAlias(rpmMacroContext mc,
+			const char * n, const char * o, const char * b);
+
+/** \ingroup rpmmacro
  * Push an auxiliary macro to context.
  * @param mc		macro context (NULL uses global context).
  * @param n		macro name
