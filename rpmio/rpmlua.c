@@ -7,10 +7,10 @@ extern "C" {
 #include <lua.h>
 #include <lualib.h>
 #include <lauxlib.h>
-#include "lposix.h"
 #ifdef __cplusplus
 }
 #endif
+#include "lposix.h"
 
 #ifndef LUA_LOADED_TABLE
 /* feature introduced in Lua 5.3.4 */
