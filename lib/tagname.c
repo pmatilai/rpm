@@ -195,7 +195,7 @@ rpmTagReturnType rpmTagGetReturnType(rpmTagVal tag)
     return (rpmTagGetType(tag) & RPM_MASK_RETURN_TYPE);
 }
 
-rpmTagClass rpmTagTypeGetClass(rpmTagType type)
+rpmTagClass rpmTagTypeGetClass(uint32_t type)
 {
     rpmTagClass tclass;
     switch (type & RPM_MASK_TYPE) {

@@ -546,7 +546,7 @@ rpmTagVal rpmTagGetValue(const char * tagstr);
  * @param type		tag type
  * @return		data class, RPM_NULL_CLASS on unknown.
  */
-rpmTagClass rpmTagTypeGetClass(rpmTagType type);
+rpmTagClass rpmTagTypeGetClass(uint32_t type);
 
 /** \ingroup rpmtag
  * Return known rpm tag names, sorted by name.
