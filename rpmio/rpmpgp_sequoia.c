@@ -88,4 +88,3 @@ W(int, rpmDigestFinal,
 #ifdef __cplusplus
 }
 #endif
-
