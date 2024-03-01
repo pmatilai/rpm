@@ -43,8 +43,8 @@ if (WITH_CXX)
 set (cxx_sources
 	argv.c base64.c digest.c expression.c macro.c
 	rgetopt.c rpmfileutil.c rpmglob.c rpmhook.c rpmio.c
-	rpmkeyring.c rpmlua.c rpmpgp.c rpmsq.c rpmsw.c rpmver.c rpmvercmp.c
-	url.c
+	rpmkeyring.c rpmlua.c rpmpgp.c rpmsq.c rpmsw.c rpmstrpool.c
+	rpmver.c rpmvercmp.c url.c
 )
 set_source_files_properties(${cxx_sources} PROPERTIES LANGUAGE CXX)
 endif()
