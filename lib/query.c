@@ -24,7 +24,6 @@
 
 #include "debug.h"
 
-
 /**
  */
 static void printFileInfo(const char * name,

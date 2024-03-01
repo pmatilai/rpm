@@ -63,6 +63,7 @@ set (cxx_sources
 	cpio.c depends.c formats.c fprint.c fsm.c header.c
 	headerfmt.c headerutil.c manifest.c order.c package.c
 	poptALL.c poptI.c poptQV.c
+	query.c relocation.c
 )
 set_source_files_properties(${cxx_sources} PROPERTIES LANGUAGE CXX)
 endif()
