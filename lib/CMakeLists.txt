@@ -61,7 +61,7 @@ if (WITH_CXX)
 # sources converted to c++ so far (avoid having to do everything at once)
 set (cxx_sources
 	cpio.c depends.c formats.c fprint.c fsm.c header.c
-	headerfmt.c headerutil.c
+	headerfmt.c headerutil.c manifest.c order.c package.c
 )
 set_source_files_properties(${cxx_sources} PROPERTIES LANGUAGE CXX)
 endif()
