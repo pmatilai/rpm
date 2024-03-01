@@ -38,7 +38,6 @@ enum rpmglobFlags_e {
     RPMGLOB_NONE		= 0,
     RPMGLOB_NOCHECK		= (1 << 0), /*!< same as GLOB_NOCHECK */
 };
-
 typedef rpmFlags rpmglobFlags;
 
 /** \ingroup rpmfileutil
