@@ -1,9 +1,16 @@
 #include "system.h"
 
+/* argh, Lua headers still aren't c++ safe */
+#ifdef __cplusplus
+extern "C" {
+#endif
 #include <lua.h>
 #include <lualib.h>
 #include <lauxlib.h>
 #include "lposix.h"
+#ifdef __cplusplus
+}
+#endif
 
 #ifndef LUA_LOADED_TABLE
 /* feature introduced in Lua 5.3.4 */
@@ -185,7 +192,7 @@ void * rpmluaGetLua(rpmlua lua)
 void rpmluaPushPrintBuffer(rpmlua lua)
 {
     INITSTATE(lua);
-    rpmluapb prbuf = xcalloc(1, sizeof(*prbuf));
+    rpmluapb prbuf = (rpmluapb)xcalloc(1, sizeof(*prbuf));
     prbuf->buf = NULL;
     prbuf->alloced = 0;
     prbuf->used = 0;
@@ -228,7 +235,7 @@ int rpmluaCheckScript(rpmlua lua, const char *script, const char *name)
 
 static int luaopt(int c, const char *oarg, int oint, void *data)
 {
-    lua_State *L = data;
+    lua_State *L = (lua_State *)data;
     char key[2] = { (char)c, '\0' };
 
     lua_pushstring(L, oarg ? oarg : "");
@@ -258,6 +265,7 @@ int rpmluaRunScript(rpmlua lua, const char *script, const char *name,
     lua_State *L = lua->L;
     int ret = -1;
     int oind = 0;
+    int nret = 0;
     static const char *lualocal = "local opt, arg = ...;";
     int otop = lua_gettop(L); /* this can recurse through macros */
 
@@ -305,7 +313,7 @@ int rpmluaRunScript(rpmlua lua, const char *script, const char *name,
 	goto exit;
     }
 
-    int nret = lua_gettop(L) - otop;
+    nret = lua_gettop(L) - otop;
     if (nret > 0 && lua->printbuf) {
 	lua_getglobal(L, "print");
 	lua_insert(L, -(nret + 1));
@@ -530,7 +538,7 @@ static int rpm_b64decode(lua_State *L)
 	void *data = NULL;
 	size_t len = 0;
 	if (rpmBase64Decode(str, &data, &len) == 0) {
-	    lua_pushlstring(L, data, len);
+	    lua_pushlstring(L, (char *)data, len);
 	} else {
 	    lua_pushnil(L);
 	}
@@ -692,7 +700,7 @@ static int rpm_register(lua_State *L)
 	(void) luaL_argerror(L, 2, "function expected");
     } else {
 	rpmluaHookData hookdata =
-	    lua_newuserdata(L, sizeof(struct rpmluaHookData_s));
+	    (rpmluaHookData)lua_newuserdata(L, sizeof(struct rpmluaHookData_s));
 	lua_pushvalue(L, -1);
 	hookdata->dataRef = luaL_ref(L, LUA_REGISTRYINDEX);
 	lua_pushvalue(L, 2);
@@ -821,7 +829,7 @@ static int rpm_execute(lua_State *L)
     int status;
     pid_t pid;
 
-    char **argv = malloc((n + 1) * sizeof(char *));
+    char **argv = (char **)malloc((n + 1) * sizeof(char *));
     if (argv == NULL)
 	return luaL_error(L, "not enough memory");
     argv[0] = (char *)file;
@@ -906,8 +914,8 @@ static int rpm_glob(lua_State *L)
 static int newinstance(lua_State *L, const char *name, void *p)
 {
     if (p != NULL) {
-	intptr_t **pp = lua_newuserdata(L, sizeof(*pp));
-	*pp = p;
+	intptr_t **pp = (intptr_t **)lua_newuserdata(L, sizeof(*pp));
+	*pp = (intptr_t *)p;
 	luaL_getmetatable(L, name);
 	lua_setmetatable(L, -2);
     }
@@ -925,7 +933,7 @@ static int createclass(lua_State *L, const char *name, const luaL_Reg *methods)
 
 static rpmver * checkver(lua_State *L, int ix)
 {
-    rpmver *vp = lua_touserdata(L, ix);
+    rpmver *vp = (rpmver *)lua_touserdata(L, ix);
     luaL_checkudata(L, ix, "rpm.ver");
     return vp;
 }
@@ -1019,7 +1027,7 @@ static const luaL_Reg ver_m[] = {
 
 static FD_t * checkfd(lua_State *L, int ix)
 {
-    FD_t *fdp = lua_touserdata(L, ix);
+    FD_t *fdp = (FD_t *)lua_touserdata(L, ix);
     luaL_checkudata(L, ix, "rpm.fd");
     return fdp;
 }
@@ -1171,7 +1179,7 @@ static const luaL_Reg fd_m[] = {
 
 static rpmMacroContext *checkmc(lua_State *L, int ix)
 {
-    rpmMacroContext *mc = lua_touserdata(L, ix);
+    rpmMacroContext *mc = (rpmMacroContext *)lua_touserdata(L, ix);
     luaL_checkudata(L, ix, "rpm.mc");
     return mc;
 }

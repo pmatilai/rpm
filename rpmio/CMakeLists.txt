@@ -42,6 +42,7 @@ if (WITH_CXX)
 # sources converted to c++ so far (avoid having to do everything at once)
 set (cxx_sources
 	argv.c base64.c digest.c expression.c macro.c rpmhook.c
+	rpmlua.c
 )
 set_source_files_properties(${cxx_sources} PROPERTIES LANGUAGE CXX)
 endif()
