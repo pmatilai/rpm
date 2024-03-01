@@ -29,10 +29,12 @@ extern char ** environ;
 #endif
 #endif
 
+#ifndef __cplusplus
 #if defined(HAVE_SECURE_GETENV)
 #define	getenv(_s)	secure_getenv(_s)
 #elif defined(HAVE___SECURE_GETENV)
 #define	getenv(_s)	__secure_getenv(_s)
+#endif
 #endif
 
 #ifdef HAVE_LIMITS_H
