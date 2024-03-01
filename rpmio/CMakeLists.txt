@@ -42,7 +42,7 @@ if (WITH_CXX)
 # sources converted to c++ so far (avoid having to do everything at once)
 set (cxx_sources
 	argv.c base64.c digest.c expression.c macro.c
-	rgetopt.c rpmglob.c rpmhook.c
+	rgetopt.c rpmfileutil.c rpmglob.c rpmhook.c rpmio.c
 	rpmkeyring.c rpmlua.c rpmpgp.c rpmsq.c rpmsw.c rpmver.c rpmvercmp.c
 	url.c
 )
