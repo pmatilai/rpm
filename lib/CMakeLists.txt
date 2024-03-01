@@ -57,6 +57,14 @@ if(ENABLE_NDB)
 	)
 endif()
 
+if (WITH_CXX)
+# sources converted to c++ so far (avoid having to do everything at once)
+set (cxx_sources
+	cpio.c depends.c formats.c fprint.c fsm.c
+)
+set_source_files_properties(${cxx_sources} PROPERTIES LANGUAGE CXX)
+endif()
+
 if(ENABLE_BDB_RO)
 	target_sources(librpm PRIVATE backend/bdb_ro.c)
 endif()
