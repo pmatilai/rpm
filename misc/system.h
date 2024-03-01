@@ -58,10 +58,16 @@ extern int fdatasync(int fildes);
 #define xmalloc(_size) rmalloc((_size))
 #define xmallocn(_nmemb, _size) rreallocn(NULL, (_nmemb), (_size))
 #define xcalloc(_nmemb, _size) rcalloc((_nmemb), (_size))
+#define xstrdup(_str) rstrdup((_str))
+#ifdef __cplusplus
+#define xrealloc(_ptr, _size) (typeof((_ptr))) rrealloc((_ptr), (_size))
+#define xreallocn(_ptr, _nmemb, _size) (typeof((_ptr))) rreallocn((_ptr), (_nmemb), (_size))
+#define _free(_ptr) (typeof((_ptr))) rfree((_ptr))
+#else
 #define xrealloc(_ptr, _size) rrealloc((_ptr), (_size))
 #define xreallocn(_ptr, _nmemb, _size) rreallocn((_ptr), (_nmemb), (_size))
-#define xstrdup(_str) rstrdup((_str))
 #define _free(_ptr) rfree((_ptr))
+#endif
 
 /* To extract program's name: use calls (reimplemented or shipped with system):
    - void setprogname(const char *pn)
