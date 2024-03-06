@@ -64,7 +64,7 @@ set (cxx_sources
 	headerfmt.c headerutil.c manifest.c order.c package.c
 	poptALL.c poptI.c poptQV.c
 	query.c relocation.c rpmal.c rpmchecksig.c rpmchroot.c
-	rpmds.c
+	rpmds.c rpmfi.c
 )
 set_source_files_properties(${cxx_sources} PROPERTIES LANGUAGE CXX)
 endif()
