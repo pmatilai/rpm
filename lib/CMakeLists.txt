@@ -62,7 +62,7 @@ if (WITH_CXX)
 set (cxx_sources
 	cpio.c depends.c formats.c fprint.c fsm.c header.c
 	headerfmt.c headerutil.c manifest.c order.c package.c
-	poptALL.c poptI.c poptQV.c
+	poptALL.c poptI.c poptQV.c psm.c
 	query.c relocation.c rpmal.c rpmchecksig.c rpmchroot.c
 	rpmds.c rpmfi.c
 )
