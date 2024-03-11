@@ -278,6 +278,10 @@ rpmSpec rpmSpecFree(rpmSpec spec)
 
     spec->buildRestrictions = headerFree(spec->buildRestrictions);
 
+    for (int i = 0; i < NR_SECT; i++) {
+	argvFree(spec->buildopts[i]);
+    }
+
     if (!spec->recursing) {
 	if (spec->BASpecs != NULL)
 	while (spec->BACount--) {
