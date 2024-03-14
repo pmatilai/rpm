@@ -187,7 +187,7 @@ rpmTagVal rpmTagGetValue(const char * tagstr)
 
 rpmTagType rpmTagGetTagType(rpmTagVal tag)
 {
-    return (rpmTagGetType(tag) & RPM_MASK_TYPE);
+    return (rpmTagType)(rpmTagGetType(tag) & RPM_MASK_TYPE);
 }
 
 rpmTagReturnType rpmTagGetReturnType(rpmTagVal tag)
@@ -239,7 +239,7 @@ int rpmTagGetNames(rpmtd tagnames, int fullname)
 
     rpmtdReset(tagnames);
     tagnames->count = rpmTagTableSize;
-    tagnames->data = names = xmalloc(tagnames->count * sizeof(*names));
+    tagnames->data = names = (const char **)xmalloc(tagnames->count * sizeof(*names));
     tagnames->type = RPM_STRING_ARRAY_TYPE;
     tagnames->flags = RPMTD_ALLOCED | RPMTD_IMMUTABLE;
 
