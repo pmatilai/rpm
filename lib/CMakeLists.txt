@@ -66,7 +66,7 @@ set (cxx_sources
 	query.c relocation.c rpmal.c rpmchecksig.c rpmchroot.c
 	rpmdb.c rpmds.c rpmfi.c rpmfs.c rpmgi.c rpminstall.c
 	rpmlead.c rpmlock.c rpmplugins.c rpmprob.c rpmps.c
-	rpmrc.c rpmscript.c rpmtd.c rpmte.c
+	rpmrc.c rpmscript.c rpmtd.c rpmte.c rpmtriggers.c
 )
 set_source_files_properties(${cxx_sources} PROPERTIES LANGUAGE CXX)
 endif()
