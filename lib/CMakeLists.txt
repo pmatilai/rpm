@@ -65,7 +65,7 @@ set (cxx_sources
 	poptALL.c poptI.c poptQV.c psm.c
 	query.c relocation.c rpmal.c rpmchecksig.c rpmchroot.c
 	rpmdb.c rpmds.c rpmfi.c rpmfs.c rpmgi.c rpminstall.c
-	rpmlead.c rpmlock.c rpmplugins.c
+	rpmlead.c rpmlock.c rpmplugins.c rpmprob.c rpmps.c
 )
 set_source_files_properties(${cxx_sources} PROPERTIES LANGUAGE CXX)
 endif()
