@@ -42,7 +42,7 @@ Header rpmteSetHeader(rpmte te, Header h);
 
 /** \ingroup rpmte
  * Retrieve type of transaction element.
- * @param te		transaction element
+ * @param te		transaction element (must not be NULL)
  * @return		type
  */
 rpmElementType rpmteType(rpmte te);

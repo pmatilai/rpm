@@ -49,7 +49,7 @@ struct rpmte_s {
 
     rpmds thisds;		/*!< This package's provided NEVR. */
     rpmds provides;		/*!< Provides: dependencies. */
-    rpmds requires;		/*!< Requires: dependencies. */
+    rpmds requirez;		/*!< Requires: dependencies. */
     rpmds conflicts;		/*!< Conflicts: dependencies. */
     rpmds obsoletes;		/*!< Obsoletes: dependencies. */
     rpmds order;		/*!< Order: dependencies. */
@@ -91,7 +91,7 @@ void rpmteCleanDS(rpmte te)
 {
     te->thisds = rpmdsFree(te->thisds);
     te->provides = rpmdsFree(te->provides);
-    te->requires = rpmdsFree(te->requires);
+    te->requirez = rpmdsFree(te->requirez);
     te->conflicts = rpmdsFree(te->conflicts);
     te->obsoletes = rpmdsFree(te->obsoletes);
     te->recommends = rpmdsFree(te->recommends);
@@ -181,7 +181,7 @@ static int addTE(rpmte p, Header h, fnpyKey key, rpmRelocation * relocs)
 
     p->thisds = rpmdsThisPool(tspool, h, RPMTAG_PROVIDENAME, RPMSENSE_EQUAL);
     p->provides = rpmdsNewPool(tspool, h, RPMTAG_PROVIDENAME, 0);
-    p->requires = rpmdsNewPool(tspool, h, RPMTAG_REQUIRENAME, 0);
+    p->requirez = rpmdsNewPool(tspool, h, RPMTAG_REQUIRENAME, 0);
     p->conflicts = rpmdsNewPool(tspool, h, RPMTAG_CONFLICTNAME, 0);
     p->obsoletes = rpmdsNewPool(tspool, h, RPMTAG_OBSOLETENAME, 0);
     p->order = rpmdsNewPool(tspool, h, RPMTAG_ORDERNAME, 0);
@@ -265,7 +265,7 @@ rpmte rpmteFree(rpmte te)
 rpmte rpmteNew(rpmts ts, Header h, rpmElementType type, fnpyKey key,
 	       rpmRelocation * relocs, int addop)
 {
-    rpmte p = xcalloc(1, sizeof(*p));
+    rpmte p = (rpmte)xcalloc(1, sizeof(*p));
     p->ts = ts;
     p->type = type;
     p->addop = addop;
@@ -307,8 +307,7 @@ Header rpmteSetHeader(rpmte te, Header h)
 
 rpmElementType rpmteType(rpmte te)
 {
-    /* XXX returning negative for unsigned type */
-    return (te != NULL ? te->type : -1);
+    return te->type;
 }
 
 const char * rpmteN(rpmte te)
@@ -461,7 +460,7 @@ rpmds rpmteDS(rpmte te, rpmTagVal tag)
     switch (tag) {
     case RPMTAG_NAME:		return te->thisds;
     case RPMTAG_PROVIDENAME:	return te->provides;
-    case RPMTAG_REQUIRENAME:	return te->requires;
+    case RPMTAG_REQUIRENAME:	return te->requirez;
     case RPMTAG_CONFLICTNAME:	return te->conflicts;
     case RPMTAG_OBSOLETENAME:	return te->obsoletes;
     case RPMTAG_ORDERNAME:	return te->order;
@@ -502,7 +501,7 @@ static void rpmteColorDS(rpmte te, rpmTag tag)
     if (!(te && deptype && (Count = rpmdsCount(ds)) > 0 && rpmfilesFC(te->files) > 0))
 	return;
 
-    colors = xcalloc(Count, sizeof(*colors));
+    colors = (rpm_color_t *)xcalloc(Count, sizeof(*colors));
 
     /* Calculate dependency color. */
     fi = rpmfilesIter(te->files, RPMFI_ITER_FWD);
@@ -550,7 +549,7 @@ static Header rpmteDBHeader(rpmte te)
 static Header rpmteFDHeader(rpmte te)
 {
     Header h = NULL;
-    te->fd = rpmtsNotify(te->ts, te, RPMCALLBACK_INST_OPEN_FILE, 0, 0);
+    te->fd = (FD_t)rpmtsNotify(te->ts, te, RPMCALLBACK_INST_OPEN_FILE, 0, 0);
     if (te->fd != NULL) {
 	rpmVSFlags ovsflags;
 	rpmRC pkgrc;
