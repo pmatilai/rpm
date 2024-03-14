@@ -67,7 +67,7 @@ set (cxx_sources
 	rpmdb.c rpmds.c rpmfi.c rpmfs.c rpmgi.c rpminstall.c
 	rpmlead.c rpmlock.c rpmplugins.c rpmprob.c rpmps.c
 	rpmrc.c rpmscript.c rpmtd.c rpmte.c rpmtriggers.c
-	rpmts.c rpmug.c rpmvs.c signature.c
+	rpmts.c rpmug.c rpmvs.c signature.c tagexts.c
 )
 set_source_files_properties(${cxx_sources} PROPERTIES LANGUAGE CXX)
 endif()
