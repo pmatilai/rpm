@@ -70,7 +70,7 @@ set (cxx_sources
 	rpmts.c rpmug.c rpmvs.c signature.c tagexts.c tagname.c
 	transaction.c verify.c
 	backend/dbi.c backend/dbiset.c
-	backend/sqlite.c
+	backend/dummydb.c backend/sqlite.c
 )
 set_source_files_properties(${cxx_sources} PROPERTIES LANGUAGE CXX)
 endif()
