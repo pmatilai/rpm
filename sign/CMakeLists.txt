@@ -25,7 +25,7 @@ endif()
 
 if (WITH_CXX)
 set (cxx_sources
-	rpmgensig.c rpmsignfiles.c
+	rpmgensig.c rpmsignfiles.c rpmsignverity.c
 )
 set_source_files_properties(${cxx_sources} PROPERTIES LANGUAGE CXX)
 endif()
