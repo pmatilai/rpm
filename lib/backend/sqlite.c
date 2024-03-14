@@ -28,6 +28,11 @@ struct dbiCursor_s {
 
 static int sqlexec(sqlite3 *sdb, const char *fmt, ...);
 
+static sqlite3 *dbiDb(dbiIndex dbi)
+{
+    return (sqlite3 *)dbi->dbi_db;
+}
+
 static void rpm_match3(sqlite3_context *sctx, int argc, sqlite3_value **argv)
 {
     int match = 0;
@@ -36,8 +41,8 @@ static void rpm_match3(sqlite3_context *sctx, int argc, sqlite3_value **argv)
 	int b2len = sqlite3_value_bytes(argv[1]);
 	int n = sqlite3_value_int(argv[2]);
 	if (b1len >= n && b2len >= n) {
-	    const char *b1 = sqlite3_value_blob(argv[0]);
-	    const char *b2 = sqlite3_value_blob(argv[1]);
+	    const void *b1 = sqlite3_value_blob(argv[0]);
+	    const void *b2 = sqlite3_value_blob(argv[1]);
 	    match = (memcmp(b1, b2, n) == 0);
 	}
     }
@@ -105,7 +110,7 @@ static rpmRC dbiCursorBindIdx(dbiCursor dbc, const void *key, int keylen,
 {
     int rc;
     if (dbc->ctype == SQLITE_TEXT) {
-	rc = sqlite3_bind_text(dbc->stmt, 1, key, keylen, NULL);
+	rc = sqlite3_bind_text(dbc->stmt, 1, (const char *)key, keylen, NULL);
     } else {
 	rc = sqlite3_bind_blob(dbc->stmt, 1, key, keylen, NULL);
     }
@@ -189,7 +194,7 @@ static int sqlite_fini(rpmdb rdb)
 {
     int rc = 0;
     if (rdb) {
-	sqlite3 *sdb = rdb->db_dbenv;
+	sqlite3 *sdb = (sqlite3 *)rdb->db_dbenv;
 	if (rdb->db_opens > 1) {
 	    rdb->db_opens--;
 	} else {
@@ -237,7 +242,7 @@ static int dbiExists(dbiIndex dbi)
 {
     const char *col = (dbi->dbi_type == DBI_PRIMARY) ? "hnum" : "key";
     const char *tbl = dbi->dbi_file;
-    int rc = sqlite3_table_column_metadata(dbi->dbi_db, NULL, tbl, col,
+    int rc = sqlite3_table_column_metadata(dbiDb(dbi), NULL, tbl, col,
 					   NULL, NULL, NULL, NULL, NULL);
     return (rc == 0);
 }
@@ -250,7 +255,7 @@ static int init_table(dbiIndex dbi, rpmTagVal tag)
 	return 0;
 
     if (dbi->dbi_type == DBI_PRIMARY) {
-	rc = sqlexec(dbi->dbi_db,
+	rc = sqlexec(dbiDb(dbi),
 			"CREATE TABLE IF NOT EXISTS '%q' ("
 			    "hnum INTEGER PRIMARY KEY AUTOINCREMENT,"
 			    "blob BLOB NOT NULL"
@@ -259,7 +264,7 @@ static int init_table(dbiIndex dbi, rpmTagVal tag)
     } else {
 	const char *keytype = (rpmTagGetClass(tag) == RPM_STRING_CLASS) ?
 				"TEXT" : "BLOB";
-	rc = sqlexec(dbi->dbi_db,
+	rc = sqlexec(dbiDb(dbi),
 			"CREATE TABLE IF NOT EXISTS '%q' ("
 			    "key '%q' NOT NULL, "
 			    "hnum INTEGER NOT NULL, "
@@ -284,18 +289,19 @@ static int create_index(sqlite3 *sdb, const char *table, const char *col)
 static int init_index(dbiIndex dbi, rpmTagVal tag)
 {
     int rc = 0;
+    sqlite3 *sdb = dbiDb(dbi);
 
     /* Can't create on readonly database, but things will still work */
-    if (sqlite3_db_readonly(dbi->dbi_db, NULL) == 1)
+    if (sqlite3_db_readonly(sdb, NULL) == 1)
 	return 0;
 
     if (dbi->dbi_type == DBI_SECONDARY) {
 	int string = (rpmTagGetClass(tag) == RPM_STRING_CLASS);
 	int array = (rpmTagGetReturnType(tag) == RPM_ARRAY_RETURN_TYPE);
 	if (!rc && string)
-	    rc = create_index(dbi->dbi_db, dbi->dbi_file, "key");
+	    rc = create_index(sdb, dbi->dbi_file, "key");
 	if (!rc && array)
-	    rc = create_index(dbi->dbi_db, dbi->dbi_file, "hnum");
+	    rc = create_index(sdb, dbi->dbi_file, "hnum");
     }
     return rc;
 }
@@ -337,13 +343,14 @@ static int sqlite_Verify(dbiIndex dbi, unsigned int flags)
 {
     int errors = -1;
     int key_errors = -1;
+    sqlite3 *sdb = dbiDb(dbi);
     sqlite3_stmt *s = NULL;
     const char *cmd = "PRAGMA integrity_check";
 
     if (dbi->dbi_type == DBI_SECONDARY)
 	return RPMRC_OK;
 
-    if (sqlite3_prepare_v2(dbi->dbi_db, cmd, -1, &s, NULL) == SQLITE_OK) {
+    if (sqlite3_prepare_v2(sdb, cmd, -1, &s, NULL) == SQLITE_OK) {
 	errors = 0;
 	while (sqlite3_step(s) == SQLITE_ROW) {
 	    const char *txt = (const char *)sqlite3_column_text(s, 0);
@@ -354,7 +361,7 @@ static int sqlite_Verify(dbiIndex dbi, unsigned int flags)
 	}
 	sqlite3_finalize(s);
     } else {
-	rpmlog(RPMLOG_ERR, "%s: %s\n", cmd, sqlite3_errmsg(dbi->dbi_db));
+	rpmlog(RPMLOG_ERR, "%s: %s\n", cmd, sqlite3_errmsg(sdb));
     }
 
     /* No point checking higher-level errors if low-level errors exist */
@@ -362,7 +369,7 @@ static int sqlite_Verify(dbiIndex dbi, unsigned int flags)
 	goto exit;
 
     cmd = "PRAGMA foreign_key_check";
-    if (sqlite3_prepare_v2(dbi->dbi_db, cmd, -1, &s, NULL) == SQLITE_OK) {
+    if (sqlite3_prepare_v2(sdb, cmd, -1, &s, NULL) == SQLITE_OK) {
 	key_errors = 0;
 	while (sqlite3_step(s) == SQLITE_ROW) {
 	    key_errors++;
@@ -372,7 +379,7 @@ static int sqlite_Verify(dbiIndex dbi, unsigned int flags)
 	}
 	sqlite3_finalize(s);
     } else {
-	rpmlog(RPMLOG_ERR, "%s: %s\n", cmd, sqlite3_errmsg(dbi->dbi_db));
+	rpmlog(RPMLOG_ERR, "%s: %s\n", cmd, sqlite3_errmsg(sdb));
     }
 
 exit:
@@ -382,7 +389,7 @@ exit:
 
 static void sqlite_SetFSync(rpmdb rdb, int enable)
 {
-    sqlexec(rdb->db_dbenv,
+    sqlexec((sqlite3 *)rdb->db_dbenv,
 	    "PRAGMA synchronous = %s", enable ? "FULL" : "OFF");
 }
 
@@ -392,10 +399,10 @@ static int sqlite_Ctrl(rpmdb rdb, dbCtrlOp ctrl)
 
     switch (ctrl) {
     case DB_CTRL_LOCK_RW:
-	rc = sqlexec(rdb->db_dbenv, "SAVEPOINT 'rwlock'");
+	rc = sqlexec((sqlite3 *)rdb->db_dbenv, "SAVEPOINT 'rwlock'");
 	break;
     case DB_CTRL_UNLOCK_RW:
-	rc = sqlexec(rdb->db_dbenv, "RELEASE 'rwlock'");
+	rc = sqlexec((sqlite3 *)rdb->db_dbenv, "RELEASE 'rwlock'");
 	break;
     default:
 	break;
@@ -406,8 +413,8 @@ static int sqlite_Ctrl(rpmdb rdb, dbCtrlOp ctrl)
 
 static dbiCursor sqlite_CursorInit(dbiIndex dbi, unsigned int flags)
 {
-    dbiCursor dbc = xcalloc(1, sizeof(*dbc));
-    dbc->sdb = dbi->dbi_db;
+    dbiCursor dbc = (dbiCursor)xcalloc(1, sizeof(*dbc));
+    dbc->sdb = dbiDb(dbi);
     dbc->flags = flags;
     dbc->tag = rpmTagGetValue(dbi->dbi_file);
     if (rpmTagGetClass(dbc->tag) == RPM_STRING_CLASS) {
@@ -466,7 +473,7 @@ static rpmRC sqlite_pkgdbPut(dbiIndex dbi, dbiCursor dbc,  unsigned int *hdrNum,
     if (dbwc)
 	dbiCursorFree(dbi, dbwc);
 
-    return rc;
+    return rc ? RPMRC_FAIL : RPMRC_OK;
 }
 
 static rpmRC sqlite_pkgdbDel(dbiIndex dbi, dbiCursor dbc,  unsigned int hdrNum)
@@ -491,7 +498,7 @@ static rpmRC sqlite_stepPkg(dbiCursor dbc, unsigned char **hdrBlob, unsigned int
 	if (hdrLen)
 	    *hdrLen = sqlite3_column_bytes(dbc->stmt, 1);
 	if (hdrBlob)
-	    *hdrBlob = (void *) sqlite3_column_blob(dbc->stmt, 1);
+	    *hdrBlob = (uint8_t *) sqlite3_column_blob(dbc->stmt, 1);
     }
 
     return (rc == SQLITE_DONE) ? RPMRC_NOTFOUND : dbiCursorResult(dbc);
@@ -605,7 +612,8 @@ static rpmRC sqlite_idxdbIter(dbiIndex dbi, dbiCursor dbc, dbiIndexSet *set)
 	    }
 	    dbc->keylen = sqlite3_column_bytes(dbc->stmt, 0);
 	    if (dbc->subc) {
-		rc = sqlite_idxdbByKey(dbi, dbc->subc, dbc->key, dbc->keylen,
+		rc = sqlite_idxdbByKey(dbi, dbc->subc,
+					(const char *)dbc->key, dbc->keylen,
 					DBC_NORMAL_SEARCH, set);
 	    } else {
 		rc = RPMRC_OK;
