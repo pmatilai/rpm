@@ -51,7 +51,8 @@ endif()
 
 if (WITH_CXX)
 set (cxx_sources
-	build.c
+	build.c files.c
+	spec.c
 )
 set_source_files_properties(${cxx_sources} PROPERTIES LANGUAGE CXX)
 endif()
