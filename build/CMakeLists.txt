@@ -55,6 +55,9 @@ set (cxx_sources
 	spec.c
 )
 set_source_files_properties(${cxx_sources} PROPERTIES LANGUAGE CXX)
+if (OpenMP_C_FOUND)
+	target_link_libraries(librpmbuild PRIVATE OpenMP::OpenMP_CXX)
+endif()
 endif()
 
 install(TARGETS librpmbuild EXPORT rpm-targets)
