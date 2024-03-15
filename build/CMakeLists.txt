@@ -55,6 +55,7 @@ set (cxx_sources
 	parseChangelog.c parseDescription.c parseFiles.c parseList.c
 	parsePolicies.c parsePreamble.c parsePrep.c parseReq.c
 	parseScript.c parseSimpleScript.c parseSpec.c
+	policies.c
 	spec.c
 )
 set_source_files_properties(${cxx_sources} PROPERTIES LANGUAGE CXX)
