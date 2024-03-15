@@ -49,5 +49,11 @@ if(OpenMP_C_FOUND)
 	target_link_libraries(librpmbuild PRIVATE OpenMP::OpenMP_C)
 endif()
 
+if (WITH_CXX)
+set (cxx_sources
+	build.c
+)
+set_source_files_properties(${cxx_sources} PROPERTIES LANGUAGE CXX)
+endif()
 
 install(TARGETS librpmbuild EXPORT rpm-targets)
