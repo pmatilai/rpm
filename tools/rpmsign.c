@@ -28,7 +28,7 @@ static char * fileSigningCert = NULL;
 static char * verityAlgorithm = NULL;
 #endif
 
-static struct rpmSignArgs sargs = {NULL, 0, 0};
+static struct rpmSignArgs sargs = {NULL, PGPHASHALGO_NONE, 0};
 
 static struct poptOption signOptsTable[] = {
     { "addsign", '\0', (POPT_ARG_VAL|POPT_ARGFLAG_OR), &mode, MODE_ADDSIGN,
@@ -91,7 +91,7 @@ static char *get_fskpass(void)
 {
     struct termios flags, tmp_flags;
     int passlen = 64;
-    char *password = xmalloc(passlen);
+    char *password = (char *)xmalloc(passlen);
     char *pwd = NULL;
 
     tcgetattr(fileno(stdin), &flags);
