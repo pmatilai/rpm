@@ -136,6 +136,7 @@ typedef enum pgpCompressAlgo_e {
  * 9.4. Hash Algorithms
  */
 typedef enum pgpHashAlgo_e {
+    PGPHASHALGO_NONE		=  0,	/*!< Invalid */
     PGPHASHALGO_MD5		=  1,	/*!< MD5 */
     PGPHASHALGO_SHA1		=  2,	/*!< SHA1 */
     PGPHASHALGO_RIPEMD160	=  3,	/*!< RIPEMD160 */
