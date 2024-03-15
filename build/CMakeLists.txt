@@ -52,6 +52,8 @@ endif()
 if (WITH_CXX)
 set (cxx_sources
 	build.c files.c misc.c pack.c
+	parseChangelog.c parseDescription.c parseFiles.c parseList.c
+	parsePolicies.c parseSimpleScript.c
 	spec.c
 )
 set_source_files_properties(${cxx_sources} PROPERTIES LANGUAGE CXX)
