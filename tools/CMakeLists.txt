@@ -68,7 +68,7 @@ endif()
 
 if (WITH_CXX)
 set (cxx_sources
-	cliutils.c elfdeps.c rpm2archive.c
+	cliutils.c elfdeps.c rpm2archive.c rpmbuild.c
 )
 set_source_files_properties(${cxx_sources} PROPERTIES LANGUAGE CXX)
 endif()
