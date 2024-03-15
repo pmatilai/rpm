@@ -1,7 +1,13 @@
 
 #include "system.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 #include <lua.h>
+#ifdef __cplusplus
+}
+#endif
 
 #include "rpmlua.h"
 #include "rpmbuild_internal.h"
@@ -14,7 +20,7 @@ static const char * luavars[] = { "patches", "sources",
 void * specLuaInit(rpmSpec spec)
 {
     rpmlua lua = rpmluaGetGlobalState();
-    lua_State *L = rpmluaGetLua(lua);
+    lua_State *L = (lua_State *)rpmluaGetLua(lua);
     for (const char **vp = luavars; vp && *vp; vp++) {
 	lua_newtable(L);
 	lua_setglobal(L, *vp);
@@ -26,7 +32,7 @@ void * specLuaInit(rpmSpec spec)
 void * specLuaFini(rpmSpec spec)
 {
     rpmlua lua = rpmluaGetGlobalState();
-    lua_State *L = rpmluaGetLua(lua);
+    lua_State *L = (lua_State *)rpmluaGetLua(lua);
     for (const char **vp = luavars; vp && *vp; vp++) {
 	lua_pushnil(L);
 	lua_setglobal(L, *vp);
@@ -37,7 +43,7 @@ void * specLuaFini(rpmSpec spec)
 void addLuaSource(const struct Source *p)
 {
     rpmlua lua = rpmluaGetGlobalState();
-    lua_State *L = rpmluaGetLua(lua);
+    lua_State *L = (lua_State *)rpmluaGetLua(lua);
     const char * what = (p->flags & RPMBUILD_ISPATCH) ? "patches" : "sources";
 
     lua_getglobal(L, what);

@@ -56,7 +56,7 @@ set (cxx_sources
 	parsePolicies.c parsePreamble.c parsePrep.c parseReq.c
 	parseScript.c parseSimpleScript.c parseSpec.c
 	policies.c reqprov.c rpmfc.c
-	spec.c
+	spec.c speclua.c
 )
 set_source_files_properties(${cxx_sources} PROPERTIES LANGUAGE CXX)
 if (OpenMP_C_FOUND)
