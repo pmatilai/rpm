@@ -30,8 +30,8 @@ typedef struct elfInfo_s {
     char *interp;
     const char *marker;		/* elf class marker or NULL */
 
-    ARGV_t requires;
-    ARGV_t provides;
+    ARGV_t reqs;
+    ARGV_t provs;
 } elfInfo;
 
 /*
@@ -144,7 +144,7 @@ static void processVerDef(Elf_Scn *scn, GElf_Shdr *shdr, elfInfo *ei)
 		    auxoffset += aux->vda_next;
 		    continue;
 		} else if (soname && !soname_only) {
-		    addDep(&ei->provides, soname, s, ei->marker);
+		    addDep(&ei->provs, soname, s, ei->marker);
 		}
 	    }
 		    
@@ -183,7 +183,7 @@ static void processVerNeed(Elf_Scn *scn, GElf_Shdr *shdr, elfInfo *ei)
 		    break;
 
 		if (genRequires(ei) && soname && !soname_only) {
-		    addDep(&ei->requires, soname, s, ei->marker);
+		    addDep(&ei->reqs, soname, s, ei->marker);
 		}
 		auxoffset += aux->vna_next;
 	    }
@@ -224,7 +224,7 @@ static void processDynamic(Elf_Scn *scn, GElf_Shdr *shdr, elfInfo *ei)
 		if (genRequires(ei)) {
 		    s = elf_strptr(ei->elf, shdr->sh_link, dyn->d_un.d_val);
 		    if (s)
-			addDep(&ei->requires, s, NULL, ei->marker);
+			addDep(&ei->reqs, s, NULL, ei->marker);
 		}
 		break;
 	    }
@@ -281,7 +281,8 @@ static int processFile(const char *fn, int dtype)
     int fdno;
     struct stat st;
     GElf_Ehdr *ehdr, ehdr_mem;
-    elfInfo *ei = rcalloc(1, sizeof(*ei));
+    elfInfo *ei = (elfInfo *)rcalloc(1, sizeof(*ei));
+    ARGV_t dep = NULL;
 
     fdno = open(fn, O_RDONLY);
     if (fdno < 0 || fstat(fdno, &st) < 0)
@@ -310,13 +311,13 @@ static int processFile(const char *fn, int dtype)
      * section, we need to ensure that we have a new enough glibc.
      */
     if (genRequires(ei) && ei->gotGNUHASH && !ei->gotHASH && !soname_only) {
-	argvAdd(&ei->requires, "rtld(GNU_HASH)");
+	argvAdd(&ei->reqs, "rtld(GNU_HASH)");
     }
 
     /*
      * For DSOs, add DT_SONAME as provide. If its missing, we can fake
      * it from the basename if requested. The bizarre looking DT_DEBUG
-     * check is used to avoid adding basename provides for PIE executables.
+     * check is used to avoid adding basename provs for PIE executables.
      */
     if (ei->isDSO && !ei->gotDEBUG) {
 	if (!ei->soname && fake_soname) {
@@ -324,16 +325,16 @@ static int processFile(const char *fn, int dtype)
 	    ei->soname = rstrdup(bn ? bn + 1 : fn);
 	}
 	if (ei->soname)
-	    addDep(&ei->provides, ei->soname, NULL, ei->marker);
+	    addDep(&ei->provs, ei->soname, NULL, ei->marker);
     }
 
     /* If requested and present, add dep for interpreter (ie dynamic linker) */
     if (ei->interp && require_interp)
-	argvAdd(&ei->requires, ei->interp);
+	argvAdd(&ei->reqs, ei->interp);
 
     rc = 0;
     /* dump the requested dependencies for this file */
-    ARGV_t dep = dtype ? ei->requires : ei->provides;
+    dep = dtype ? ei->reqs : ei->provs;
     if (dep && *dep) {
 	if (multifile)
 	    fprintf(stdout, ";%s\n", fn);
@@ -344,8 +345,8 @@ static int processFile(const char *fn, int dtype)
 exit:
     if (fdno >= 0) close(fdno);
     if (ei) {
-	argvFree(ei->provides);
-	argvFree(ei->requires);
+	argvFree(ei->provs);
+	argvFree(ei->reqs);
 	free(ei->soname);
 	free(ei->interp);
     	if (ei->elf) elf_end(ei->elf);
@@ -357,13 +358,13 @@ exit:
 int main(int argc, char *argv[])
 {
     int rc = 0;
-    int provides = 0;
-    int requires = 0;
+    int provs = 0;
+    int reqs = 0;
     poptContext optCon;
 
     struct poptOption opts[] = {
-	{ "provides", 'P', POPT_ARG_VAL, &provides, -1, NULL, NULL },
-	{ "requires", 'R', POPT_ARG_VAL, &requires, -1, NULL, NULL },
+	{ "provs", 'P', POPT_ARG_VAL, &provs, -1, NULL, NULL },
+	{ "reqs", 'R', POPT_ARG_VAL, &reqs, -1, NULL, NULL },
 	{ "soname-only", 0, POPT_ARG_VAL, &soname_only, -1, NULL, NULL },
 	{ "no-fake-soname", 0, POPT_ARG_VAL, &fake_soname, 0, NULL, NULL },
 	{ "no-filter-soname", 0, POPT_ARG_VAL, &filter_soname, 0, NULL, NULL },
@@ -385,14 +386,14 @@ int main(int argc, char *argv[])
     if (poptPeekArg(optCon)) {
 	const char *fn;
 	while ((fn = poptGetArg(optCon)) != NULL) {
-	    if (processFile(fn, requires))
+	    if (processFile(fn, reqs))
 		rc = EXIT_FAILURE;
 	}
     } else {
 	char fn[BUFSIZ];
 	while (fgets(fn, sizeof(fn), stdin) != NULL) {
 	    fn[strlen(fn)-1] = '\0';
-	    if (processFile(fn, requires))
+	    if (processFile(fn, reqs))
 		rc = EXIT_FAILURE;
 	}
     }
