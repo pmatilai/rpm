@@ -453,6 +453,44 @@ const char * lookupInDefaultTable(const char * name,
     return name;
 }
 
+#ifdef MACROFILES
+static char *initMacroPath(const char *confdir)
+{
+    return xstrdup(MACROFILES);
+}
+#else
+/*
+ * Prefer XDG_CONFIG_HOME/rpmmacros but fall back to ~/.rpmmacros
+ * if it exists and the XDG path doesn't.
+ */
+static char *initMacroPath(const char *confdir)
+{
+    const char *xdgconf = getenv("XDG_CONFIG_HOME");
+    if (!(xdgconf && *xdgconf))
+	xdgconf = "~/.config";
+    char *dotpath = rpmGetPath(xdgconf, "/rpmmacros", NULL);
+
+    if (rpmGlob(dotpath, NULL, NULL)) {
+	const char *oldcfg = "~/.rpmmacros";
+	if (rpmGlob(oldcfg, NULL, NULL) == 0) {
+	    free(dotpath);
+	    dotpath = xstrdup(oldcfg);
+	}
+    }
+    char *mpath = rstrscat(NULL, confdir, "/macros", ":",
+			    confdir, "/macros.d/macros.*", ":",
+			    confdir, "/platform/%{_target}/macros", ":",
+			    confdir, "/fileattrs/*.attr", ":",
+			    confdir, "/" RPM_VENDOR "/macros", ":",
+			    SYSCONFDIR "/rpm/macros.*", ":",
+			    SYSCONFDIR "/rpm/macros", ":",
+			    SYSCONFDIR "/rpm/%{_target}/macros", ":",
+			    dotpath, NULL);
+    free(dotpath);
+    return mpath;
+}
+#endif
+
 static void setDefaults(void)
 {
     const char *confdir = rpmConfigDir();
@@ -463,21 +501,8 @@ static void setDefaults(void)
 			  	"~/.rpmrc", NULL);
     }
 
-#ifndef MACROFILES
-    if (!macrofiles) {
-	macrofiles = rstrscat(NULL, confdir, "/macros", ":",
-				confdir, "/macros.d/macros.*", ":",
-				confdir, "/platform/%{_target}/macros", ":",
-				confdir, "/fileattrs/*.attr", ":",
-  				confdir, "/" RPM_VENDOR "/macros", ":",
-				SYSCONFDIR "/rpm/macros.*", ":",
-				SYSCONFDIR "/rpm/macros", ":",
-				SYSCONFDIR "/rpm/%{_target}/macros", ":",
-				"~/.rpmmacros", NULL);
-    }
-#else
-    macrofiles = MACROFILES;
-#endif
+    if (!macrofiles)
+	macrofiles = initMacroPath(confdir);
 }
 
 /* FIX: se usage inconsistent, W2DO? */
