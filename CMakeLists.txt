@@ -407,7 +407,7 @@ endif()
 
 if (WITH_CXX)
 	add_compile_options(-fno-exceptions)
-	add_compile_options(-Wno-sign-compare -Wno-write-strings -Wno-narrowing)
+	add_compile_options(-Wno-sign-compare -Wno-narrowing)
 else()
 	add_compile_options(-Wmissing-prototypes -Wstrict-prototypes)
 endif()
