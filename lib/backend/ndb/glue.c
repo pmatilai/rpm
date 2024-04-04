@@ -314,7 +314,7 @@ static rpmRC ndb_pkgdbPut(dbiIndex dbi, dbiCursor dbc,  unsigned int *hdrNum, un
 {
     struct ndbEnv_s *ndbenv = (struct ndbEnv_s *)dbc->dbi->dbi_rpmdb->db_dbenv;
     unsigned int hnum = *hdrNum;
-    int rc = RPMRC_OK;
+    rpmRC rc = RPMRC_OK;
     rpmpkgdb pkgdb = (rpmpkgdb)dbc->dbi->dbi_db;
 
     if (hnum == 0) {
@@ -347,7 +347,7 @@ static rpmRC ndb_pkgdbDel(dbiIndex dbi, dbiCursor dbc,  unsigned int hdrNum)
 /* iterate over all packages */
 static rpmRC ndb_pkgdbIter(dbiIndex dbi, dbiCursor dbc, unsigned char **hdrBlob, unsigned int *hdrLen)
 {
-    int rc;
+    rpmRC rc;
     unsigned int hdrNum;
     rpmpkgdb pkgdb = (rpmpkgdb)dbc->dbi->dbi_db;
 
@@ -379,7 +379,7 @@ static rpmRC ndb_pkgdbIter(dbiIndex dbi, dbiCursor dbc, unsigned char **hdrBlob,
 
 static rpmRC ndb_pkgdbGet(dbiIndex dbi, dbiCursor dbc, unsigned int hdrNum, unsigned char **hdrBlob, unsigned int *hdrLen)
 {
-    int rc;
+    rpmRC rc;
     struct ndbEnv_s *ndbenv = (struct ndbEnv_s *)dbc->dbi->dbi_rpmdb->db_dbenv;
 
     if (!hdrNum)
@@ -425,7 +425,7 @@ static void addtoset(dbiIndexSet *set, unsigned int *pkglist, unsigned int pkgli
 /* Iterate over all index entries */
 static rpmRC ndb_idxdbIter(dbiIndex dbi, dbiCursor dbc, dbiIndexSet *set)
 {
-    int rc;
+    rpmRC rc;
     rpmidxdb idxdb = (rpmidxdb)dbc->dbi->dbi_db;
     if (!dbc->list) {
 	/* setup iteration list on first call */
@@ -473,7 +473,7 @@ static rpmRC ndb_idxdbIter(dbiIndex dbi, dbiCursor dbc, dbiIndexSet *set)
 
 static rpmRC ndb_idxdbGet(dbiIndex dbi, dbiCursor dbc, const char *keyp, size_t keylen, dbiIndexSet *set, int searchType)
 {
-    int rc;
+    rpmRC rc;
     unsigned int *pkglist = 0, pkglistn = 0;
 
     if (!keyp)
@@ -483,7 +483,7 @@ static rpmRC ndb_idxdbGet(dbiIndex dbi, dbiCursor dbc, const char *keyp, size_t 
     if (searchType == DBC_PREFIX_SEARCH) {
 	unsigned int *list = 0, nlist = 0, i = 0;
 	unsigned char *listdata = 0;
-	int rrc = RPMRC_NOTFOUND;
+	rpmRC rrc = RPMRC_NOTFOUND;
 	rc = rpmidxList(idxdb, &list, &nlist, &listdata);
 	if (rc)
 	    return rc;
@@ -494,7 +494,7 @@ static rpmRC ndb_idxdbGet(dbiIndex dbi, dbiCursor dbc, const char *keyp, size_t 
 		continue;
 	    rc = ndb_idxdbGet(dbi, dbc, (char *)k, kl, set, DBC_NORMAL_SEARCH);
 	    if (rc == RPMRC_NOTFOUND)
-		rc = 0;
+		rc = RPMRC_OK;
 	    else
 		rrc = rc;
 	}

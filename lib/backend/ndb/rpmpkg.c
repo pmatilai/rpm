@@ -15,11 +15,6 @@
 
 #include "rpmpkg.h"
 
-#define RPMRC_FAIL 2
-#define RPMRC_NOTFOUND 1
-#define RPMRC_OK 0
-
-
 static int rpmpkgVerifyblob(rpmpkgdb pkgdb, unsigned int pkgidx, unsigned int blkoff, unsigned int blkcnt);
 
 typedef struct pkgslot_s {
@@ -1264,7 +1259,7 @@ static int rpmpkgVerifyInternal(rpmpkgdb pkgdb)
     return RPMRC_OK;
 }
 
-int rpmpkgGet(rpmpkgdb pkgdb, unsigned int pkgidx, unsigned char **blobp, unsigned int *bloblp)
+rpmRC rpmpkgGet(rpmpkgdb pkgdb, unsigned int pkgidx, unsigned char **blobp, unsigned int *bloblp)
 {
     int rc;
 
@@ -1279,9 +1274,9 @@ int rpmpkgGet(rpmpkgdb pkgdb, unsigned int pkgidx, unsigned char **blobp, unsign
     return rc;
 }
 
-int rpmpkgPut(rpmpkgdb pkgdb, unsigned int pkgidx, unsigned char *blob, unsigned int blobl)
+rpmRC rpmpkgPut(rpmpkgdb pkgdb, unsigned int pkgidx, unsigned char *blob, unsigned int blobl)
 {
-    int rc;
+    rpmRC rc;
 
     if (!pkgidx) {
 	return RPMRC_FAIL;
@@ -1293,9 +1288,9 @@ int rpmpkgPut(rpmpkgdb pkgdb, unsigned int pkgidx, unsigned char *blob, unsigned
     return rc;
 }
 
-int rpmpkgDel(rpmpkgdb pkgdb, unsigned int pkgidx)
+rpmRC rpmpkgDel(rpmpkgdb pkgdb, unsigned int pkgidx)
 {
-    int rc;
+    rpmRC rc;
 
     if (!pkgidx) {
 	return RPMRC_FAIL;
@@ -1307,9 +1302,9 @@ int rpmpkgDel(rpmpkgdb pkgdb, unsigned int pkgidx)
     return rc;
 }
 
-int rpmpkgList(rpmpkgdb pkgdb, unsigned int **pkgidxlistp, unsigned int *npkgidxlistp)
+rpmRC rpmpkgList(rpmpkgdb pkgdb, unsigned int **pkgidxlistp, unsigned int *npkgidxlistp)
 {
-    int rc;
+    rpmRC rc;
     if (pkgidxlistp)
 	*pkgidxlistp = 0;
     *npkgidxlistp = 0;
@@ -1320,9 +1315,9 @@ int rpmpkgList(rpmpkgdb pkgdb, unsigned int **pkgidxlistp, unsigned int *npkgidx
     return rc;
 }
 
-int rpmpkgVerify(rpmpkgdb pkgdb)
+rpmRC rpmpkgVerify(rpmpkgdb pkgdb)
 {
-    int rc;
+    rpmRC rc;
     if (rpmpkgLockReadHeader(pkgdb, 0))
 	return RPMRC_FAIL;
     rc = rpmpkgVerifyInternal(pkgdb);
@@ -1330,7 +1325,7 @@ int rpmpkgVerify(rpmpkgdb pkgdb)
     return rc;
 }
 
-int rpmpkgNextPkgIdx(rpmpkgdb pkgdb, unsigned int *pkgidxp)
+rpmRC rpmpkgNextPkgIdx(rpmpkgdb pkgdb, unsigned int *pkgidxp)
 {
     if (rpmpkgLockReadHeader(pkgdb, 1) || !pkgdb->nextpkgidx)
 	return RPMRC_FAIL;
