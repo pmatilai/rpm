@@ -1,14 +1,6 @@
 
 #include "system.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-#include <lua.h>
-#ifdef __cplusplus
-}
-#endif
-
 #include "rpmlua.h"
 #include "rpmbuild_internal.h"
 

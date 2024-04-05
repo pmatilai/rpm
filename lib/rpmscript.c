@@ -6,14 +6,6 @@
 #include <fcntl.h>
 #include <signal.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-#include <lua.h>
-#ifdef __cplusplus
-}
-#endif
-
 #include <rpm/rpmfileutil.h>
 #include <rpm/rpmmacro.h>
 #include <rpm/rpmio.h>

@@ -1,15 +1,6 @@
 #include "system.h"
 
-/* argh, Lua headers still aren't c++ safe */
-#ifdef __cplusplus
-extern "C" {
-#endif
-#include <lua.h>
-#include <lualib.h>
-#include <lauxlib.h>
-#ifdef __cplusplus
-}
-#endif
+#include "rpmlua.h"
 #include "lposix.h"
 
 #ifndef LUA_LOADED_TABLE
@@ -35,7 +26,6 @@ extern "C" {
 #include <rpm/rpmver.h>
 #include "rpmhook.h"
 
-#include "rpmlua.h"
 #include "rpmio_internal.h"
 #include "rpmmacro_internal.h"
 
