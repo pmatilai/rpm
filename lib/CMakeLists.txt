@@ -69,7 +69,7 @@ set (cxx_sources
 	rpmrc.c rpmscript.c rpmtd.c rpmte.c rpmtriggers.c
 	rpmts.c rpmug.c rpmvs.c signature.c tagexts.c tagname.c
 	transaction.c verify.c
-	backend/dbi.c backend/dbiset.c
+	backend/dbi.c backend/dbiset.c backend/bdb_ro.c
 	backend/dummydb.c backend/sqlite.c backend/ndb/glue.c
 )
 set_source_files_properties(${cxx_sources} PROPERTIES LANGUAGE CXX)
