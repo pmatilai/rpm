@@ -113,36 +113,36 @@ typedef struct FileListRec_s {
 /**
  */
 typedef struct AttrRec_s {
-    rpmsid	ar_fmodestr;
-    rpmsid	ar_dmodestr;
-    rpmsid	ar_user;
-    rpmsid	ar_group;
-    mode_t	ar_fmode;
-    mode_t	ar_dmode;
+    rpmsid	ar_fmodestr {};
+    rpmsid	ar_dmodestr {};
+    rpmsid	ar_user {};
+    rpmsid	ar_group {};
+    mode_t	ar_fmode {};
+    mode_t	ar_dmode {};
 } * AttrRec;
 
 /* list of files */
 static StringBuf check_fileList = NULL;
 
 typedef struct FileEntry_s {
-    rpmfileAttrs attrFlags;
-    specfFlags specdFlags;
-    rpmVerifyFlags verifyFlags;
-    struct AttrRec_s ar;
+    rpmfileAttrs attrFlags {};
+    specfFlags specdFlags {};
+    rpmVerifyFlags verifyFlags {};
+    struct AttrRec_s ar {};
 
-    ARGV_t langs;
-    char *caps;
+    ARGV_t langs {};
+    char *caps {};
 
     /* these are only ever relevant for current entry */
-    unsigned devtype;
-    unsigned devmajor;
-    int devminor;
-    int isDir;
+    unsigned devtype {};
+    unsigned devmajor {};
+    int devminor {};
+    int isDir {};
 } * FileEntry;
 
 struct FileEntries_s {
-    struct FileEntry_s defEntry;
-    struct FileEntry_s curEntry;
+    struct FileEntry_s defEntry {};
+    struct FileEntry_s curEntry {};
 };
 
 typedef struct specialDir_s {
@@ -188,11 +188,6 @@ typedef struct FileList_s {
     struct FileEntry_s cur {};
 } * FileList;
 
-static void nullAttrRec(AttrRec ar)
-{
-    memset(ar, 0, sizeof(*ar));
-}
-
 static void dupAttrRec(const AttrRec oar, AttrRec nar)
 {
     if (oar == nar)
@@ -229,7 +224,7 @@ static void FileEntryFree(FileEntry entry)
 {
     argvFree(entry->langs);
     free(entry->caps);
-    memset(entry, 0, sizeof(*entry));
+    *entry = {}; /* reinitialize the entry to defaults */
 }
 
 /**
@@ -561,8 +556,6 @@ static rpmRC parseForAttr(rpmstrPool pool, char * buf, int def, FileEntry entry)
 
     while (p <= pe)
 	*p++ = ' ';
-
-    nullAttrRec(ar);
 
     p = q; SKIPWHITE(p);
     if (*p != '\0') {
