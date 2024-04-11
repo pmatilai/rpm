@@ -146,16 +146,16 @@ struct FileEntries_s {
 };
 
 typedef struct specialDir_s {
-    char * dirname;
-    ARGV_t files;
-    struct AttrRec_s ar;
-    struct AttrRec_s def_ar;
-    rpmFlags sdtype;
+    char * dirname {};
+    ARGV_t files {};
+    struct AttrRec_s ar {};
+    struct AttrRec_s def_ar {};
+    rpmFlags sdtype {};
 
-    int entriesCount;
-    int entriesAlloced;
+    int entriesCount {};
+    int entriesAlloced {};
 
-    struct FileEntries_s *entries;
+    struct FileEntries_s *entries {};
 } * specialDir;
 
 typedef struct FileRecords_s {
@@ -2360,9 +2360,8 @@ static char * getSpecialDocDir(Header h, rpmFlags sdtype)
 
 static specialDir specialDirNew(Header h, rpmFlags sdtype)
 {
-    specialDir sd = (specialDir)xcalloc(1, sizeof(*sd));
+    specialDir sd = new specialDir_s;
 
-    sd->entriesCount = 0;
     sd->entriesAlloced = 10;
     sd->entries = (struct FileEntries_s *)xcalloc(sd->entriesAlloced, sizeof(*(sd->entries)));
 
@@ -2399,7 +2398,7 @@ static specialDir specialDirFree(specialDir sd)
 	    FileEntryFree(&sd->entries[i].defEntry);
 	}
 	free(sd->entries);
-	free(sd);
+	delete sd;
     }
     return NULL;
 }
