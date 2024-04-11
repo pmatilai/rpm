@@ -90,7 +90,7 @@ enum parseAttrs_e {
 /**
  */
 typedef struct FileListRec_s {
-    struct stat fl_st;
+    struct stat fl_st {};
 #define	fl_dev	fl_st.st_dev
 #define	fl_ino	fl_st.st_ino
 #define	fl_mode	fl_st.st_mode
@@ -99,15 +99,15 @@ typedef struct FileListRec_s {
 #define	fl_size	fl_st.st_size
 #define	fl_mtime fl_st.st_mtime
 
-    char *diskPath;		/* get file from here       */
-    char *cpioPath;		/* filename in cpio archive */
-    rpmsid uname;
-    rpmsid gname;
-    unsigned	flags;
-    specfFlags	specdFlags;	/* which attributes have been explicitly specified. */
-    rpmVerifyFlags verifyFlags;
-    char *langs;		/* XXX locales separated with | */
-    char *caps;
+    char *diskPath {};		/* get file from here       */
+    char *cpioPath {};		/* filename in cpio archive */
+    rpmsid uname {};
+    rpmsid gname {};
+    unsigned	flags {};
+    specfFlags	specdFlags {};	/* which attributes have been explicitly specified. */
+    rpmVerifyFlags verifyFlags {};
+    char *langs {};		/* XXX locales separated with | */
+    char *caps {};
 } * FileListRec;
 
 /**
@@ -169,23 +169,23 @@ typedef struct FileRecords_s {
  */
 typedef struct FileList_s {
     /* global filelist state */
-    char * buildRoot;
-    size_t buildRootLen;
-    int processingFailed;
-    int haveCaps;
-    int largeFiles;
-    ARGV_t docDirs;
-    rpmBuildPkgFlags pkgFlags;
-    rpmstrPool pool;
+    char * buildRoot {};
+    size_t buildRootLen {};
+    int processingFailed {};
+    int haveCaps {};
+    int largeFiles {};
+    ARGV_t docDirs {};
+    rpmBuildPkgFlags pkgFlags {};
+    rpmstrPool pool {};
 
     /* actual file records */
-    struct FileRecords_s files;
+    struct FileRecords_s files {};
 
     /* active defaults */
-    struct FileEntry_s def;
+    struct FileEntry_s def {};
 
     /* current file-entry state */
-    struct FileEntry_s cur;
+    struct FileEntry_s cur {};
 } * FileList;
 
 static void nullAttrRec(AttrRec ar)
@@ -2621,8 +2621,6 @@ static rpmRC processPackageFiles(rpmSpec spec, rpmBuildPkgFlags pkgFlags,
 	    return RPMRC_FAIL;
     }
     /* Init the file list structure */
-    memset(&fl, 0, sizeof(fl));
-
     fl.pool = rpmstrPoolLink(spec->pool);
     /* XXX spec->buildRoot == NULL, then xstrdup("") is returned */
     fl.buildRoot = rpmGenPath(spec->rootDir, spec->buildRoot, NULL);
@@ -2725,7 +2723,6 @@ rpmRC processSourceFiles(rpmSpec spec, rpmBuildPkgFlags pkgFlags)
     sourcePkg->cpioList = NULL;
 
     /* Init the file list structure */
-    memset(&fl, 0, sizeof(fl));
     fl.pool = rpmstrPoolLink(spec->pool);
     if (_srcdefattr) {
 	char *a = rstrscat(NULL, "%defattr ", _srcdefattr, NULL);
