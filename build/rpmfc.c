@@ -61,30 +61,30 @@ typedef struct {
 #undef HTDATATYPE
 
 struct rpmfc_s {
-    Package pkg;
-    int nfiles;		/*!< no. of files */
-    int fknown;		/*!< no. of classified files */
-    int fwhite;		/*!< no. of "white" files */
-    int skipProv;	/*!< Don't auto-generate Provides:? */
-    int skipReq;	/*!< Don't auto-generate Requires:? */
-    char *buildRoot;	/*!< (Build) root dir */
-    size_t brlen;	/*!< rootDir length */
+    Package pkg {};
+    int nfiles {};	/*!< no. of files */
+    int fknown {};	/*!< no. of classified files */
+    int fwhite {};	/*!< no. of "white" files */
+    int skipProv {};	/*!< Don't auto-generate Provides:? */
+    int skipReq {};	/*!< Don't auto-generate Requires:? */
+    char *buildRoot {};	/*!< (Build) root dir */
+    size_t brlen {};	/*!< rootDir length */
 
-    rpmfcAttr *atypes;	/*!< known file attribute types */
+    rpmfcAttr *atypes {};/*!< known file attribute types */
 
-    char ** fn;		/*!< (no. files) file names */
-    char ** ftype;	/*!< (no. files) file types */
-    ARGV_t *fattrs;	/*!< (no. files) file attribute tokens */
-    rpm_color_t *fcolor;/*!< (no. files) file colors */
-    rpmsid *fcdictx;	/*!< (no. files) file class dictionary indices */
-    ARGI_t fddictx;	/*!< (no. files) file depends dictionary start */
-    ARGI_t fddictn;	/*!< (no. files) file depends dictionary no. entries */
-    ARGI_t ddictx;	/*!< (no. dependencies) file->dependency mapping */
-    rpmstrPool cdict;	/*!< file class dictionary */
-    rpmfcFileDeps fileDeps; /*!< file dependency mapping */
+    char ** fn {};	/*!< (no. files) file names */
+    char ** ftype {};	/*!< (no. files) file types */
+    ARGV_t *fattrs {};	/*!< (no. files) file attribute tokens */
+    rpm_color_t *fcolor {};/*!< (no. files) file colors */
+    rpmsid *fcdictx {};	/*!< (no. files) file class dictionary indices */
+    ARGI_t fddictx {};	/*!< (no. files) file depends dictionary start */
+    ARGI_t fddictn {};	/*!< (no. files) file depends dictionary no. entries */
+    ARGI_t ddictx {};	/*!< (no. dependencies) file->dependency mapping */
+    rpmstrPool cdict {};/*!< file class dictionary */
+    rpmfcFileDeps fileDeps {}; 	/*!< file dependency mapping */
 
-    fattrHash fahash;	/*!< attr:file mapping */
-    rpmstrPool pool;	/*!< general purpose string storage */
+    fattrHash fahash {};/*!< attr:file mapping */
+    rpmstrPool pool {};	/*!< general purpose string storage */
 };
 
 struct rpmfcTokens_s {
@@ -937,15 +937,14 @@ rpmfc rpmfcFree(rpmfc fc)
 	rpmstrPoolFree(fc->cdict);
 
 	rpmstrPoolFree(fc->pool);
-	memset(fc, 0, sizeof(*fc)); /* trash and burn */
-	free(fc);
+	delete fc;
     }
     return NULL;
 }
 
 rpmfc rpmfcCreate(const char *buildRoot, rpmFlags flags)
 {
-    rpmfc fc = (rpmfc)xcalloc(1, sizeof(*fc));
+    rpmfc fc = new rpmfc_s;
     if (buildRoot) {
 	fc->buildRoot = xstrdup(buildRoot);
 	fc->brlen = strlen(buildRoot);
