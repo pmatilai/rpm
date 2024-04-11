@@ -101,12 +101,12 @@ typedef struct ReadLevelEntry {
 /** \ingroup rpmbuild
  */
 struct Source {
-    char * fullSource;
-    const char * source;     /* Pointer into fullSource */
-    char * path;             /* On-disk path (including %_sourcedir) */
-    int flags;
-    uint32_t num;
-struct Source * next;
+    char * fullSource {};
+    const char * source {};     /* Pointer into fullSource */
+    char * path {};             /* On-disk path (including %_sourcedir) */
+    int flags {};
+    uint32_t num {};
+    struct Source * next {};
 };
 
 typedef struct Package_s * Package;
