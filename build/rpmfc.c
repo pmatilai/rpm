@@ -34,10 +34,10 @@ struct matchRule {
 };
 
 typedef struct rpmfcAttr_s {
-    char *name;
-    struct matchRule incl;
-    struct matchRule excl;
-    char *proto;
+    char *name {};
+    struct matchRule incl {};
+    struct matchRule excl {};
+    char *proto {};
 } * rpmfcAttr;
 
 typedef struct {
@@ -195,7 +195,7 @@ static regex_t *rpmfcAttrReg(const char *arg, ...)
 
 static rpmfcAttr rpmfcAttrNew(const char *name)
 {
-    rpmfcAttr attr = (rpmfcAttr)xcalloc(1, sizeof(*attr));
+    rpmfcAttr attr = new rpmfcAttr_s;
     struct matchRule *rules[] = { &attr->incl, &attr->excl, NULL };
 
     attr->name = xstrdup(name);
@@ -240,7 +240,7 @@ static rpmfcAttr rpmfcAttrFree(rpmfcAttr attr)
 	ruleFree(&attr->excl);
 	rfree(attr->name);
 	rfree(attr->proto);
-	rfree(attr);
+	delete attr;
     }
     return NULL;
 }
