@@ -35,7 +35,7 @@ struct TriggerFileEntry * freeTriggerFiles(struct TriggerFileEntry * p)
 	o->fileName = _free(o->fileName);
 	o->script = _free(o->script);
 	o->prog = _free(o->prog);
-	free(o);
+	delete o;
     }
     return NULL;
 }

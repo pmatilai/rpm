@@ -39,13 +39,13 @@ enum sections_e {
 #define NR_SECT 7
 
 struct TriggerFileEntry {
-    int index;
-    char * fileName;
-    char * script;
-    char * prog;
-    uint32_t flags;
-    struct TriggerFileEntry * next;
-    uint32_t priority;
+    int index {};
+    char * fileName {};
+    char * script {};
+    char * prog {};
+    uint32_t flags {};
+    struct TriggerFileEntry * next {};
+    uint32_t priority {};
 };
 
 typedef enum rpmParseLineType_e {

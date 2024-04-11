@@ -47,7 +47,7 @@ static int addTriggerIndex(Package pkg, const char *file,
     if (last)
 	index = last->index + 1;
 
-    tfe = (struct TriggerFileEntry *)xcalloc(1, sizeof(*tfe));
+    tfe = new TriggerFileEntry;
 
     tfe->fileName = (file) ? xstrdup(file) : NULL;
     tfe->script = (script && *script != '\0') ? xstrdup(script) : NULL;
