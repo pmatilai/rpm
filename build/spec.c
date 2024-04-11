@@ -203,48 +203,19 @@ rpmds * packageDependencies(Package pkg, rpmTagVal tag)
 
 rpmSpec newSpec(void)
 {
-    rpmSpec spec = (rpmSpec)xcalloc(1, sizeof(*spec));
+    rpmSpec spec = new rpmSpec_s;
     
-    spec->specFile = NULL;
-
-    spec->fileStack = NULL;
-    spec->lbufSize = BUFSIZ * 10;
     spec->lbuf = (char *)xmalloc(spec->lbufSize);
     spec->lbuf[0] = '\0';
     spec->line = spec->lbuf;
-    spec->nextline = NULL;
-    spec->nextpeekc = '\0';
-    spec->lineNum = 0;
+
     spec->readStack = (struct ReadLevelEntry*)xcalloc(1, sizeof(*spec->readStack));
     spec->readStack->next = NULL;
     spec->readStack->reading = 1;
     spec->readStack->lastConditional = lineTypes;
     spec->readStack->readable = 1;
 
-    spec->rootDir = NULL;
-
-    spec->sources = NULL;
-    spec->packages = NULL;
-    spec->noSource = 0;
-    spec->numSources = 0;
-    spec->autonum_patch = -1;
-    spec->autonum_source = -1;
-
-    spec->sourceRpmName = NULL;
-    spec->sourcePkgId = NULL;
-    spec->sourcePackage = NULL;
-    
-    spec->buildRoot = NULL;
-    spec->buildDir = NULL;
-
     spec->buildRestrictions = headerNew();
-    spec->BANames = NULL;
-    spec->BACount = 0;
-    spec->recursing = 0;
-    spec->BASpecs = NULL;
-
-    spec->flags = RPMSPEC_NONE;
-
     spec->macros = rpmGlobalMacroContext;
     spec->pool = rpmstrPoolCreate();
     
@@ -306,9 +277,9 @@ rpmSpec rpmSpecFree(rpmSpec spec)
 
     spec->buildHost = _free(spec->buildHost);
 
-    spec = _free(spec);
+    delete spec;
 
-    return spec;
+    return NULL;
 }
 
 Header rpmSpecSourceHeader(rpmSpec spec)

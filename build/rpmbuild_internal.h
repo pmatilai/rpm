@@ -115,52 +115,52 @@ typedef struct Package_s * Package;
  * The structure used to store values parsed from a spec file.
  */
 struct rpmSpec_s {
-    char * buildHost;
-    rpm_time_t buildTime;
+    char * buildHost {};
+    rpm_time_t buildTime {};
 
-    char * specFile;	/*!< Name of the spec file. */
-    char * buildRoot;
-    char * buildDir;
-    const char * rootDir;
+    char * specFile {};	/*!< Name of the spec file. */
+    char * buildRoot {};
+    char * buildDir {};
+    const char * rootDir {};
 
-    struct OpenFileInfo * fileStack;
-    char *lbuf;
-    size_t lbufSize;
-    size_t lbufOff;
-    char nextpeekc;
-    char * nextline;
-    char * line;
-    int lineNum;
+    struct OpenFileInfo * fileStack {};
+    char *lbuf {};
+    size_t lbufSize { BUFSIZ * 10 };
+    size_t lbufOff {};
+    char nextpeekc { '\0' };
+    char * nextline {};
+    char * line {};
+    int lineNum {};
 
-    struct ReadLevelEntry * readStack;
+    struct ReadLevelEntry * readStack {};
 
-    Header buildRestrictions;
-    rpmSpec * BASpecs;
-    const char ** BANames;
-    int BACount;
-    int recursing;		/*!< parse is recursive? */
+    Header buildRestrictions {};
+    rpmSpec * BASpecs {};
+    const char ** BANames {};
+    int BACount {};
+    int recursing {};		/*!< parse is recursive? */
 
-    rpmSpecFlags flags;
+    rpmSpecFlags flags { RPMSPEC_NONE };
 
-    struct Source * sources;
-    int numSources;
-    int noSource;
-    int autonum_patch;
-    int autonum_source;
+    struct Source * sources {};
+    int numSources {};
+    int noSource {};
+    int autonum_patch { -1 };
+    int autonum_source { -1 };
 
-    char * sourceRpmName;
-    unsigned char * sourcePkgId;
-    Package sourcePackage;
+    char * sourceRpmName {};
+    unsigned char * sourcePkgId {};
+    Package sourcePackage {};
 
-    rpmMacroContext macros;
-    rpmstrPool pool;
+    rpmMacroContext macros { rpmGlobalMacroContext };
+    rpmstrPool pool { };
 
-    StringBuf sections[NR_SECT]; /*!< spec sections (%prep etc) */
-    ARGV_t buildopts[NR_SECT];	/*!< per-section buildsystem options */
+    StringBuf sections[NR_SECT] {}; 	/*!< spec sections (%prep etc) */
+    ARGV_t buildopts[NR_SECT] {};	/*!< per-section buildsystem options */
 
-    StringBuf parsed;		/*!< parsed spec contents */
+    StringBuf parsed {};		/*!< parsed spec contents */
 
-    Package packages;		/*!< Package list. */
+    Package packages {};		/*!< Package list. */
 };
 
 #define PACKAGE_NUM_DEPS 12
