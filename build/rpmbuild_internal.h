@@ -169,45 +169,45 @@ struct rpmSpec_s {
  * The structure used to store values for a package.
  */
 struct Package_s {
-    rpmsid name;
-    rpmstrPool pool;
-    Header header;
-    rpmds ds;			/*!< Requires: N = EVR */
-    rpmds dependencies[PACKAGE_NUM_DEPS];
-    rpmfiles cpioList;
-    ARGV_t dpaths;
-    unsigned int rpmver;	/* v4, v6? */
+    rpmsid name {};
+    rpmstrPool pool {};
+    Header header {};
+    rpmds ds {};			/*!< Requires: N = EVR */
+    rpmds dependencies[PACKAGE_NUM_DEPS] {};
+    rpmfiles cpioList {};
+    ARGV_t dpaths {};
+    unsigned int rpmver {};	/* v4, v6? */
 
-    struct Source * icon;
+    struct Source * icon {};
 
-    int autoReq;
-    int autoProv;
+    int autoReq { 1 };
+    int autoProv { 1 };
 
-    char * preInFile;	/*!< %pre scriptlet. */
-    char * postInFile;	/*!< %post scriptlet. */
-    char * preUnFile;	/*!< %preun scriptlet. */
-    char * postUnFile;	/*!< %postun scriptlet. */
-    char * preTransFile;	/*!< %pretrans scriptlet. */
-    char * postTransFile;	/*!< %posttrans scriptlet. */
-    char * preunTransFile;	/*!< %preuntrans scriptlet. */
-    char * postunTransFile;	/*!< %postuntrans scriptlet. */
-    char * verifyFile;	/*!< %verifyscript scriptlet. */
+    char * preInFile {};	/*!< %pre scriptlet. */
+    char * postInFile {};	/*!< %post scriptlet. */
+    char * preUnFile {};	/*!< %preun scriptlet. */
+    char * postUnFile {};	/*!< %postun scriptlet. */
+    char * preTransFile {};	/*!< %pretrans scriptlet. */
+    char * postTransFile {};	/*!< %posttrans scriptlet. */
+    char * preunTransFile {};	/*!< %preuntrans scriptlet. */
+    char * postunTransFile {};	/*!< %postuntrans scriptlet. */
+    char * verifyFile {};	/*!< %verifyscript scriptlet. */
 
-    struct TriggerFileEntry * triggerFiles;
-    struct TriggerFileEntry * fileTriggerFiles;
-    struct TriggerFileEntry * transFileTriggerFiles;
+    struct TriggerFileEntry * triggerFiles {};
+    struct TriggerFileEntry * fileTriggerFiles {};
+    struct TriggerFileEntry * transFileTriggerFiles {};
 
-    ARGV_t fileFile;
-    ARGV_t fileList;		/* If NULL, package will not be written */
-    ARGV_t fileExcludeList;
-    ARGV_t removePostfixes;
-    fileRenameHash fileRenameMap;
-    ARGV_t policyList;
+    ARGV_t fileFile {};
+    ARGV_t fileList {};		/* If NULL, package will not be written */
+    ARGV_t fileExcludeList {};
+    ARGV_t removePostfixes {};
+    fileRenameHash fileRenameMap {};
+    ARGV_t policyList {};
 
-    char *filename;
-    rpmRC rc;
+    char *filename {};
+    rpmRC rc {};
 
-    Package next;
+    Package next {};
 };
 
 #define PART_SUBNAME  0
