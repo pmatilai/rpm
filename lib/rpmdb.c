@@ -268,35 +268,35 @@ typedef struct miRE_s {
 } * miRE;
 
 struct rpmdbMatchIterator_s {
-    rpmdbMatchIterator	mi_next;
-    rpmdb		mi_db;
-    rpmDbiTagVal	mi_rpmtag;
-    dbiIndexSet		mi_set;
-    dbiCursor		mi_dbc;
-    int			mi_setx;
-    Header		mi_h;
-    int			mi_sorted;
-    int			mi_cflags;
-    int			mi_modified;
-    unsigned int	mi_prevoffset;	/* header instance (native endian) */
-    unsigned int	mi_offset;	/* header instance (native endian) */
-    unsigned int	mi_filenum;	/* tag element (native endian) */
-    int			mi_nre;
-    miRE		mi_re;
-    rpmts		mi_ts;
-    rpmRC (*mi_hdrchk) (rpmts ts, const void * uh, size_t uc, char ** msg);
+    rpmdbMatchIterator	mi_next {};
+    rpmdb		mi_db {};
+    rpmDbiTagVal	mi_rpmtag {};
+    dbiIndexSet		mi_set {};
+    dbiCursor		mi_dbc {};
+    int			mi_setx {};
+    Header		mi_h {};
+    int			mi_sorted {};
+    int			mi_cflags {};
+    int			mi_modified {};
+    unsigned int	mi_prevoffset {};	/* header instance (native endian) */
+    unsigned int	mi_offset {};	/* header instance (native endian) */
+    unsigned int	mi_filenum {};	/* tag element (native endian) */
+    int			mi_nre {};
+    miRE		mi_re {};
+    rpmts		mi_ts {};
+    rpmRC (*mi_hdrchk) (rpmts ts, const void * uh, size_t uc, char ** msg) {};
 
 };
 
 struct rpmdbIndexIterator_s {
-    rpmdbIndexIterator	ii_next;
-    rpmdb		ii_db;
-    dbiIndex		ii_dbi;
-    rpmDbiTag		ii_rpmtag;
-    dbiCursor		ii_dbc;
-    dbiIndexSet		ii_set;
-    unsigned int	*ii_hdrNums;
-    int			ii_skipdata;
+    rpmdbIndexIterator	ii_next {};
+    rpmdb		ii_db {};
+    dbiIndex		ii_dbi {};
+    rpmDbiTag		ii_rpmtag {};
+    dbiCursor		ii_dbc {};
+    dbiIndexSet		ii_set {};
+    unsigned int	*ii_hdrNums {};
+    int			ii_skipdata {};
 };
 
 rpmop rpmdbOp(rpmdb rpmdb, rpmdbOpX opx)
@@ -386,7 +386,7 @@ int rpmdbClose(rpmdb db)
     db->db_checked = dbChkFree(db->db_checked);
     db->db_indexes = _free(db->db_indexes);
 
-    db = _free(db);
+    delete db;
 
 exit:
     return rc;
@@ -425,7 +425,7 @@ static rpmdb newRpmdb(const char * root, const char * home,
 	return NULL;
     }
 
-    db = (rpmdb)xcalloc(sizeof(*db), 1);
+    db = new rpmdb_s;
 
     if (!(perms & 0600)) perms = 0644;	/* XXX sanity */
 
@@ -977,7 +977,7 @@ rpmdbMatchIterator rpmdbFreeIterator(rpmdbMatchIterator mi)
     rpmdbClose(mi->mi_db);
     mi->mi_ts = rpmtsFree(mi->mi_ts);
 
-    mi = _free(mi);
+    delete mi;
 
     return NULL;
 }
@@ -1589,25 +1589,9 @@ rpmdbMatchIterator rpmdbNewIterator(rpmdb db, rpmDbiTagVal dbitag)
 	    return NULL;
     }
 
-    mi = (rpmdbMatchIterator)xcalloc(1, sizeof(*mi));
-    mi->mi_set = NULL;
+    mi = new rpmdbMatchIterator_s;
     mi->mi_db = rpmdbLink(db);
     mi->mi_rpmtag = dbitag;
-
-    mi->mi_dbc = NULL;
-    mi->mi_setx = 0;
-    mi->mi_h = NULL;
-    mi->mi_sorted = 0;
-    mi->mi_cflags = 0;
-    mi->mi_modified = 0;
-    mi->mi_prevoffset = 0;
-    mi->mi_offset = 0;
-    mi->mi_filenum = 0;
-    mi->mi_nre = 0;
-    mi->mi_re = NULL;
-
-    mi->mi_ts = NULL;
-    mi->mi_hdrchk = NULL;
 
     return mi;
 };
@@ -1793,11 +1777,10 @@ rpmdbIndexIterator rpmdbIndexIteratorInit(rpmdb db, rpmDbiTag rpmtag)
     if (indexOpen(db, rpmtag, 0, &dbi))
 	return NULL;
 
-    ii = (rpmdbIndexIterator)xcalloc(1, sizeof(*ii));
+    ii = new rpmdbIndexIterator_s;
     ii->ii_db = rpmdbLink(db);
     ii->ii_rpmtag = rpmtag;
     ii->ii_dbi = dbi;
-    ii->ii_set = NULL;
 
     return ii;
 }
@@ -1932,7 +1915,7 @@ rpmdbIndexIterator rpmdbIndexIteratorFree(rpmdbIndexIterator ii)
     if (ii->ii_hdrNums)
 	ii->ii_hdrNums = _free(ii->ii_hdrNums);
 
-    ii = _free(ii);
+    delete ii;
     return NULL;
 }
 

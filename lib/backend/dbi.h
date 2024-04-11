@@ -37,34 +37,34 @@ struct rpmdbOps_s;
  * Describes the collection of index databases used by rpm.
  */
 struct rpmdb_s {
-    char 	* db_root;/*!< path prefix */
-    char 	* db_home;/*!< directory path */
-    char	* db_fullpath;	/*!< full db path including prefix */
-    int		db_flags;
-    int		db_mode;	/*!< open mode */
-    int		db_perms;	/*!< open permissions */
-    const char	* db_descr;	/*!< db backend description (for error msgs) */
-    struct dbChk_s * db_checked;/*!< headerCheck()'ed package instances */
-    rpmdb	db_next;
-    int		db_opens;
-    dbiIndex	db_pkgs;	/*!< Package db */
-    const rpmDbiTag * db_tags;
-    int		db_ndbi;	/*!< No. of tag indices. */
-    dbiIndex 	* db_indexes;	/*!< Tag indices. */
-    int		db_buildindex;	/*!< Index rebuild indicator */
+    char 	* db_root {};/*!< path prefix */
+    char 	* db_home {};/*!< directory path */
+    char	* db_fullpath {};/*!< full db path including prefix */
+    int		db_flags {};
+    int		db_mode {};	/*!< open mode */
+    int		db_perms {};	/*!< open permissions */
+    const char	* db_descr {};	/*!< db backend description (for error msgs) */
+    struct dbChk_s * db_checked {};/*!< headerCheck()'ed package instances */
+    rpmdb	db_next {};
+    int		db_opens {};
+    dbiIndex	db_pkgs {};	/*!< Package db */
+    const rpmDbiTag * db_tags {};
+    int		db_ndbi {};	/*!< No. of tag indices. */
+    dbiIndex 	* db_indexes {};/*!< Tag indices. */
+    int		db_buildindex {};/*!< Index rebuild indicator */
 
-    const struct rpmdbOps_s * db_ops;	/*!< backend ops */
+    const struct rpmdbOps_s * db_ops {};/*!< backend ops */
 
     /* dbenv and related parameters */
-    void * db_dbenv;		/*!< Backend private handle */
-    void * db_cache;		/*!< Backend private cache handle */
-    struct dbConfig_s cfg;
+    void * db_dbenv {};		/*!< Backend private handle */
+    void * db_cache {};		/*!< Backend private cache handle */
+    struct dbConfig_s cfg {};
 
-    struct rpmop_s db_getops;
-    struct rpmop_s db_putops;
-    struct rpmop_s db_delops;
+    struct rpmop_s db_getops {};
+    struct rpmop_s db_putops {};
+    struct rpmop_s db_delops {};
 
-    int nrefs;			/*!< Reference count. */
+    int nrefs {};		/*!< Reference count. */
 };
 
 /* Type of the dbi, also serves as the join key size */
