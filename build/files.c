@@ -50,14 +50,6 @@
 #define DEBUG_ID_DIR		"/usr/lib/debug/.build-id"
 #define DEBUG_DWZ_DIR 		"/usr/lib/debug/.dwz"
 
-#define HASHTYPE fileRenameHash
-#define HTKEYTYPE const char *
-#define HTDATATYPE const char *
-#include "rpmhash.C"
-#undef HASHTYPE
-#undef HTKEYTYPE
-#undef HTDATATYPE
-
 /**
  */
 enum specfFlags_e {
@@ -1085,9 +1077,6 @@ static void genCpioListAndHeader(FileList fl, rpmSpec spec, Package pkg, int isS
 
     /* Adjust paths if needed */
     if (!isSrc && pkg->removePostfixes) {
-	pkg->fileRenameMap = fileRenameHashCreate(fl->files.used,
-	                                          rstrhash, strcmp,
-	                                          (fileRenameHashFreeKey)rfree, (fileRenameHashFreeData)rfree);
 	for (i = 0, flp = fl->files.recs; i < fl->files.used; i++, flp++) {
 	    char * cpiopath = flp->cpioPath;
 	    char * cpiopath_orig = xstrdup(cpiopath);
@@ -1103,9 +1092,8 @@ static void genCpioListAndHeader(FileList fl, rpmSpec spec, Package pkg, int isS
 		}
 	    }
 	    if (strcmp(cpiopath_orig, cpiopath))
-		fileRenameHashAddEntry(pkg->fileRenameMap, xstrdup(cpiopath), cpiopath_orig);
-	    else
-		_free(cpiopath_orig);
+		pkg->fileRenameMap.insert({cpiopath, cpiopath_orig});
+	    _free(cpiopath_orig);
 	}
     }
 
@@ -2936,17 +2924,13 @@ static void filterDebuginfoPackage(rpmSpec spec, Package pkg,
 	if (namel > 6 && !strcmp(name + namel - 6, ".debug"))
 	    namel -= 6;
 
-	/* fileRenameMap doesn't necessarily have to be initialized */
-	if (pkg->fileRenameMap) {
-	    const char **names = NULL;
-	    int namec = 0;
-	    fileRenameHashGetEntry(pkg->fileRenameMap, name, &names, &namec, NULL);
-	    if (namec) {
-		if (namec > 1)
-		    rpmlog(RPMLOG_WARNING, _("%s was mapped to multiple filenames"), name);
-		name = *names;
-		namel = strlen(name);
-	    }
+	auto remap = pkg->fileRenameMap.find(name);
+	if (remap != pkg->fileRenameMap.end()) {
+	    if (pkg->fileRenameMap.count(name) > 1)
+		    rpmlog(RPMLOG_WARNING,
+			    _("%s was mapped to multiple filenames"), name);
+	    name = remap->second.c_str();
+	    namel = remap->second.size();
 	}
 	
 	/* generate path */

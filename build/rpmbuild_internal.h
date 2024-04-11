@@ -1,19 +1,14 @@
 #ifndef _RPMBUILD_INTERNAL_H
 #define _RPMBUILD_INTERNAL_H
 
+#include <unordered_map>
+#include <string>
+
 #include <rpm/rpmbuild.h>
 #include <rpm/rpmutil.h>
 #include <rpm/rpmstrpool.h>
 #include "rpmbuild_misc.h"
 #include "rpmlua.h"
-
-#define HASHTYPE fileRenameHash
-#define HTKEYTYPE const char *
-#define HTDATATYPE const char *
-#include "rpmhash.H"
-#undef HASHTYPE
-#undef HTKEYTYPE
-#undef HTDATATYPE
 
 #define ALLOWED_CHARS_NAME ".-_+%{}"
 #define ALLOWED_FIRSTCHARS_NAME "_%"
@@ -201,7 +196,7 @@ struct Package_s {
     ARGV_t fileList {};		/* If NULL, package will not be written */
     ARGV_t fileExcludeList {};
     ARGV_t removePostfixes {};
-    fileRenameHash fileRenameMap {};
+    std::unordered_map<std::string,std::string> fileRenameMap {};
     ARGV_t policyList {};
 
     char *filename {};
