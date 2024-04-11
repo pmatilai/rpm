@@ -209,11 +209,7 @@ rpmSpec newSpec(void)
     spec->lbuf[0] = '\0';
     spec->line = spec->lbuf;
 
-    spec->readStack = (struct ReadLevelEntry*)xcalloc(1, sizeof(*spec->readStack));
-    spec->readStack->next = NULL;
-    spec->readStack->reading = 1;
-    spec->readStack->lastConditional = lineTypes;
-    spec->readStack->readable = 1;
+    spec->readStack = new ReadLevelEntry;
 
     spec->buildRestrictions = headerNew();
     spec->macros = rpmGlobalMacroContext;
@@ -242,7 +238,7 @@ rpmSpec rpmSpecFree(rpmSpec spec)
 	struct ReadLevelEntry *rl = spec->readStack;
 	spec->readStack = rl->next;
 	rl->next = NULL;
-	free(rl);
+	delete rl;
     }
     spec->lbuf = _free(spec->lbuf);
     

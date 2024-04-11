@@ -91,11 +91,11 @@ static struct parsedSpecLine_s const lineTypes[] = {
 #define LINE_ELIFANY (LINE_ELIF | LINE_ELIFOS | LINE_ELIFARCH)
 
 typedef struct ReadLevelEntry {
-    int reading;
-    int lineNum;
-    int readable;
-    parsedSpecLine lastConditional;
-    struct ReadLevelEntry * next;
+    int reading { 1 };
+    int lineNum {};
+    int readable { 1 };
+    parsedSpecLine lastConditional { lineTypes };
+    struct ReadLevelEntry * next {};
 } RLE_t;
 
 /** \ingroup rpmbuild
