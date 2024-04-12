@@ -4,6 +4,7 @@
 
 #include "system.h"
 
+#include <unordered_map>
 
 #include <rpm/rpmte.h>
 #include <rpm/rpmfi.h>
@@ -55,14 +56,7 @@ typedef struct availableIndexFileEntry_s {
     unsigned int entryIx;	/*!< Dependency index. */
 } * availableIndexFileEntry;
 
-#define HASHTYPE rpmalFileHash
-#define HTKEYTYPE rpmsid
-#define HTDATATYPE struct availableIndexFileEntry_s
-#include "rpmhash.H"
-#include "rpmhash.C"
-#undef HASHTYPE
-#undef HTKEYTYPE
-#undef HTDATATYPE
+typedef std::unordered_multimap<rpmsid,availableIndexFileEntry_s> rpmalFileHash;
 
 /** \ingroup rpmdep
  * Set of available packages, items, and directories.
@@ -72,7 +66,7 @@ struct rpmal_s {
     availablePackage list {};	/*!< Set of packages. */
     rpmalDepHash providesHash {};
     rpmalDepHash obsoletesHash {};
-    rpmalFileHash fileHash {};
+    rpmalFileHash *fileHash {};
     int delta {};		/*!< Delta for pkg list reallocation. */
     int size {};		/*!< No. of pkgs in list. */
     int alloced {};		/*!< No. of pkgs allocated for list. */
@@ -90,7 +84,7 @@ static void rpmalFreeIndex(rpmal al)
 {
     al->providesHash = rpmalDepHashFree(al->providesHash);
     al->obsoletesHash = rpmalDepHashFree(al->obsoletesHash);
-    al->fileHash = rpmalFileHashFree(al->fileHash);
+    delete al->fileHash;
     al->fpc = fpCacheFree(al->fpc);
 }
 
@@ -106,7 +100,6 @@ rpmal rpmalCreate(rpmts ts, int delta)
 
     al->providesHash = NULL;
     al->obsoletesHash = NULL;
-    al->fileHash = NULL;
     al->tsflags = rpmtsFlags(ts);
     al->tscolor = rpmtsColor(ts);
     al->prefcolor = rpmtsPrefColor(ts);
@@ -194,7 +187,7 @@ static void rpmalAddFiles(rpmal al, rpmalNum pkgNum, rpmfiles fi)
 	fileEntry.dirName = rpmfilesDNId(fi, rpmfilesDI(fi, i));
 	fileEntry.entryIx = i;
 
-	rpmalFileHashAddEntry(al->fileHash, rpmfilesBNId(fi, i), fileEntry);
+	al->fileHash->insert({rpmfilesBNId(fi, i), fileEntry});
     }
 }
 
@@ -280,13 +273,13 @@ static void rpmalMakeFileIndex(rpmal al)
     availablePackage alp;
     int i, fileCnt = 0;
 
+    al->fileHash = new rpmalFileHash;
+
     for (i = 0; i < al->size; i++) {
 	alp = al->list + i;
 	if (alp->fi != NULL)
 	    fileCnt += rpmfilesFC(alp->fi);
     }
-    al->fileHash = rpmalFileHashCreate(fileCnt/4+128,
-				       sidHash, sidCmp, NULL, NULL);
     for (i = 0; i < al->size; i++) {
 	alp = al->list + i;
 	rpmalAddFiles(al, i, alp->fi);
@@ -384,8 +377,6 @@ static rpmte * rpmalAllFileSatisfiesDepend(const rpmal al, const char *fileName,
 
     /* Split path into dirname and basename components for lookup */
     if ((slash = strrchr(fileName, '/')) != NULL) {
-	availableIndexFileEntry result;
-	int resultCnt = 0;
 	size_t bnStart = (slash - fileName) + 1;
 	rpmsid baseName;
 
@@ -396,28 +387,28 @@ static rpmte * rpmalAllFileSatisfiesDepend(const rpmal al, const char *fileName,
 	if (!baseName)
 	    return NULL;	/* no match possible */
 
-	rpmalFileHashGetEntry(al->fileHash, baseName, &result, &resultCnt, NULL);
-
-	if (resultCnt > 0) {
-	    int i, found;
+	auto result = al->fileHash->equal_range(baseName);
+	if (result.first != result.second) {
+	    int resultCnt = std::distance(result.first, result.second);
+	    int found = 0;
 	    ret = (rpmte *)xmalloc((resultCnt+1) * sizeof(*ret));
 	    fingerPrint * fp = NULL;
 	    rpmsid dirName = rpmstrPoolIdn(al->pool, fileName, bnStart, 1);
 
-	    for (found = i = 0; i < resultCnt; i++) {
-		availablePackage alp = al->list + result[i].pkgNum;
+	    for (auto match = result.first; match != result.second; ++match) {
+		availablePackage alp = al->list + match->second.pkgNum;
 		if (alp->p == NULL) /* deleted */
 		    continue;
 		/* ignore self-conflicts/obsoletes */
 		if (filterds && rpmteDS(alp->p, rpmdsTagN(filterds)) == filterds)
 		    continue;
-		if (result[i].dirName != dirName) {
+		if (match->second.dirName != dirName) {
 		    /* if the directory is different check the fingerprints */
 		    if (!al->fpc)
 			al->fpc = fpCacheCreate(1001, al->pool);
 		    if (!fp)
 			fpLookupId(al->fpc, dirName, baseName, &fp);
-		    if (!fpLookupEqualsId(al->fpc, fp, result[i].dirName, baseName))
+		    if (!fpLookupEqualsId(al->fpc, fp, match->second.dirName, baseName))
 			continue;
 		}
 		ret[found] = alp->p;
