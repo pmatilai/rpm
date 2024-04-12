@@ -15,85 +15,85 @@ typedef struct diskspaceInfo_s * rpmDiskSpaceInfo;
 
 /* Transaction set elements information */
 typedef struct tsMembers_s {
-    rpmstrPool pool;		/*!< Global string pool */
-    packageHash removedPackages;	/*!< Set of packages being removed. */
-    packageHash installedPackages;	/*!< Set of installed packages */
-    rpmal addedPackages;	/*!< Set of packages being installed. */
+    rpmstrPool pool {};		/*!< Global string pool */
+    packageHash removedPackages {};	/*!< Set of packages being removed. */
+    packageHash installedPackages {};	/*!< Set of installed packages */
+    rpmal addedPackages {};	/*!< Set of packages being installed. */
 
-    rpmds rpmlib;		/*!< rpmlib() dependency set. */
-    rpmte * order;		/*!< Packages sorted by dependencies. */
-    int orderCount;		/*!< No. of transaction elements. */
-    int orderAlloced;		/*!< No. of allocated transaction elements. */
-    int delta;			/*!< Delta for reallocation. */
+    rpmds rpmlib {};		/*!< rpmlib() dependency set. */
+    rpmte * order {};		/*!< Packages sorted by dependencies. */
+    int orderCount {};		/*!< No. of transaction elements. */
+    int orderAlloced {};		/*!< No. of allocated transaction elements. */
+    int delta {};			/*!< Delta for reallocation. */
 } * tsMembers;
 
 typedef struct tsTrigger_s {
-    unsigned int hdrNum;
-    int index;
+    unsigned int hdrNum {};
+    int index {};
 } tsTrigger;
 
 typedef struct tsTriggers_s {
-    tsTrigger *trigger;
-    int count;
-    int alloced;
+    tsTrigger *trigger {};
+    int count {};
+    int alloced {};
 } tsTriggers;
 
 /** \ingroup rpmts
  * The set of packages to be installed/removed atomically.
  */
 struct rpmts_s {
-    rpmtransFlags transFlags;	/*!< Bit(s) to control operation. */
+    rpmtransFlags transFlags {};/*!< Bit(s) to control operation. */
 
-    int (*solve) (rpmts ts, rpmds key, const void * data);
+    int (*solve) (rpmts ts, rpmds key, const void * data) {};
                                 /*!< Search for NEVRA key. */
-    const void * solveData;	/*!< Solve callback data */
+    const void * solveData {};	/*!< Solve callback data */
 
-    rpmCallbackFunction notify;	/*!< Callback function. */
-    rpmCallbackData notifyData;	/*!< Callback private data. */
-    int notifyStyle;		/*!< Callback style (header vs rpmte) */
+    rpmCallbackFunction notify {};/*!< Callback function. */
+    rpmCallbackData notifyData {};/*!< Callback private data. */
+    int notifyStyle {};		/*!< Callback style (header vs rpmte) */
 
-    rpmtsChangeFunction change;	/*!< Change callback function. */
-    void *changeData;		/*!< Change callback private data. */
+    rpmtsChangeFunction change {};/*!< Change callback function. */
+    void *changeData {};	/*!< Change callback private data. */
 
-    rpmprobFilterFlags ignoreSet;
+    rpmprobFilterFlags ignoreSet {};
 				/*!< Bits to filter current problems. */
 
-    rpmDiskSpaceInfo dsi;	/*!< Per filesystem disk/inode usage. */
+    rpmDiskSpaceInfo dsi {};	/*!< Per filesystem disk/inode usage. */
 
-    rpmdb rdb;			/*!< Install database handle. */
-    int dbmode;			/*!< Install database open mode. */
+    rpmdb rdb {};		/*!< Install database handle. */
+    int dbmode {};		/*!< Install database open mode. */
 
-    tsMembers members;		/*!< Transaction set member info (order etc) */
+    tsMembers members {};	/*!< Transaction set member info (order etc) */
 
-    char * rootDir;		/*!< Path to top of install tree. */
-    char * lockPath;		/*!< Transaction lock path */
-    rpmlock lock;		/*!< Transaction lock file */
-    FD_t scriptFd;		/*!< Scriptlet stdout/stderr. */
-    rpm_tid_t tid;		/*!< Transaction id. */
+    char * rootDir {};		/*!< Path to top of install tree. */
+    char * lockPath {};		/*!< Transaction lock path */
+    rpmlock lock {};		/*!< Transaction lock file */
+    FD_t scriptFd {};		/*!< Scriptlet stdout/stderr. */
+    rpm_tid_t tid {};		/*!< Transaction id. */
 
-    rpm_color_t color;		/*!< Transaction color bits. */
-    rpm_color_t prefcolor;	/*!< Preferred file color. */
+    rpm_color_t color {};	/*!< Transaction color bits. */
+    rpm_color_t prefcolor {};	/*!< Preferred file color. */
 
-    rpmVSFlags vsflags;		/*!< Signature/digest verification flags. */
-    rpmVSFlags vfyflags;	/*!< Package verification flags */
-    int vfylevel;		/*!< Package verification level */
-    rpmKeyring keyring;		/*!< Keyring in use. */
-    int keyringtype;		/*!< Keyring type */
+    rpmVSFlags vsflags {};	/*!< Signature/digest verification flags. */
+    rpmVSFlags vfyflags {};	/*!< Package verification flags */
+    int vfylevel {};		/*!< Package verification level */
+    rpmKeyring keyring {};	/*!< Keyring in use. */
+    int keyringtype {};		/*!< Keyring type */
 
-    ARGV_t netsharedPaths;	/*!< From %{_netsharedpath} */
-    ARGV_t installLangs;	/*!< From %{_install_langs} */
+    ARGV_t netsharedPaths {};	/*!< From %{_netsharedpath} */
+    ARGV_t installLangs {};	/*!< From %{_install_langs} */
 
-    struct rpmop_s ops[RPMTS_OP_MAX];
+    struct rpmop_s ops[RPMTS_OP_MAX] {};
 
-    rpmPlugins plugins;		/*!< Transaction plugins */
+    rpmPlugins plugins {};	/*!< Transaction plugins */
 
-    int nrefs;			/*!< Reference count. */
+    int nrefs {};		/*!< Reference count. */
 
-    rpmtriggers trigs2run;   /*!< Transaction file triggers */
+    rpmtriggers trigs2run {};   /*!< Transaction file triggers */
 
-    int min_writes;             /*!< macro minimize_writes used */
+    int min_writes {};		/*!< macro minimize_writes used */
 
-    time_t overrideTime;	/*!< Time value used when overriding system clock. */
+    time_t overrideTime {};	/*!< Time value used when overriding system clock. */
 };
 
 #ifdef __cplusplus

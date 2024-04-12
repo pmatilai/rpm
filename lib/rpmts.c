@@ -835,7 +835,7 @@ rpmts rpmtsFree(rpmts ts)
     tsmem->removedPackages = packageHashFree(tsmem->removedPackages);
     tsmem->installedPackages = packageHashFree(tsmem->installedPackages);
     tsmem->order = _free(tsmem->order);
-    ts->members = _free(ts->members);
+    delete ts->members;
 
     ts->dsi = _free(ts->dsi);
 
@@ -860,7 +860,7 @@ rpmts rpmtsFree(rpmts ts)
 
     (void) rpmtsUnlink(ts);
 
-    ts = _free(ts);
+    delete ts;
 
     return NULL;
 }
@@ -1190,7 +1190,7 @@ static int vfylevel_init(void)
 
 rpmts rpmtsCreate(void)
 {
-    rpmts ts = (rpmts)xcalloc(1, sizeof(*ts));
+    rpmts ts = new rpmts_s;
     tsMembers tsmem;
     char *source_date_epoch = NULL;
 
@@ -1241,7 +1241,7 @@ rpmts rpmtsCreate(void)
 	free(tmp);
     }
 
-    tsmem = (tsMembers)xcalloc(1, sizeof(*ts->members));
+    tsmem = new tsMembers_s;
     tsmem->pool = NULL;
     tsmem->delta = 5;
     tsmem->addedPackages = NULL;
