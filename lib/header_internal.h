@@ -11,17 +11,17 @@
 typedef struct entryInfo_s * entryInfo;
 typedef struct hdrblob_s * hdrblob;
 struct hdrblob_s {
-    uint32_t *ei;
-    uint32_t il;
-    uint32_t dl;
-    entryInfo pe;
-    uint32_t pvlen;
-    uint8_t *dataStart;
-    uint8_t *dataEnd;
+    uint32_t *ei {};
+    uint32_t il {};
+    uint32_t dl {};
+    entryInfo pe {};
+    uint32_t pvlen {};
+    uint8_t *dataStart {};
+    uint8_t *dataEnd {};
 
-    rpmTagVal regionTag;
-    uint32_t ril;
-    uint32_t rdl;
+    rpmTagVal regionTag {};
+    uint32_t ril {};
+    uint32_t rdl {};
 };
 
 #ifdef __cplusplus

@@ -92,24 +92,24 @@ struct entryInfo_s {
  */
 typedef struct indexEntry_s * indexEntry;
 struct indexEntry_s {
-    struct entryInfo_s info;	/*!< Description of tag data. */
-    void * data; 		/*!< Location of tag data. */
-    uint32_t length;		/*!< No. bytes of data. */
-    uint32_t rdlen;		/*!< No. bytes of data in region. */
+    struct entryInfo_s info {};	/*!< Description of tag data. */
+    void * data {}; 		/*!< Location of tag data. */
+    uint32_t length {};		/*!< No. bytes of data. */
+    uint32_t rdlen {};		/*!< No. bytes of data in region. */
 };
 
 /** \ingroup header
  * The Header data structure.
  */
 struct headerToken_s {
-    void * blob;		/*!< Header region blob. */
-    indexEntry index;		/*!< Array of tags. */
-    int indexUsed;		/*!< Current size of tag array. */
-    int indexAlloced;		/*!< Allocated size of tag array. */
-    unsigned int instance;	/*!< Rpmdb instance */
-    headerFlags flags;
-    int sorted;			/*!< Current sort method */
-    int nrefs;			/*!< Reference count. */
+    void * blob {};		/*!< Header region blob. */
+    indexEntry index {};	/*!< Array of tags. */
+    int indexUsed {};		/*!< Current size of tag array. */
+    int indexAlloced {};	/*!< Allocated size of tag array. */
+    unsigned int instance {};	/*!< Rpmdb instance */
+    headerFlags flags {};
+    int sorted {};		/*!< Current sort method */
+    int nrefs {};		/*!< Reference count. */
 };
 
 /** \ingroup header
@@ -272,13 +272,13 @@ Header headerFree(Header h)
     }
     h->blob = _free(h->blob);
 
-    h = _free(h);
+    delete h;
     return NULL;
 }
 
 static Header headerCreate(void *blob, int32_t indexLen)
 {
-    Header h = (Header)xcalloc(1, sizeof(*h));
+    Header h = new headerToken_s;
     if (blob) {
 	h->blob = blob;
 	h->indexAlloced = indexLen + 1;
@@ -1755,27 +1755,26 @@ int headerMod(Header h, rpmtd td)
  * Header tag iterator data structure.
  */
 struct headerIterator_s {
-    Header h;		/*!< Header being iterated. */
-    int next_index;	/*!< Next tag index. */
+    Header h {};	/*!< Header being iterated. */
+    int next_index {};	/*!< Next tag index. */
 };
 
 HeaderIterator headerFreeIterator(HeaderIterator hi)
 {
     if (hi != NULL) {
 	hi->h = headerFree(hi->h);
-	hi = _free(hi);
+	delete hi;
     }
     return NULL;
 }
 
 HeaderIterator headerInitIterator(Header h)
 {
-    HeaderIterator hi = (HeaderIterator)xmalloc(sizeof(*hi));
+    HeaderIterator hi = new headerIterator_s;
 
     headerSort(h);
 
     hi->h = headerLink(h);
-    hi->next_index = 0;
     return hi;
 }
 
@@ -1945,7 +1944,7 @@ exit:
 
 hdrblob hdrblobCreate(void)
 {
-    hdrblob blob = (hdrblob)xcalloc(1, sizeof(*blob));
+    hdrblob blob = new hdrblob_s;
     return blob;
 }
 
@@ -1953,7 +1952,7 @@ hdrblob hdrblobFree(hdrblob blob)
 {
     if (blob) {
 	free(blob->ei);
-	free(blob);
+	delete blob;
     }
     return NULL;
 }
@@ -2047,7 +2046,6 @@ rpmRC hdrblobInit(const void *uh, size_t uc,
 		struct hdrblob_s *blob, char **emsg)
 {
     rpmRC rc = RPMRC_FAIL;
-    memset(blob, 0, sizeof(*blob));
     if (uc && uc < 8) {
 	rasprintf(emsg, _("hdr length: BAD"));
 	goto exit;
