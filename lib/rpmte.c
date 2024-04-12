@@ -28,59 +28,59 @@
  * A single package instance to be installed/removed atomically.
  */
 struct rpmte_s {
-    rpmElementType type;	/*!< Package disposition (installed/removed). */
-    void *userdata;		/*!< Application private user data. */
+    rpmElementType type {};	/*!< Package disposition (installed/removed). */
+    void *userdata {};		/*!< Application private user data. */
 
-    Header h;			/*!< Package header. */
-    char * NEVR;		/*!< Package name-version-release. */
-    char * NEVRA;		/*!< Package name-version-release.arch. */
-    char * name;		/*!< Name: */
-    char * epoch;
-    char * version;		/*!< Version: */
-    char * release;		/*!< Release: */
-    char * arch;		/*!< Architecture hint. */
-    char * os;			/*!< Operating system hint. */
-    int isSource;		/*!< (TR_ADDED) source rpm? */
+    Header h {};		/*!< Package header. */
+    char * NEVR {};		/*!< Package name-version-release. */
+    char * NEVRA {};		/*!< Package name-version-release.arch. */
+    char * name {};		/*!< Name: */
+    char * epoch {};
+    char * version {};		/*!< Version: */
+    char * release {};		/*!< Release: */
+    char * arch {};		/*!< Architecture hint. */
+    char * os {};		/*!< Operating system hint. */
+    int isSource {};		/*!< (TR_ADDED) source rpm? */
 
-    rpmte depends;              /*!< Package updated by this package (ERASE te) */
-    rpmte parent;		/*!< Parent transaction element. */
-    unsigned int db_instance;	/*!< Database instance (of removed pkgs) */
-    tsortInfo tsi;		/*!< Dependency ordering chains. */
+    rpmte depends {};		/*!< Package updated by this package (ERASE te) */
+    rpmte parent {};		/*!< Parent transaction element. */
+    unsigned int db_instance {};/*!< Database instance (of removed pkgs) */
+    tsortInfo tsi {};		/*!< Dependency ordering chains. */
 
-    rpmds thisds;		/*!< This package's provided NEVR. */
-    rpmds provides;		/*!< Provides: dependencies. */
-    rpmds requires;		/*!< Requires: dependencies. */
-    rpmds conflicts;		/*!< Conflicts: dependencies. */
-    rpmds obsoletes;		/*!< Obsoletes: dependencies. */
-    rpmds order;		/*!< Order: dependencies. */
-    rpmds recommends;		/*!< Recommends: dependencies. */
-    rpmds suggests;		/*!< Suggests: dependencies. */
-    rpmds supplements;		/*!< Supplements: dependencies. */
-    rpmds enhances;		/*!< Enhances: dependencies. */
-    rpmfiles files;		/*!< File information. */
-    rpmps probs;		/*!< Problems (relocations) */
-    rpmts ts;			/*!< Parent transaction */
+    rpmds thisds {};		/*!< This package's provided NEVR. */
+    rpmds provides {};		/*!< Provides: dependencies. */
+    rpmds requires {};		/*!< Requires: dependencies. */
+    rpmds conflicts {};		/*!< Conflicts: dependencies. */
+    rpmds obsoletes {};		/*!< Obsoletes: dependencies. */
+    rpmds order {};		/*!< Order: dependencies. */
+    rpmds recommends {};	/*!< Recommends: dependencies. */
+    rpmds suggests {};		/*!< Suggests: dependencies. */
+    rpmds supplements {};	/*!< Supplements: dependencies. */
+    rpmds enhances {};		/*!< Enhances: dependencies. */
+    rpmfiles files {};		/*!< File information. */
+    rpmps probs {};		/*!< Problems (relocations) */
+    rpmts ts {};		/*!< Parent transaction */
 
-    rpm_color_t color;		/*!< Color bit(s) from package dependencies. */
-    rpm_loff_t pkgFileSize;	/*!< No. of bytes in package file (approx). */
-    unsigned int headerSize;	/*!< No. of bytes in package header */
+    rpm_color_t color {};	/*!< Color bit(s) from package dependencies. */
+    rpm_loff_t pkgFileSize {};	/*!< No. of bytes in package file (approx). */
+    unsigned int headerSize {};	/*!< No. of bytes in package header */
 
-    fnpyKey key;		/*!< (TR_ADDED) Retrieval key. */
-    rpmRelocation * relocs;	/*!< (TR_ADDED) Payload file relocations. */
-    int nrelocs;		/*!< (TR_ADDED) No. of relocations. */
-    uint8_t *badrelocs;		/*!< (TR_ADDED) Bad relocations (or NULL) */
-    FD_t fd;			/*!< (TR_ADDED) Payload file descriptor. */
-    int verified;		/*!< (TR_ADDED) Verification status */
-    int addop;			/*!< (TR_ADDED) RPMTE_INSTALL/UPDATE/REINSTALL */
+    fnpyKey key {};		/*!< (TR_ADDED) Retrieval key. */
+    rpmRelocation * relocs {};	/*!< (TR_ADDED) Payload file relocations. */
+    int nrelocs {};		/*!< (TR_ADDED) No. of relocations. */
+    uint8_t *badrelocs {};	/*!< (TR_ADDED) Bad relocations (or NULL) */
+    FD_t fd {};			/*!< (TR_ADDED) Payload file descriptor. */
+    int verified {};		/*!< (TR_ADDED) Verification status */
+    int addop {};		/*!< (TR_ADDED) RPMTE_INSTALL/UPDATE/REINSTALL */
 
 #define RPMTE_HAVE_PRETRANS	(1 << 0)
 #define RPMTE_HAVE_POSTTRANS	(1 << 1)
 #define RPMTE_HAVE_PREUNTRANS	(1 << 2)
 #define RPMTE_HAVE_POSTUNTRANS	(1 << 3)
-    int transscripts;		/*!< pre/posttrans script existence */
-    int failed;			/*!< (parent) install/erase failed */
+    int transscripts {};		/*!< pre/posttrans script existence */
+    int failed {};			/*!< (parent) install/erase failed */
 
-    rpmfs fs;
+    rpmfs fs {};
 };
 
 /* forward declarations */
@@ -256,8 +256,7 @@ rpmte rpmteFree(rpmte te)
 	rpmpsFree(te->probs);
 	rpmteCleanDS(te);
 
-	memset(te, 0, sizeof(*te));	/* XXX trash and burn */
-	free(te);
+	delete te;
     }
     return NULL;
 }
@@ -265,14 +264,14 @@ rpmte rpmteFree(rpmte te)
 rpmte rpmteNew(rpmts ts, Header h, rpmElementType type, fnpyKey key,
 	       rpmRelocation * relocs, int addop)
 {
-    rpmte p = (rpmte)xcalloc(1, sizeof(*p));
+    rpmte p = new rpmte_s;
     p->ts = ts;
     p->type = type;
     p->addop = addop;
     p->verified = RPMSIG_UNVERIFIED_TYPE;
 
     if (addTE(p, h, key, relocs)) {
-	rpmteFree(p);
+	delete p;
 	return NULL;
     }
 
