@@ -44,31 +44,31 @@ typedef struct hardlinks_s * hardlinks_t;
 typedef int (*iterfunc)(rpmfi fi);
 
 struct rpmfi_s {
-    int i;			/*!< Current file index. */
-    int j;			/*!< Current directory index. */
-    iterfunc next;		/*!< Iterator function. */
-    char * fn;			/*!< File name buffer. */
-    char * ofn;			/*!< Original file name buffer. */
+    int i {};			/*!< Current file index. */
+    int j {};			/*!< Current directory index. */
+    iterfunc next {};		/*!< Iterator function. */
+    char * fn {};		/*!< File name buffer. */
+    char * ofn {};		/*!< Original file name buffer. */
 
-    int intervalStart;		/*!< Start of iterating interval. */
-    int intervalEnd;		/*!< End of iterating interval. */
+    int intervalStart {};	/*!< Start of iterating interval. */
+    int intervalEnd {};		/*!< End of iterating interval. */
 
-    rpmfiChdirCb onChdir;	/*!< Callback for directory changes */
-    void *onChdirData;		/*!< Caller private callback data */
+    rpmfiChdirCb onChdir {};	/*!< Callback for directory changes */
+    void *onChdirData {};	/*!< Caller private callback data */
 
-    rpmfiles files;		/*!< File info set */
-    rpmcpio_t archive;		/*!< Archive with payload */
-    uint8_t * found;	/*!< Bit field of files found in the archive */
-    int nrefs;			/*!< Reference count */
+    rpmfiles files {};		/*!< File info set */
+    rpmcpio_t archive {};	/*!< Archive with payload */
+    uint8_t * found {};	/*!< Bit field of files found in the archive */
+    int nrefs {};		/*!< Reference count */
 };
 
 struct rpmfn_s {
-    rpm_count_t dc;		/*!< No. of directories. */
-    rpm_count_t fc;		/*!< No. of files. */
+    rpm_count_t dc {};		/*!< No. of directories. */
+    rpm_count_t fc {};		/*!< No. of files. */
 
-    rpmsid * bnid;		/*!< Index to base name(s) (pool) */
-    rpmsid * dnid;		/*!< Index to directory name(s) (pool) */
-    uint32_t * dil;		/*!< Directory indice(s) (from header) */
+    rpmsid * bnid {};		/*!< Index to base name(s) (pool) */
+    rpmsid * dnid {};		/*!< Index to directory name(s) (pool) */
+    uint32_t * dil {};		/*!< Directory indice(s) (from header) */
 };
 
 typedef struct rpmfn_s * rpmfn;
@@ -77,58 +77,58 @@ typedef struct rpmfn_s * rpmfn;
  * A package filename set.
  */
 struct rpmfiles_s {
-    Header h;			/*!< Header for file info set (or NULL) */
-    rpmstrPool pool;		/*!< String pool of this file info set */
+    Header h {};		/*!< Header for file info set (or NULL) */
+    rpmstrPool pool {};		/*!< String pool of this file info set */
 
-    struct rpmfn_s fndata;	/*!< File name data */
-    struct rpmfn_s *ofndata;	/*!< Original file name data */
+    struct rpmfn_s fndata {};	/*!< File name data */
+    struct rpmfn_s *ofndata {};	/*!< Original file name data */
 
-    rpmsid * flinks;		/*!< Index to file link(s) (pool) */
+    rpmsid * flinks {};		/*!< Index to file link(s) (pool) */
 
-    rpm_flag_t * fflags;	/*!< File flag(s) (from header) */
-    rpm_off_t * fsizes;		/*!< File size(s) (from header) */
-    rpm_loff_t * lfsizes;	/*!< File size(s) (from header) */
-    rpm_time_t * fmtimes;	/*!< File modification time(s) (from header) */
-    rpm_mode_t * fmodes;	/*!< File mode(s) (from header) */
-    rpm_rdev_t * frdevs;	/*!< File rdev(s) (from header) */
-    rpm_ino_t * finodes;	/*!< File inodes(s) (from header) */
+    rpm_flag_t * fflags {};	/*!< File flag(s) (from header) */
+    rpm_off_t * fsizes {};	/*!< File size(s) (from header) */
+    rpm_loff_t * lfsizes {};	/*!< File size(s) (from header) */
+    rpm_time_t * fmtimes {};	/*!< File modification time(s) (from header) */
+    rpm_mode_t * fmodes {};	/*!< File mode(s) (from header) */
+    rpm_rdev_t * frdevs {};	/*!< File rdev(s) (from header) */
+    rpm_ino_t * finodes {};	/*!< File inodes(s) (from header) */
 
-    rpmsid * fuser;		/*!< Index to file owner(s) (misc pool) */
-    rpmsid * fgroup;		/*!< Index to file group(s) (misc pool) */
-    rpmsid * flangs;		/*!< Index to file lang(s) (misc pool) */
+    rpmsid * fuser {};		/*!< Index to file owner(s) (misc pool) */
+    rpmsid * fgroup {};		/*!< Index to file group(s) (misc pool) */
+    rpmsid * flangs {};		/*!< Index to file lang(s) (misc pool) */
 
-    char * fstates;		/*!< File state(s) (from header) */
+    char * fstates {};		/*!< File state(s) (from header) */
 
-    rpm_color_t * fcolors;	/*!< File color bits (header) */
-    char ** fcaps;		/*!< File capability strings (header) */
+    rpm_color_t * fcolors {};	/*!< File color bits (header) */
+    char ** fcaps {};		/*!< File capability strings (header) */
 
-    char ** cdict;		/*!< File class dictionary (header) */
-    rpm_count_t ncdict;		/*!< No. of class entries. */
-    uint32_t * fcdictx;		/*!< File class dictionary index (header) */
+    char ** cdict {};		/*!< File class dictionary (header) */
+    rpm_count_t ncdict {};	/*!< No. of class entries. */
+    uint32_t * fcdictx {};	/*!< File class dictionary index (header) */
 
-    uint32_t * ddict;		/*!< File depends dictionary (header) */
-    rpm_count_t nddict;		/*!< No. of depends entries. */
-    uint32_t * fddictx;		/*!< File depends dictionary start (header) */
-    uint32_t * fddictn;		/*!< File depends dictionary count (header) */
-    rpm_flag_t * vflags;	/*!< File verify flag(s) (from header) */
+    uint32_t * ddict {};	/*!< File depends dictionary (header) */
+    rpm_count_t nddict {};	/*!< No. of depends entries. */
+    uint32_t * fddictx {};	/*!< File depends dictionary start (header) */
+    uint32_t * fddictn {};	/*!< File depends dictionary count (header) */
+    rpm_flag_t * vflags {};	/*!< File verify flag(s) (from header) */
 
-    rpmfiFlags fiflags;		/*!< file info set control flags */
+    rpmfiFlags fiflags {};	/*!< file info set control flags */
 
-    struct fingerPrint_s * fps;	/*!< File fingerprint(s). */
+    struct fingerPrint_s * fps {};/*!< File fingerprint(s). */
 
-    int digestalgo;		/*!< File digest algorithm */
-    uint32_t *signatureoffs;	/*!< File signature offsets */
-    int veritysiglength;	/*!< Verity signature length */
-    uint16_t verityalgo;	/*!< Verity algorithm */
-    unsigned char * digests;	/*!< File digests in binary. */
-    unsigned char * signatures; /*!< File signatures in binary. */
-    unsigned char * veritysigs; /*!< Verity signatures in binary. */
+    int digestalgo {};		/*!< File digest algorithm */
+    uint32_t *signatureoffs {};	/*!< File signature offsets */
+    int veritysiglength {};	/*!< Verity signature length */
+    uint16_t verityalgo {};	/*!< Verity algorithm */
+    unsigned char * digests {};	/*!< File digests in binary. */
+    unsigned char * signatures {}; /*!< File signatures in binary. */
+    unsigned char * veritysigs {}; /*!< Verity signatures in binary. */
 
-    struct nlinkHash_s * nlinks;/*!< Files connected by hardlinks */
-    rpm_off_t * replacedSizes;	/*!< (TR_ADDED) */
-    rpm_loff_t * replacedLSizes;/*!< (TR_ADDED) */
-    int magic;
-    int nrefs;		/*!< Reference count. */
+    struct nlinkHash_s * nlinks {};/*!< Files connected by hardlinks */
+    rpm_off_t * replacedSizes {};/*!< (TR_ADDED) */
+    rpm_loff_t * replacedLSizes {};/*!< (TR_ADDED) */
+    int magic {};
+    int nrefs {};		/*!< Reference count. */
 };
 
 static int indexSane(rpmtd xd, rpmtd yd, rpmtd zd);
@@ -198,7 +198,7 @@ static int rpmfnInit(rpmfn fndata, rpmTagVal bntag, Header h, rpmstrPool pool)
 	    dx.data = NULL;
 	    rc = fndata->fc;
 	} else {
-	    memset(fndata, 0, sizeof(*fndata));
+	    fndata = {};
 	    rc = -1;
 	}
 	rpmtdFreeData(&bn);
@@ -215,7 +215,7 @@ static void rpmfnClear(rpmfn fndata)
 	free(fndata->bnid);
 	free(fndata->dnid);
 	free(fndata->dil);
-	memset(fndata, 0, sizeof(*fndata));
+	fndata = {};
     }
 }
 
@@ -1242,7 +1242,7 @@ rpmfiles rpmfilesFree(rpmfiles fi)
     if (rpmfilesFC(fi) > 0) {
 	if (fi->ofndata != &fi->fndata) {
 	    rpmfnClear(fi->ofndata);
-	    free(fi->ofndata);
+	    delete fi->ofndata;
 	}
 	rpmfnClear(&fi->fndata);
 
@@ -1291,8 +1291,7 @@ rpmfiles rpmfilesFree(rpmfiles fi)
     fi->nlinks = nlinkHashFree(fi->nlinks);
 
     (void) rpmfilesUnlink(fi);
-    memset(fi, 0, sizeof(*fi));		/* XXX trash and burn */
-    fi = _free(fi);
+    delete fi;
 
     return NULL;
 }
@@ -1310,7 +1309,7 @@ rpmfi rpmfiFree(rpmfi fi)
     fi->found = _free(fi->found);
     fi->archive = rpmcpioFree(fi->archive);
 
-    free(fi);
+    delete fi;
     return NULL;
 }
 
@@ -1709,7 +1708,7 @@ static int rpmfilesPopulate(rpmfiles fi, Header h, rpmfiFlags flags)
 
 rpmfiles rpmfilesNew(rpmstrPool pool, Header h, rpmTagVal tagN, rpmfiFlags flags)
 {
-    rpmfiles fi = (rpmfiles)xcalloc(1, sizeof(*fi));
+    rpmfiles fi = new rpmfiles_s;
     int fc;
 
     fi->magic = RPMFIMAGIC;
@@ -1732,7 +1731,7 @@ rpmfiles rpmfilesNew(rpmstrPool pool, Header h, rpmTagVal tagN, rpmfiFlags flags
 	if (headerIsEntry(h, RPMTAG_ORIGBASENAMES)) {
 	    /* For relocated packages, grab the original paths too */
 	    int ofc;
-	    fi->ofndata = (rpmfn)xmalloc(sizeof(*fi->ofndata));
+	    fi->ofndata = new rpmfn_s;
 	    ofc = rpmfnInit(fi->ofndata, RPMTAG_ORIGBASENAMES, h, fi->pool);
 	    
 	    if (ofc != 0 && ofc != fc)
@@ -1780,7 +1779,7 @@ static rpmfi initIter(rpmfiles files, int itype, int link)
     rpmfi fi = NULL;
 
     if (files && itype>=0 && itype<=RPMFILEITERMAX) {
-	fi = (rpmfi)xcalloc(1, sizeof(*fi));
+	fi = new rpmfi_s;
 	fi->i = -1;
 	fi->j = -1;
 	fi->files = link ? rpmfilesLink(files) : files;
