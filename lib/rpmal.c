@@ -68,18 +68,18 @@ typedef struct availableIndexFileEntry_s {
  * Set of available packages, items, and directories.
  */
 struct rpmal_s {
-    rpmstrPool pool;		/*!< String pool */
-    availablePackage list;	/*!< Set of packages. */
-    rpmalDepHash providesHash;
-    rpmalDepHash obsoletesHash;
-    rpmalFileHash fileHash;
-    int delta;			/*!< Delta for pkg list reallocation. */
-    int size;			/*!< No. of pkgs in list. */
-    int alloced;		/*!< No. of pkgs allocated for list. */
-    rpmtransFlags tsflags;	/*!< Transaction control flags. */
-    rpm_color_t tscolor;	/*!< Transaction color. */
-    rpm_color_t prefcolor;	/*!< Transaction preferred color. */
-    fingerPrintCache fpc;
+    rpmstrPool pool {};		/*!< String pool */
+    availablePackage list {};	/*!< Set of packages. */
+    rpmalDepHash providesHash {};
+    rpmalDepHash obsoletesHash {};
+    rpmalFileHash fileHash {};
+    int delta {};		/*!< Delta for pkg list reallocation. */
+    int size {};		/*!< No. of pkgs in list. */
+    int alloced {};		/*!< No. of pkgs allocated for list. */
+    rpmtransFlags tsflags {};	/*!< Transaction control flags. */
+    rpm_color_t tscolor {};	/*!< Transaction color. */
+    rpm_color_t prefcolor {};	/*!< Transaction preferred color. */
+    fingerPrintCache fpc {};
 };
 
 /**
@@ -96,7 +96,7 @@ static void rpmalFreeIndex(rpmal al)
 
 rpmal rpmalCreate(rpmts ts, int delta)
 {
-    rpmal al = (rpmal)xcalloc(1, sizeof(*al));
+    rpmal al = new rpmal_s;
 
     al->pool = rpmstrPoolLink(rpmtsPool(ts));
     al->delta = delta;
@@ -133,7 +133,7 @@ rpmal rpmalFree(rpmal al)
     al->alloced = 0;
 
     rpmalFreeIndex(al);
-    al = _free(al);
+    delete al;
     return NULL;
 }
 
