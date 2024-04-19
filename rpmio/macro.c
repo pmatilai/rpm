@@ -45,26 +45,26 @@ enum macroFlags_e {
 
 /*! The structure used to store a macro. */
 struct rpmMacroEntry_s {
-    struct rpmMacroEntry_s *prev;/*!< Macro entry stack. */
-    const char *name;  	/*!< Macro name. */
-    const char *opts;  	/*!< Macro parameters (a la getopt) */
-    const char *body;	/*!< Macro body. */
-    macroFunc func;	/*!< Macro function (builtin macros) */
-    void *priv;		/*!< Private user data (aux macros) */
-    int nargs;		/*!< Number of required args */
-    int flags;		/*!< Macro state bits. */
-    int level;          /*!< Scoping level. */
-    char arena[];   	/*!< String arena. */
+    struct rpmMacroEntry_s *prev {};/*!< Macro entry stack. */
+    const char *name {};  	/*!< Macro name. */
+    const char *opts {};  	/*!< Macro parameters (a la getopt) */
+    const char *body {};	/*!< Macro body. */
+    macroFunc func {};		/*!< Macro function (builtin macros) */
+    void *priv {};		/*!< Private user data (aux macros) */
+    int nargs {};		/*!< Number of required args */
+    int flags {};		/*!< Macro state bits. */
+    int level {};       	/*!< Scoping level. */
+    char arena[];	   	/*!< String arena. */
 };
 
 /*! The structure used to store the set of macros in a context. */
 struct rpmMacroContext_s {
-    rpmMacroEntry *tab;  /*!< Macro entry table (array of pointers). */
-    int n;      /*!< No. of macros. */
-    int depth;		 /*!< Depth tracking on external recursion */
-    int level;		 /*!< Scope level tracking when on external recursion */
-    pthread_mutex_t lock;
-    pthread_mutexattr_t lockattr;
+    rpmMacroEntry *tab {};  /*!< Macro entry table (array of pointers). */
+    int n {};      /*!< No. of macros. */
+    int depth {};		 /*!< Depth tracking on external recursion */
+    int level {};		 /*!< Scope level tracking when on external recursion */
+    pthread_mutex_t lock {};
+    pthread_mutexattr_t lockattr {};
 };
 
 
@@ -101,18 +101,18 @@ static void initLocks(void)
  * Macro expansion state.
  */
 struct rpmMacroBuf_s {
-    char * buf;			/*!< Expansion buffer. */
-    size_t tpos;		/*!< Current position in expansion buffer */
-    size_t nb;			/*!< No. bytes remaining in expansion buffer. */
-    int depth;			/*!< Current expansion depth. */
-    int level;			/*!< Current scoping level */
-    int error;			/*!< Errors encountered during expansion? */
-    int macro_trace;		/*!< Pre-print macro to expand? */
-    int expand_trace;		/*!< Post-print macro expansion? */
-    int flags;			/*!< Flags to control behavior */
-    rpmMacroEntry me;		/*!< Current macro (or NULL if anonymous) */
-    ARGV_t args;		/*!< Current macro arguments (or NULL) */
-    rpmMacroContext mc;
+    char * buf {};		/*!< Expansion buffer. */
+    size_t tpos {};		/*!< Current position in expansion buffer */
+    size_t nb {};		/*!< No. bytes remaining in expansion buffer. */
+    int depth {};		/*!< Current expansion depth. */
+    int level {};		/*!< Current scoping level */
+    int error {};		/*!< Errors encountered during expansion? */
+    int macro_trace {};		/*!< Pre-print macro to expand? */
+    int expand_trace {};	/*!< Post-print macro expansion? */
+    int flags {};		/*!< Flags to control behavior */
+    rpmMacroEntry me {};	/*!< Current macro (or NULL if anonymous) */
+    ARGV_t args {};		/*!< Current macro arguments (or NULL) */
+    rpmMacroContext mc {};
 };
 
 /**
@@ -463,7 +463,7 @@ expandThis(rpmMacroBuf mb, const char * src, size_t slen, char **target, int *fl
 
 static rpmMacroBuf mbCreate(rpmMacroContext mc, int flags)
 {
-    rpmMacroBuf mb = (rpmMacroBuf)xcalloc(1, sizeof(*mb));
+    rpmMacroBuf mb = new rpmMacroBuf_s {};
     mb->buf = NULL;
     mb->depth = mc->depth;
     mb->level = mc->level;
@@ -1827,7 +1827,7 @@ static int doExpandMacros(rpmMacroContext mc, const char *src, int flags,
     /* expanded output is usually much less than alloced buffer, downsize */
     *target = xrealloc(mb->buf, mb->tpos + 1);
 
-    _free(mb);
+    delete mb;
     return rc;
 }
 
@@ -1920,7 +1920,7 @@ static void popMacro(rpmMacroContext mc, const char * n)
 
 static int defineMacro(rpmMacroContext mc, const char * macro, int level)
 {
-    rpmMacroBuf mb = (rpmMacroBuf)xcalloc(1, sizeof(*mb));
+    rpmMacroBuf mb = new rpmMacroBuf_s {};
     int rc;
     size_t parsed = 0;
 
@@ -1928,7 +1928,7 @@ static int defineMacro(rpmMacroContext mc, const char * macro, int level)
     mb->mc = mc;
     doDefine(mb, macro, level, 0, &parsed);
     rc = mb->error;
-    _free(mb);
+    delete mb;
     return rc;
 }
 
@@ -2028,7 +2028,7 @@ int rpmExpandThisMacro(rpmMacroContext mc, const char *n,  ARGV_const_t args, ch
 	rc = expandThisMacro(mb, *mep, args, flags);
 	mb->buf[mb->tpos] = '\0';	/* XXX just in case */
 	target = xrealloc(mb->buf, mb->tpos + 1);
-	_free(mb);
+	delete mb;
     }
     rpmmctxRelease(mc);
     if (rc) {
