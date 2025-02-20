@@ -1,88 +1,75 @@
----
-section: 8
-title: RPM misc options
----
+RPMMISC(8)
 
 NAME rpm - lesser need options for rpm(8)
-=========================================
 
-OPTIONS
-=======
+# OPTIONS
 
-**\--predefine=\'***MACRO EXPR***\'**
+*--predefine='**MACRO EXPR**'*
 
-:   Defines *MACRO* with value *EXPR* before loading macro files.
+	Defines *MACRO* with value *EXPR* before loading macro files.
 
-Switching off features
-======================
 
-**\--color \[never\|auto\|always\]**
+*--color [never|auto|always]*
 
-:   Use terminal colors for highlighting error and debug message.
-    Default is turning colors on for ttys only (**auto**).
+	Use terminal colors for highlighting error and debug message.
+	Default is turning colors on for ttys only (*auto*).
 
-**\--nocontexts** Disable the SELinux plugin if available. This stops
-the plugin from setting SELinux contexts for files and scriptlets.
+##  Switching off features
 
-**\--noglob**
+*--nocontexts*
 
-:   Do not glob arguments when installing package files.
+	Disable the SELinux plugin if available. This stops
+	the plugin from setting SELinux contexts for files and scriptlets.
 
-**\--nocaps**
+*--noglob*
 
-:   Don\'t verify capabilities of files.
+	Do not glob arguments when installing package files.
 
-**\--excludeconfigs, \--noconfigs**
+*--nocaps*
 
-:   Do not install configuration files.
+	Don't verify capabilities of files.
 
-**\--nohdrchk**
+*--excludeconfigs, --noconfigs*
 
-:   Don\'t verify database header(s) when retrieved.
+	Do not install configuration files.
 
-Debugging
-=========
+*--nohdrchk*
 
-**-d, \--debug**
+	Don't verify database header(s) when retrieved.
 
-:   Print debugging information.
+## Debugging
 
-**\--deploops**
+*-d, --debug*
 
-:   Print dependency loops as warning.
+	Print debugging information.
 
-**\--fsmdebug**
+*--deploops*
 
-:   Print debuging information of payload handling code.
+	Print dependency loops as warning.
 
-**\--rpmfcdebug**
+*--fsmdebug*
 
-:   Print debug information about files packaged.
+	Print debuging information of payload handling code.
 
-**\--rpmiodebug**
+*--rpmfcdebug*
 
-:   Print debug information about file IO.
+	Print debug information about files packaged.
 
-**\--stats**
+*--rpmiodebug*
 
-:   Print runtime statistics of often used functions.
+	Print debug information about file IO.
 
-Obsolete Options
-================
+*--stats*
 
-**-K, \--checksig**
+	Print runtime statistics of often used functions.
 
-:   See and use **rpmkeys**(8).
+## Obsolete Options
 
-**\--nodocs**
+*-K, --checksig*
 
-:   Do not install documentation. Use **\--excludedocs** instead.
+	See and use *rpmkeys*(8).
 
-**\--promoteepoch**
+*--nodocs*
 
-:   Enable obsolete epoch handling used in rpm 3.x time frame.
+	Do not install documentation. Use *--excludedocs* instead.
 
-**\--prtpkts**
-
-:   OBSOLETE! Used to print the packages containing and representing the
-    pgp keys for debugging purposes.

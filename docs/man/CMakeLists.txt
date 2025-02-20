@@ -1,3 +1,7 @@
+find_program(SCDOC NAMES scdoc REQUIRED)
+mark_as_advanced(SCDOC)
+
+
 set(core
 	gendiff.1 rpm2cpio.8 rpm2archive.8
 	rpm.8 rpmbuild.8 rpmdb.8 rpmkeys.8 rpmsign.8 rpmspec.8
@@ -12,14 +16,12 @@ set(extra
 
 # Build all manuals
 set(manuals ${core} ${extra})
-if (PANDOC)
-	foreach(man ${manuals})
-		add_custom_command(OUTPUT ${man} COMMAND ${PANDOC}
-				${CMAKE_CURRENT_SOURCE_DIR}/${man}.md
-				-s -t man -o ${man} DEPENDS ${man}.md)
-	endforeach()
-	add_custom_target(man ALL DEPENDS ${manuals})
-endif()
+foreach(man ${manuals})
+	add_custom_command(OUTPUT ${man} COMMAND ${SCDOC}
+			< ${CMAKE_CURRENT_SOURCE_DIR}/${man}.md
+			> ${man} DEPENDS ${man}.md)
+endforeach()
+add_custom_target(man ALL DEPENDS ${manuals})
 
 # Install manuals for the enabled features
 set(manuals ${core})
