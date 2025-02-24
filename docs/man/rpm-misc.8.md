@@ -1,6 +1,8 @@
 RPMMISC(8)
 
-NAME rpm - lesser need options for rpm(8)
+# NAME
+
+rpm - lesser need options for rpm(8)
 
 # OPTIONS
 

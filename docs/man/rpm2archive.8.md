@@ -6,7 +6,7 @@ rpm2archive - Create tar archive from RPM Package Manager (RPM) package.
 
 # SYNOPSIS
 
-*rpm2archive* *{-n|--nocompression}* *{-f|--format=pax|cpio}* _FILES_
+*rpm2archive* *{-n|--nocompression}* *{-f|--format=pax|cpio}* *FILES*
 
 # DESCRIPTION
 
@@ -38,9 +38,7 @@ containing files greater than 4GB which are not supported by *cpio*.
 
 ```
 rpm2archive glint-1.0-1.i386.rpm | tar -xvz
-
 rpm2archive glint-1.0-1.i386.rpm ; tar -xvz glint-1.0-1.i386.rpm.tgz
-
 cat glint-1.0-1.i386.rpm | rpm2archive - | tar -tvz
 ```
 

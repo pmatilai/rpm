@@ -20,7 +20,7 @@ See *systemd-inhibit*(1) for the details of this mechanism.
 It is strongly advised to have the plugin installed on all systemd based
 systems.
 
-Prerequisites
+# PREREQUISITES
 
 For the plugin to work systemd has to be used as init system and
 the DBUS system bus must be available. If the plugin cannot access the

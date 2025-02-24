@@ -10,7 +10,7 @@ rpmbuild - Build RPM Package(s)
 
 The general form of *rpmbuild* command is
 
-*rpmbuild* {*-b**STAGE**|-r**STAGE**|-t**STAGE*} [*rpmbuild-options*] *FILE ...*
+*rpmbuild* {*-b**STAGE**|-r**STAGE**|-t**STAGE*} [*build-options*] *FILE ...*
 
 *rpmbuild* {*--rebuild|--recompile*} [*build-options*] *SOURCEPKG ...*
 

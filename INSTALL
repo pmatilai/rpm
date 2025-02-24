@@ -29,7 +29,7 @@ The source for the file utility + library is available from
 The libarchive library for archive access, available from
     https://www.libarchive.org/
 
-The scdoc manuage page generator, available from
+The scdoc manual page generator, available from
     https://git.sr.ht/~sircmpwn/scdoc
 
 You will need a cryptographic library to support digests and an OpenPGP

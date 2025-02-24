@@ -10,7 +10,7 @@ The plugin writes basic information about rpm transactions to the system
 dbus - like packages installed or removed. Other programs can subscribe
 to the signals to be notified of the packages on the system change.
 
-DBus Signals
+# DBUS SIGNALS
 
 Sends *StartTransaction* and *EndTransaction* messages from the
 */org/rpm/Transaction* object with the *org.rpm.Transaction*

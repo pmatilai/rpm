@@ -109,15 +109,15 @@ These options can be used in all the different modes.
 	the caller, such as any mounts needed for the operation inside the
 	root directory.
 
-*-D, --define='**MACRO EXPR**'*
+*-D, --define='*MACRO EXPR*'*
 
 	Defines *MACRO* with value *EXPR*.
 
-*--undefine='**MACRO**'*
+*--undefine='*MACRO*'*
 
 	Undefines *MACRO*.
 
-*-E, --eval='**EXPR**'*
+*-E, --eval='*EXPR*'*
 
 	Prints macro expansion of *EXPR*.
 
@@ -134,22 +134,19 @@ information on *rpm*'s *ftp* and *http* client support.
 
 The general form of an *rpm* install command is
 
-*rpm* {*-i|--install*} [*install-options*] *PACKAGE_FILE
-...*
+*rpm* {*-i|--install*} [*install-options*] *PACKAGE_FILE ...*
 
 This installs a new package.
 
 The general form of an *rpm* upgrade command is
 
-*rpm* {*-U|--upgrade*} [*install-options*] *PACKAGE_FILE
-...*
+*rpm* {*-U|--upgrade*} [*install-options*] *PACKAGE_FILE ...*
 
 This upgrades or installs the package currently installed to a newer
 version. This is the same as install, except all other version(s) of the
 package are removed after the new package is installed.
 
-*rpm* {*-F|--freshen*} [*install-options*] *PACKAGE_FILE
-...*
+*rpm* {*-F|--freshen*} [*install-options*] *PACKAGE_FILE ...*
 
 This will upgrade packages, but only ones for which an earlier version
 is installed.
@@ -324,7 +321,7 @@ and turns off execution of the corresponding *%triggerprein*,
 
 The general form of an *rpm* erase command is
 
-*rpm* {*-e|--erase*} [*erase-options*] *PACKAGE_NAME* ...
+*rpm* {*-e|--erase*} [*erase-options*] *PACKAGE_NAME ...*
 
 The following erase-options options may also be used:
 
@@ -389,7 +386,7 @@ names are case insensitive, and the leading *RPMTAG_* portion of the
 tag name may be omitted as well.
 
 Alternate output formats may be requested by following the tag with
-*:**typetag*. Currently, the following types are supported:
+*:typetag*. Currently, the following types are supported:
 
 *:armor*
 
@@ -513,7 +510,7 @@ selection and information selection.
 	architecture name separated by a dot. See the output of *rpm -qa*
 	or *rpm -qp* *PACKAGE_FILE* as an example.
 
-*-a, --all [**SELECTOR*]
+*-a, --all* [*SELECTOR*]
 
 	Query all installed packages.
 
@@ -755,7 +752,7 @@ selection and information selection.
 
 The general form of an *rpm* verify command is
 
-*rpm* {*-V|--verify*} [*select-options*] [*verify-options*] [*PACKAGE_NAME* ...]
+*rpm* {*-V|--verify*} [*select-options*] [*verify-options*] [*PACKAGE_NAME ...*]
 
 Verifying a package compares information about the installed files in
 the package with information about the files taken from the package
@@ -812,15 +809,15 @@ unique to verify mode are:
 The format of the output is a string of 9 characters, a possible
 attribute marker:
 
-	*a* %*a*rtifact a build side-effect file (such as buildid links).
-	*c* %*c*onfig configuration file.
-	*d* %*d*oc documentation file.
-	*g* %*g*host file (i.e. the file contents are not included in the package payload).
-	*l* %*l*icense license file.
-	*m* %*m*issingok file missing is not a verify failure.
-	*n* %%config(*n*oreplace) (do not replace file).
-	*r* %*r*eadme readme file.
-	*s* *s*pecfile in source package.
+*a* %*a*rtifact a build side-effect file (such as buildid links).++
+*c* %*c*onfig configuration file.++
+*d* %*d*oc documentation file.++
+*g* %*g*host file (i.e. the file contents are not included in the package payload).++
+*l* %*l*icense license file.++
+*m* %*m*issingok file missing is not a verify failure.++
+*n* %%config(*n*oreplace) (do not replace file).++
+*r* %*r*eadme readme file.++
+*s* *s*pecfile in source package.
 
 from the package header, followed by the file name. Each of the 9
 characters denotes the result of a comparison of attribute(s) of the
@@ -831,15 +828,15 @@ single "*.*" (period) means the test passed, while a single
 em*B*oldened) character denotes failure of the corresponding
 *--verify* test:
 
-	*S* file *S*ize differs
-	*M* *M*ode differs (includes permissions and file type)
-	*5* digest (formerly MD*5* sum) differs
-	*D* *D*evice major/minor number mismatch
-	*L* read*L*ink(2) path mismatch
-	*U* *U*ser ownership differs
-	*G* *G*roup ownership differs
-	*T* m*T*ime differs
-	*P* ca*P*abilities differ
+*S* file *S*ize differs++
+*M* *M*ode differs (includes permissions and file type)++
+*5* digest (formerly MD*5* sum) differs++
+*D* *D*evice major/minor number mismatch++
+*L* read*L*ink(2) path mismatch++
+*U* *U*ser ownership differs++
+*G* *G*roup ownership differs++
+*T* m*T*ime differs++
+*P* ca*P*abilities differ
 
 # MISCELLANEOUS COMMANDS
 
@@ -852,7 +849,7 @@ em*B*oldened) character denotes failure of the corresponding
 
 	obsolete aliases for *--restore*
 
-*rpm* *--restore* [*select-options*] *PACKAGE_NAME* ...
+*rpm* *--restore* [*select-options*] *PACKAGE_NAME ...*
 
 	The option restores file metadata such as timestamp, owner, group,
 	permissions and capabilities of files in packages.

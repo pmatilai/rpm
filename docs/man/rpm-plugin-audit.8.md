@@ -37,7 +37,7 @@ The entries in the audit log have the following fields:
 :  Package format
 :  rpm
 
-## CONFIGURATION
+# CONFIGURATION
 
 There are currently no options for this plugin in particular. See
 *rpm-plugins*(8) on how to control plugins in general.
