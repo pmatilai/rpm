@@ -408,6 +408,16 @@ typedef enum rpmTag_e {
 #define RPMTAG_NOT_FOUND		((uint32_t)-1)
 #define	RPMTAG_EXTERNAL_TAG		1000000
 
+#ifdef _RPM4_TAG_COMPAT
+#warning Using rpm 4.x compatibility defines may be incompatible with v6 packages
+#define RPMTAG_HDRID			RPMTAG_SHA1HEADER
+#define RPMTAG_PAYLOADDIGEST		RPMTAG_PAYLOADSHA256
+#define RPMTAG_PAYLOADDIGESTALT		RPMTAG_PAYLOADSHA256ALT
+#define RPMTAG_PAYLOADDIGESTALGO	RPMTAG_PAYLOADSHA256ALGO
+#define RPMTAG_PKGID			RPMTAG_SIGMD5
+#define RPMTAG_SOURCEPKGID		RPMTAG_SOURCESIGMD5
+#endif
+
 /** \ingroup rpmtag
  * Rpm database index tags.
  */

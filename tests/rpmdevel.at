@@ -35,6 +35,53 @@ LD_PRELOAD=${ASANLIB} ./trpm
 )
 RPMTEST_CLEANUP
 
+RPMTEST_SETUP([rpm API user 2])
+AT_KEYWORDS([devel])
+
+cp /data/src/tagtest.c .
+
+cat << EOF > CMakeLists.txt
+cmake_minimum_required(VERSION 3.18)
+project(trpm VERSION 1.0 DESCRIPTION "test rpm API" LANGUAGES C)
+find_package(rpm REQUIRED)
+option(RPM4_COMPAT OFF)
+if (RPM4_COMPAT)
+    add_compile_definitions(_RPM4_TAG_COMPAT)
+endif()
+
+add_executable(tagtest tagtest.c)
+target_link_libraries(tagtest PRIVATE rpm::librpm)
+
+EOF
+
+RPMTEST_CHECK([
+cmake . && make
+],
+[2],
+[ignore],
+[ignore])
+
+RPMTEST_CHECK([
+cmake -DRPM4_COMPAT=ON . && make
+],
+[0],
+[ignore],
+[ignore])
+
+RPMTEST_CHECK([
+LD_PRELOAD=${ASANLIB} ./tagtest /data/RPMS/hlinktest-1.0-1.noarch.rpm
+],
+[0],
+[269: e1d61f3a1121f7518265354f48082eb30e957e99
+5092: 6af0e75095876c4ce40cea8327fe037a1d7a84f1a79b92622e6e8b73c345ad01
+5097: 6af0e75095876c4ce40cea8327fe037a1d7a84f1a79b92622e6e8b73c345ad01
+5093: 8
+261: 8533fdce2c4f384fc5e2a595cef74722
+1146: (null)
+],
+[])
+RPMTEST_CLEANUP
+
 RPMTEST_SETUP_RW([rpm plugin development])
 AT_KEYWORDS([devel])
 
