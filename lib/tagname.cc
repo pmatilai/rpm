@@ -3,6 +3,11 @@
  */
 
 #include "system.h"
+
+#include <algorithm>
+#include <string>
+#include <unordered_map>
+
 #include <rpm/header.h>
 #include <rpm/rpmstring.h>
 #include "debug.h"
@@ -194,13 +199,28 @@ rpmTagVal rpmTagGetValue(const char * tagstr)
 {
     const struct headerTagTableEntry_s *t;
     rpmTagVal tagval = RPMTAG_NOT_FOUND;
+    static const std::unordered_map<std::string_view,rpmTagVal> compat_names = {
+	{ "HDRID",		RPMTAG_SHA1HEADER },
+	{ "PAYLOADDIGEST",	RPMTAG_PAYLOADSHA256 },
+	{ "PAYLOADDIGESTALT",	RPMTAG_PAYLOADSHA256ALT },
+	{ "PAYLOADDIGESTALGO",	RPMTAG_PAYLOADSHA256ALGO },
+	{ "PKGID",		RPMTAG_SIGMD5 },
+	{ "SOURCEPKGID",	RPMTAG_SOURCESIGMD5 },
+    };
 
     if (!rstrcasecmp(tagstr, "Packages"))
 	return RPMDBI_PACKAGES;
 
     t = tags.getEntry(tagstr);
-    if (t)
+    if (t) {
 	tagval = t->val;
+    } else {
+	std::string tagn = tagstr;
+	std::transform(tagn.begin(), tagn.end(), tagn.begin(), ::toupper);
+	auto res = compat_names.find(tagn);
+	if (res != compat_names.end())
+	    tagval = res->second;
+    }
 	
     return tagval;
 }

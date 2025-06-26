@@ -80,6 +80,21 @@ LD_PRELOAD=${ASANLIB} ./tagtest /data/RPMS/hlinktest-1.0-1.noarch.rpm
 1146: (null)
 ],
 [])
+
+RPMTEST_CHECK([
+for t in hdrid payloaddigest payloaddigestalt payloaddigestalgo pkgid sourcepkgid; do
+    rpm -q --qf "%{${t}:tagnum}: %{${t}}\n" /data/RPMS/hlinktest-1.0-1.noarch.rpm
+done
+],
+[0],
+[269: e1d61f3a1121f7518265354f48082eb30e957e99
+5092: 6af0e75095876c4ce40cea8327fe037a1d7a84f1a79b92622e6e8b73c345ad01
+5097: 6af0e75095876c4ce40cea8327fe037a1d7a84f1a79b92622e6e8b73c345ad01
+5093: 8
+261: 8533fdce2c4f384fc5e2a595cef74722
+(none): (none)
+],
+[])
 RPMTEST_CLEANUP
 
 RPMTEST_SETUP_RW([rpm plugin development])
