@@ -60,7 +60,7 @@ sign *%*. A section implicitly ends when a new section starts, or
 it can be explicitly declared with *%end*.
 
 The spec file is parsed linearly from top to bottom.
-In most sections, empty and whitespace-only lines are ignored.
+In most sections, empty and whitespace-only lines are ignored
 and lines starting with *#* are considered comments.
 Except lines in the false branch of a conditional, every spec line is
 macro-expanded before further processing, including comment lines.
@@ -158,7 +158,7 @@ An example is shown in an indented block where applicable.
 
 *BuildConflicts:* _CAPABILITY_ ...
 	Capabilities which cannot be installed during the
-	package package build.
+	package build.
 	Resolved before building the package.
 
 	Usage: S
@@ -185,7 +185,7 @@ An example is shown in an indented block where applicable.
 *BuildRoot:* _PATH_
 	Obsolete. Silently ignored in RPM >= 4.6.0.
 
-*BuildOptions*[*(*_BUILDSCRIPT_*)*]: _OPTION_
+*BuildOption*[*(*_BUILDSCRIPT_*)*]: _OPTION_
 	Declarative buildsystem option for _BUILDSCRIPT_.
 	See *Build scriptlets* for valid names, used without the
 	preceding *%* here.
@@ -319,7 +319,7 @@ An example is shown in an indented block where applicable.
 	generated from this spec. Causes the source RPM to be called *nosrc*.
 
 	```
-	Patch5: prorietary-tool-3.0.zip
+	Patch5: proprietary-tool-3.0-memleak.patch
 	NoPatch: 5
 	```
 
@@ -328,8 +328,8 @@ An example is shown in an indented block where applicable.
 	generated from this spec. Causes the source RPM to be called *nosrc*.
 
 	```
-	Source1: prorietary-tool-3.0.zip
-	Source2: propritary-data-3.0.zip
+	Source1: proprietary-tool-3.0.zip
+	Source2: proprietary-data-3.0.zip
 	NoSource: 1 2
 	```
 
@@ -359,7 +359,7 @@ An example is shown in an indented block where applicable.
 	as a file in the *%{SOURCEDIR}* directory.
 
 	Patch numbers do not need to be consecutive and may include leading
-	zeroes. Non-numbered patch tag `Patch:` is also supported and is
+	zeroes. Non-numbered patch tag *Patch:* is also supported and is
 	automatically assigned the next available patch integer.
 
 	Patch numbers are separate from source numbers.
@@ -415,7 +415,7 @@ An example is shown in an indented block where applicable.
 
 *RemovePathPostfixes:* _POSTFIX1_[;_POSTFIX2_ ...]
 	Colon separated lists of path postfixes that are removed from the
-	end of file names when adding those files to the package.
+	end of filenames when adding those files to the package.
 	Used on sub-package level.
 
 	Used for creating sub-packages with conflicting files, such as
@@ -449,14 +449,14 @@ An example is shown in an indented block where applicable.
 	```
 
 	Source numbers do not need to be consecutive and may include leading
-	zeroes. Non-numbered source tag `Source:` is also supported and is
+	zeroes. Non-numbered source tag *Source:* is also supported and is
 	automatically assigned the next available source integer.
 
 	Source numbers are separate from patch numbers.
 
 	Usage: DS
 
-	See also *%sourcelist* section.
+	See also *%sourcelist*.
 
 *SourceLicense*: _TEXT_
 	Short summary of the source license if it differs
@@ -530,10 +530,10 @@ An example is shown in an indented block where applicable.
 
 *%changelog*
 	The general form of the *%changelog* is a header line starting
-	with '*\**', followed by one or more message lines starting with
+	with *\**, followed by one or more message lines starting with
 	*-*:
 
-	Two forms of _HEADER_ are supported:
+	Two forms of a header line are supported:
 
 	_WEEKDAY_ _MONTH_ _DAY_ _YEAR_ _EMAIL_
 
@@ -565,13 +565,14 @@ An example is shown in an indented block where applicable.
 
 	Usage: R
 
-*%files* [*-n*] _SUBNAME_] [*-f* _FILE_ [*-f* _FILE_ ...]]
+*%files* [*-n*] [_SUBNAME_] [*-f* _FILE_ [*-f* _FILE_ ...]]
 	A manifest describing the files in the (sub-)package.
 
 	*-f* _FILE_
 		Additional files manifest to be read from disk after
 		the build scripts have completed.
 		May be supplied multiple times.
+
 	*-n*
 		Interpret _SUBNAME_ as the full package name.
 
@@ -580,13 +581,15 @@ An example is shown in an indented block where applicable.
 
 	\[_ATTRIBUTE_ ...] _GLOB_
 
+	The following attributes are supported:
+
 	*%artifact*
 		Denotes files that are more like side-effects of packaging
 		than actual content the user would be interested in. Such
 		files can be easily filtered out on queries and also left
 		out of installations if space is tight.
 
-		Added: rpm-4.14.1
+		Added: 4.14.1
 
 	*%attr(*_MODE_*,* _USER_*,* _GROUP_*)*
 		Override the permissions for a single _GLOB_. _MODE_ is
@@ -626,8 +629,9 @@ An example is shown in an indented block where applicable.
 		entries.
 
 	*%dir*
-		Used to explicitly own the directory itself but not it’s
+		Used to explicitly own the directory itself but not its
 		contents.
+
 	*%doc*
 		Used to mark and/or install files as documentation.
 
@@ -638,15 +642,19 @@ An example is shown in an indented block where applicable.
 		component. Thus *%doc path/to/docfile* installs docfile in the
 		documentation path.
 
-	*%license* (since rpm >= 4.11)
+	*%license*
 		Used to mark and/or install files as licenses.
 
 		Similar to *%doc* and can be used with absolute or "special"
 		forms.
 
-	*%missingok* (since rpm >= 4.14 in standalone form)
+		Added: 4.11.0
+
+	*%missingok*
 		Used to mark file presence optional, ie one whose absence
 		does not cause verify to fail.
+
+		Added: 4.14.0 (in standalone form)
 
 	*%readme*
 		Used to mark a README file. Obsolete.
@@ -691,14 +699,14 @@ An example is shown in an indented block where applicable.
 	_GLOB_
 		The usual rules for shell globbing (see *glob*(7)) apply,
 		including brace expansion. Metacharacters can be escaped by
-		prefixing them with a backslash (\). Spaces are used to
-		separate file names and must also be escaped.
+		prefixing them with a backslash (*\\​*). Spaces are used to
+		separate filenames and must also be escaped.
 
-		Enclosing a file name in double quotes (*"*) preserves the
+		Enclosing a filename in double quotes (*"*) preserves the
 		literal value of all characters within the quotes, with the
-		exception of *\ * and the percent sign (*%*). A *\ * or *%*
-		can be escaped with an extra *\ * or *%*, respectively. A
-		double quote can be escaped with a *\ *.
+		exception of *\\​* and the percent sign (*%*). A *\\​*
+		or *%* can be escaped with an extra *\\​* or *%*,
+		respectively. A double quote can be escaped with a *\\​*.
 
 		If a glob pattern has no matches, it is tried literally (as
 		if all the metacharacters were escaped). This is similar to
@@ -731,7 +739,7 @@ An example is shown in an indented block where applicable.
 	separated by dash: _NAME_*-*_SUBNAME_.
 
 	*-n*
-		Interpret _SUBNAME_ a full package name.
+		Interpret _SUBNAME_ as the full package name.
 
 	See *Preamble* for the syntax and accepted tags. In particular,
 	*Name* cannot appear in a sub-package preamble. *Version*,
@@ -742,7 +750,7 @@ An example is shown in an indented block where applicable.
 	Summary: main binaries for myproj
 	...
 	
-	%package -libs
+	%package libs
 	Summary: shared libraries for myproj
 	```
 
@@ -762,6 +770,12 @@ An example is shown in an indented block where applicable.
 
 	Identical to using non-numbered *Source:* lines.
 
+	```
+	%sourcelist
+	mysoft-1.0.tar.gz
+	mysoft-data-1.0.zip
+	```
+
 ## Package scriptlets
 
 Package scriplets are used to execute actions at pre-determined times of
@@ -770,46 +784,28 @@ uninstall.
 
 See *rpm-scriptlets*(7).
 
-*%filetriggerin*
-
-*%filetriggerun*
-
-*%filetriggerpostun*
-
-*%pre*
-
-*%pretrans*
-
-*%preuntrans*
-
-*%preun*
-
-*%post*
-
-*%posttrans*
-
-*%postun*
-
-*%postuntrans*
-
-*%transfiletriggerin*
-
-*%transfiletriggerpostun*
-
-*%transfiletriggerun*
-
-*%triggerprein*
-
-*%triggerin*
-
-*%triggerun*
-
-*%triggerpostun*
-
+*%filetriggerin*++
+*%filetriggerun*++
+*%filetriggerpostun*++
+*%pre*++
+*%pretrans*++
+*%preuntrans*++
+*%preun*++
+*%post*++
+*%posttrans*++
+*%postun*++
+*%postuntrans*++
+*%transfiletriggerin*++
+*%transfiletriggerpostun*++
+*%transfiletriggerun*++
+*%triggerprein*++
+*%triggerin*++
+*%triggerun*++
+*%triggerpostun*++
 *%verify*
 
 ## Build scriptlets
-Build scriptlet sections are literal *sh*(1) shell scripts that are executed
+Build scriptlet sections are literal *sh*(1) scripts that are executed
 during different stages of a package build, from unpacking the source through
 configuring, building and testing it to placing the files into their target
 directories.
@@ -824,7 +820,7 @@ to augment them multiple times by using the following options:
 - *-a*: append to the section
 - *-p*: prepend to the section
 
-These operations are applied relative to the corresponding main section,
+The augment operations are applied relative to the corresponding main section,
 in the order they appear in the spec. If the main section does not exist,
 they are applied relative to the first fragment.
 
@@ -864,7 +860,7 @@ For example:
 
 ## %generate_buildrequires
 Used to determine build dependencies dynamically. If present, it is executed
-after *%prep* and can thus access the unpacked and patches sources.
+after *%prep* and can thus access the unpacked and patched sources.
 The script must print the found build dependencies to standard output in
 the same syntax as *BuildRequires* use, one dependency per line.
 
@@ -908,7 +904,7 @@ the build root directory.
 Used to run software self-tests where present.
 
 ## %clean (OBSOLETE)
-Use to clean up temporary files after the build. This section is obsolete,
+Used to clean up temporary files after the build. This section is obsolete,
 packages should place any temporaries inside their designated *%builddir*,
 which RPM will automatically clean up.
 
@@ -998,9 +994,6 @@ _TEXT_
 	Free-form line of text, preferably under 70 characters to
 	avoid line-wrapping in common usage contexts.
 
-_MULTILINE_
-	Free-form multi-line text.
-
 _URL_
 	A uniform resource locator (URL), colloquially known as a web address.
 
@@ -1019,7 +1012,7 @@ Summary: Minimal spec
 BuildArch: noarch
 
 %description
-%{summary}
+%{summary}.
 
 %files
 ```
@@ -1034,7 +1027,7 @@ Summary: Hello world demo package
 Source: https://github.com/rpm-software-management/rpm/blob/master/tests/data/SOURCES/hello-2.0.tar.gz
 
 %description
-%{summary}
+%{summary}.
 %end
 
 # unpack sources, without %end this comment would end up in description
@@ -1063,6 +1056,7 @@ Source: https://github.com/rpm-software-management/rpm/blob/master/tests/data/SO
 # SEE ALSO
 *rpmbuild*(1) *rpm-version*(7) *rpm-config*(5) *rpmbuild-config*(5) *rpmspec*(1)
 *rpm-lua*(7) *rpm-macros*(7) *rpm-spec-macros*(7) *rpm-dependencies*(7)
-*rpm-scriptlets*(7) *rpm-dependency-generators*(7) *rpm-design*(7) *rpm*(8)
+*rpm-sysusers*(7) *rpm-scriptlets*(7) *rpm-dependency-generators*(7)
+*rpm-design*(7) *rpm*(8)
 
 *http://www.rpm.org/*
