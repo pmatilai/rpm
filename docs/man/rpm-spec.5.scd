@@ -848,65 +848,67 @@ are evaluated during spec parse and may not be up-to-date, whereas
 environment variables are evaluated at the time of their execution in the
 script.
 
-## %prep
-%prep prepares the sources for building. This is where sources are unpacked,
-possible patches applied and other similar pre-flight activities performed.
+*%prep*
+	Prepares the sources for building. This is where sources are unpacked,
+	possible patches applied and other similar pre-flight activities
+	performed.
 
-For example:
-```
-%prep
-%autosetup -p1
-```
+	For example:
+	```
+	%prep
+	%autosetup -p1
+	```
 
-## %generate_buildrequires
-Used to determine build dependencies dynamically. If present, it is executed
-after *%prep* and can thus access the unpacked and patched sources.
-The script must print the found build dependencies to standard output in
-the same syntax as *BuildRequires* use, one dependency per line.
+*%generate_buildrequires*
+	Used to determine build dependencies dynamically. If present, it is
+	executed after *%prep* and can thus access the unpacked and patched
+	sources. The script must print the found build dependencies to standard
+	output in the same syntax as *BuildRequires* use, one dependency per
+	line.
 
-See *DYNAMIC BUILD DEPENDENCIES* in *rpmbuild*(1) for more information.
+	See *DYNAMIC BUILD DEPENDENCIES* in *rpmbuild*(1) for more information.
 
-Added: 4.15.0
+	Added: 4.15.0
 
-## %conf
-Used to configure the prepared sources for building, such as running
-*cmake*(1) or the _configure_ script from an *autoconf*(1) based build.
+*%conf*
+	Used to configure the prepared sources for building, such as running
+	*cmake*(1) or the _configure_ script from an *autoconf*(1) based build.
 
-For example:
-```
-%conf
-%configure \
-	--with-foo \
-	--without-bar
-```
+	For example:
+	```
+	%conf
+	%configure \
+		--with-foo \
+		--without-bar
+	```
 
-Added: 4.18.0
+	Added: 4.18.0
 
-## %build
-Used to compile the configured sources to binaries.
+*%build*
+	Used to compile the configured sources to binaries.
 
-For example:
-```
-%build
-%make_build
-```
+	For example:
+	```
+	%build
+	%make_build
+	```
 
-## %install
-Used to install the compiled binaries to their target locations inside
-the build root directory.
+*%install*
+	Used to install the compiled binaries to their target locations inside
+	the build root directory.
 
-```
-%install
-%make_install
-```
+	```
+	%install
+	%make_install
+	```
 
-## %check
-Used to run software self-tests where present.
+*%check*
+	Used to run software self-tests where present.
 
-## %clean (OBSOLETE)
-Used to clean up temporary files after the build. This section is obsolete,
-packages should place any temporaries inside their designated *%builddir*,
-which RPM will automatically clean up.
+*%clean (OBSOLETE)*
+	Used to clean up temporary files after the build. This section is
+	obsolete, packages should place any temporaries inside their designated
+	*%builddir*, which RPM will automatically clean up.
 
 # CONDITIONALS
 The spec supports several conditionals which can appear anywhere in the
