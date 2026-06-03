@@ -79,13 +79,15 @@ Sub-packages can be declared with *%package* sections, which start a preamble
 section specific to that sub-package. Not all tags are available in
 sub-packages.
 
-The Usage-entry indicates various tag properties:
+A *Usage* line below denotes various tag properties:
 - *D*efines macro by the same name (uppercase on first encounter,
   lowercase for all except *Patch* and *Source*)
 - *M*acro settable via *rpmbuild-config*(5)
 - *O*bsolete, do not use
 - *R*equired
 - *S*ub-package usable
+
+An example is shown in an indented block where applicable.
 
 *AutoReq:* _BOOLEAN_
 	Control per-package automatic dependency generation for *Requires*
