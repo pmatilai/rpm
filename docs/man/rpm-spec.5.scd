@@ -10,7 +10,7 @@ _TAG_*:* _VALUE_ ...++
 _TAG_[*(*_MODIFIERS_*)*]*:* _VALUE_ ...++
 _TAG_[*(*_LANG_*)*]*:* _VALUE_
 
-## Declarative sections
+## Manifests
 *%*_SECTION_++
 _LINE_++
 ​...
@@ -21,7 +21,7 @@ _LINE_++
 
 ## Build scriptlets
 ; "." at the start of a line is special to scdoc, work around with unicode hack
-*%*_SECTION_ [{*-a*|*-p*}]
+*%*_SECTION_ [{*-a*|*-p*}]++
 _LINE_++
 ​...
 
@@ -31,24 +31,24 @@ _LINE_++
 ​...
 
 ## Comments
-*#* _LINE_ (preamble and most declarative sections, macros expanded)
+*#* _LINE_ (preamble and most manifest sections, macros expanded)
 
 *%dnl* _LINE_ (everywhere)
 
 
 # DESCRIPTION
-An RPM _spec_ file is a recipe for building distributable RPM packages from
-sources to binaries in a repeatable, non-interactive process with
-*rpmbuild*(1). See *rpm-design*(7) for more background.
+An RPM _spec_ file is a recipe for building one or more software packages in the
+RPM format, in an automated and repeateable manner, by using *rpmbuild*(1). See
+also *rpm-design*(7) for some background.
 
-A spec consists of multiple *SECTIONS*, which fall into three main categories:
-- Declarative sections contain information either about the build, such as
-  the sources and patches that form the source package, or the generated
-  package, as the contained files, dependencies and human oriented
-  descriptions. There are two distinct types of declarative sections:
-  - The *Preamble* follows a tag:value format.
-  - The other *Declarative sections* are multiline text-entries,
-    each with their own sub-syntaxes.
+A spec consists of multiple *SECTIONS*, which fall into two categories:
+- *Metadata* contains information either about the build process, such as the
+  sources and patches that form the source package, or the generated package,
+  such as the contained files, dependencies and human-oriented descriptions.
+  There are two distinct types of metadata sections:
+	- The *Preamble* which follows a tag:value format.
+	- The *Manifests* which are multiline text entries, each with their own
+	  sub-syntax.
 - *Build scriptlets* are literal *sh*(1) scripts, executed by *rpmbuild*(1)
   when building binary packages.
 - *Package scriptlets* are scripts that are executed at different points of
@@ -524,7 +524,7 @@ The Usage-entry indicates various tag properties:
 
 	Usage: DRS
 
-## Declarative sections
+## Manifests
 
 *%changelog*
 	The general form of the *%changelog* is a header line starting
