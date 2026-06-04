@@ -25,13 +25,13 @@ For general RPM macro syntax and usage, see *rpm-macros*(7) and
 	Prepare sources for building: unpack source archives and apply
 	patches. See also *%setup*.
 
-	Only available in the *prep* section.
+	Only available in the *%prep* section.
 
 	*-a* _N_
-		Unpack source N after changing to the build directory.
+		Unpack source _N_ after changing to the build directory.
 		If multiple instances are needed, use *%setup* instead.
 	*-b* _N_
-		Unpack source N before changing to the build directory.
+		Unpack source _N_ before changing to the build directory.
 		If multiple instances are needed, use *%setup* instead.
 	*-c*
 		Create the build directory (and change to it) before unpacking.
@@ -59,7 +59,7 @@ For general RPM macro syntax and usage, see *rpm-macros*(7) and
 		- *git*
 		- *git_am*
 		- *hg*
-		- *patch*
+		- *patch* (default)
 		- *quilt*
 
 		Note that the exact behavior depends on the VCS: for example
@@ -71,16 +71,16 @@ For general RPM macro syntax and usage, see *rpm-macros*(7) and
 	*-v*
 		Verbose operation.
 
-*%autopatch* [_OPTIONS_] [N ...]
-	Apply (a range of) patches. Use in combination with *%autosetup -N*
-	for finer control over patch application.
+*%autopatch* [_OPTIONS_] [_NUMBER_ ...]
+	Apply (a range of) patch numbers. Use in combination with
+	*%autosetup -N* for finer control over patch application.
 
-	Only available in the *prep* section.
+	Only available in the *%prep* section.
 
 	*-m* _MIN_
 		Apply patches starting from _MIN_ range.
 	*-M* _MAX_
-		Apply patches up to _MIN_ range.
+		Apply patches up to _MAX_ range.
 	*-p* _N_
 		Patch prefix stripping level (same as *-p* to *patch*(1))
 	*-q*
@@ -104,6 +104,8 @@ For general RPM macro syntax and usage, see *rpm-macros*(7) and
 	Look for translation files in the buildroot, generating a _NAME_*.lang*
 	*%files* manifest for them.
 	_NAME_ is usually the upstream project name.
+
+	Available options:
 
 	*--all-name*
 		Match all package/domain names.
@@ -164,7 +166,7 @@ For general RPM macro syntax and usage, see *rpm-macros*(7) and
 	*-b* _SUF_
 		Backup patched files with suffix _SUF_.
 	*-d* _DIR_
-		Change to directory DIR before doing anything else.
+		Change to directory _DIR_ before doing anything else.
 	*-E*
 		Remove files emptied by patching.
 	*-F* _N_
@@ -190,9 +192,9 @@ For general RPM macro syntax and usage, see *rpm-macros*(7) and
 	Only available inside the *%prep* section.
 
 	*-a* _N_
-		Unpack source N after changing to the build directory.
+		Unpack source _N_ after changing to the build directory.
 	*-b* _N_
-		Unpack source N before changing to the build directory.
+		Unpack source _N_ before changing to the build directory.
 	*-c*
 		Create the build directory (and change to it) before unpacking.
 	*-C*
@@ -265,6 +267,7 @@ For general RPM macro syntax and usage, see *rpm-macros*(7) and
 	BuildRequires: gnutls-devel
 	%endif
 	```
+
 *%{without* _NAME_*}*
 	Test if build conditional _NAME_ is disabled.
 
@@ -272,8 +275,8 @@ For general RPM macro syntax and usage, see *rpm-macros*(7) and
 	Alternative form of testing a build conditional.
 
 	```
-	%configure \
-		%{?with_static:--enable-static} \
+	%configure \\
+		%{?with_static:--enable-static} \\
 		%{!?with_static:--disable-static}
 	```
 
@@ -281,9 +284,9 @@ See _http://rpm.org/docs/latest/manual/conditionalbuilds.html_ for more
 information.
 
 ## Path macros
-RPM defines paths for various common locations in unix-like systems for
+RPM defines paths for various common locations in UNIX-like systems for
 the sake of flexibility and some portability.
-Most of these macros follow the prefix defined in *%\_prefix*
+Most of these macros honor the prefix defined in *%\_prefix*
 (not to be confused with *%prefix* from relocatable packages).
 
 The values in parenthesis reflect common values of these macros on modern
@@ -292,7 +295,7 @@ Linux systems and are provided for mental reference only.
 *%\_bindir*
 	Most user commands. (_/usr/bin_)
 *%\_datadir*
-	Architecture independent data. (_/usr/share/_)
+	Architecture independent data. (_/usr/share_)
 *%\_datarootdir*
 	Alias for *%\_datadir*.
 *%\_includedir*
@@ -304,15 +307,15 @@ Linux systems and are provided for mental reference only.
 *%\_libexecdir*
 	Binaries run by other commands. (_/usr/libexec_)
 *%\_localstatedir*
-	Variable data files (_/var_)
+	Variable data files. (_/var_)
 *%\_mandir*
-	Manual pages (_/usr/share/man_)
+	Manual pages. (_/usr/share/man_)
 *%\_prefix*
-	Prefix of most path macros (_/usr_)
+	Prefix of most path macros. (_/usr_)
 *%\_rundir*
 	Run-time variable data. (_/run_)
 *%\_sharedstatedir*
-	Variable state information (_/var/lib_)
+	Variable state information. (_/var/lib_)
 *%\_sbindir*
 	Non-essential standard system binaries. (_/usr/sbin_)
 *%\_sysconfdir*
@@ -370,13 +373,13 @@ BuildRequires: arm-and-leg-devel
 ## Compiler flags
 
 *%build_cflags*
-	C compiler flags.  This is traditionally called CFLAGS in makefiles.
+	C compiler flags.  This is traditionally called *CFLAGS* in makefiles.
 
 *%build_cxxflags*
-	C++ compiler flags.  This is traditionally called CXXFLAGS in makefiles.
+	C++ compiler flags.  This is traditionally called *CXXFLAGS* in makefiles.
 
 *%build_fflags*
-	Fortran compiler flags.  Makefiles use both FFLAGS and FCFLAGS as
+	Fortran compiler flags.  Makefiles use both *FFLAGS* and *FCFLAGS* as
 	the corresponding variable names.
 
 *%optflags*
@@ -390,7 +393,7 @@ BuildRequires: arm-and-leg-devel
 	variables such as *CFLAGS* and *LDFLAGS* if they have not been
 	set already.
 
-# Platform macros
+## Platform macros
 *%\_host*
 	Shorthand for *%{\_host\_cpu}-%{\_host\_os}*
 
@@ -401,7 +404,7 @@ BuildRequires: arm-and-leg-devel
 	The operating system of the host where RPM is running.
 
 *%\_target*
-	Shorthand for *%{\_target\_cpu}-%{\_target\_os}*
+	Shorthand for *%{\_target\_cpu}-%{\_target\_os}*.
 
 *%\_target\_cpu*
 	The architecture for which the current package is being built for.
