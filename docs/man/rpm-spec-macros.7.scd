@@ -21,6 +21,23 @@ For general RPM macro syntax and usage, see *rpm-macros*(7) and
 *rpm-macrofile*(5).
 
 ## Build steps
+*%autopatch* [_OPTIONS_] [_NUMBER_ ...]
+	Apply (a range of) patch numbers. Use in combination with
+	*%autosetup -N* for finer control over patch application.
+
+	Only available in the *%prep* section.
+
+	*-m* _MIN_
+		Apply patches starting from _MIN_ range.
+	*-M* _MAX_
+		Apply patches up to _MAX_ range.
+	*-p* _N_
+		Patch prefix stripping level (same as *-p* to *patch*(1))
+	*-q*
+		Don't warn if there are no matching patches.
+	*-v*
+		Verbose operation.
+
 *%autosetup* [_OPTIONS_]
 	Prepare sources for building: unpack source archives and apply
 	patches. See also *%setup*.
@@ -68,23 +85,6 @@ For general RPM macro syntax and usage, see *rpm-macros*(7) and
 	*-T*
 		Skip the default unpacking of the first source (mostly used
 		with *-a* or *-b*).
-	*-v*
-		Verbose operation.
-
-*%autopatch* [_OPTIONS_] [_NUMBER_ ...]
-	Apply (a range of) patch numbers. Use in combination with
-	*%autosetup -N* for finer control over patch application.
-
-	Only available in the *%prep* section.
-
-	*-m* _MIN_
-		Apply patches starting from _MIN_ range.
-	*-M* _MAX_
-		Apply patches up to _MAX_ range.
-	*-p* _N_
-		Patch prefix stripping level (same as *-p* to *patch*(1))
-	*-q*
-		Don't warn if there are no matching patches.
 	*-v*
 		Verbose operation.
 
