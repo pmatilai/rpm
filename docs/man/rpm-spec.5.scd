@@ -10,6 +10,10 @@ _TAG_*:* _VALUE_ ...++
 _TAG_[*(*_MODIFIERS_*)*]*:* _VALUE_ ...++
 _TAG_[*(*_LANG_*)*]*:* _VALUE_
 
+*%package* [*-n*] _SUBNAME_++
+_TAG_[...]*:*_VALUE_ [...]++
+​...
+
 ## Manifests
 *%*_SECTION_++
 _LINE_++
@@ -46,7 +50,7 @@ A spec consists of multiple *SECTIONS*, which fall into two categories:
   sources and patches that form the source package, or the generated package,
   such as the contained files, dependencies and human-oriented descriptions.
   There are two distinct types of metadata sections:
-	- The *Preamble* which follows a tag:value format.
+	- The *Preamble*s which follow a tag:value format.
 	- The *Manifests* which are multiline text entries, each with their own
 	  sub-syntax.
 - *Build scriptlets* are literal *sh*(1) scripts, executed by *rpmbuild*(1)
@@ -68,16 +72,15 @@ macro-expanded before further processing, including comment lines.
 # SECTIONS
 
 ## Preamble
-The main preamble is the entry to a spec file, and consists of tag-value pairs
-that either control some aspects of the build or describe the produced
-binaries.
+A preamble consists of tag:value pairs that either control some aspects of
+the build, or describe the produced binaries.
+
+Sub-packages are declared with *%package* sections, which start a preamble
+section specific to that sub-package. Not all tags are available in
+sub-packages.
 
 Tags accepting multiple values on one line can also appear multiple
 times within a package.
-
-Sub-packages can be declared with *%package* sections, which start a preamble
-section specific to that sub-package. Not all tags are available in
-sub-packages.
 
 A *Usage* line below denotes various tag properties:
 - *D*efines macro by the same name (uppercase on first encounter,
