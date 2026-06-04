@@ -579,6 +579,11 @@ An example is shown in an indented block where applicable.
 	*-n*
 		Interpret _SUBNAME_ as the full package name.
 
+	Binary packages are only produced for packages with a *%files*
+	section, whether they contain any files or not. This is useful
+	for conditional sub-package generation: only the *%files*
+	section needs to be conditionalized.
+
 	The section format is one *glob*(7) entry per line, optionally preceded
 	by virtual file attributes applying to all the matching files:
 
