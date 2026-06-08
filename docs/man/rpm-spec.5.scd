@@ -197,7 +197,7 @@ An example is shown in an indented block where applicable.
 	BuildOption(conf): --enable-fu
 	```
 
-*Buildsystem:* _NAME_
+*BuildSystem:* _NAME_
 	Use declarative buildsystem _NAME_ to build the package.
 	Buildsystems are inherently distribution specific.
 
