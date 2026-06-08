@@ -396,7 +396,7 @@ An example is shown in an indented block where applicable.
 	Prefixes: /usr /etc
 	```
 
-*Provides*[*(*_MODIFIERS_*)*]*:* _CAPABILITY_ ...
+*Provides:* _CAPABILITY_ ...
 	See *rpm-dependencies*(7).
 
 	Usage: S
