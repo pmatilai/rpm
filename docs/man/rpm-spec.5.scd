@@ -15,12 +15,20 @@ _TAG_[*(*_LANG_*)*]*:* _VALUE_
 _LINE_++
 ​...
 
-*%*_SECTION_ [*-n* _SUBNAME_] [_OPTIONS_]++
+*%*_SECTION_ [*-n* _SUBNAME_] [options]++
 _LINE_++
 ​...
 
 ## Package scriptlets
-*%*_SECTION_ [*-n* _SUBNAME_] [_OPTIONS_]++
+*%*_SCRIPT_ [options] [_NAME_]++
+\[_LINE_\]++
+​...
+
+*%*_TRIGGER_ [options] [_NAME_] *--* _TRIGGERCOND_ ...++
+\[_LINE_\]++
+​...
+
+*%*_FILETRIGGER_ [options] [filetrigger-options] [_NAME_] *--* _PATH_ ...++
 \[_LINE_\]++
 ​...
 
