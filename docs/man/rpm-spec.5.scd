@@ -585,11 +585,12 @@ An example is shown in an indented block where applicable.
 	section needs to be conditionalized.
 
 	The section format is one *glob*(7) entry per line, optionally preceded
-	by virtual file attributes applying to all the matching files:
+	by attributes that apply to all the matching files:
 
 	\[_ATTRIBUTE_ ...] _GLOB_
 
-	The following attributes are supported:
+	The attributes fall roughly into three categories: concrete,
+	semantic and verification attributes:
 
 	*%artifact*
 		Denotes files that are more like side-effects of packaging
@@ -665,17 +666,12 @@ An example is shown in an indented block where applicable.
 		Added: 4.14.0 (in standalone form)
 
 	*%readme*
-		Used to mark a README file. Obsolete.
+		Used to mark a README file.
 
 	*%verify*[*(*_MODIFIERS_*)*]
-		The virtual file attribute token *%verify* tells *-V/–verify*
-		to ignore certain features on files which may be modified by
-		(say) a postinstall script so that false problems are not
-		displayed during package verification.
-
-		```
-		%verify(not size filedigest mtime) %{prefix}/bin/javaswarm
-		```
+		Tell *-V/–verify* to ignore certain features on files.
+		Used to avoid false positives from files that are expected
+		to be modified in certain ways.
 
 		Supported modifiers are:
 		- *filedigest*
@@ -687,6 +683,10 @@ An example is shown in an indented block where applicable.
 		- *mode*
 		- *rdev*
 		- *caps*
+
+		```
+		%verify(not size filedigest mtime) %{prefix}/bin/javaswarm
+		```
 
 	*%caps(*_CAPABILITY_*)*
 		Sets the given POSIX.1e draft 15 *capabilities*(7) on the file.
