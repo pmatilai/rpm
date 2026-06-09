@@ -1019,7 +1019,7 @@ Summary: Minimal spec
 BuildArch: noarch
 
 %description
-%{summary}.
+A minimal spec file.
 
 %files
 ```
@@ -1034,7 +1034,8 @@ Summary: Hello world demo package
 Source: https://github.com/rpm-software-management/rpm/blob/master/tests/data/SOURCES/hello-2.0.tar.gz
 
 %description
-%{summary}.
+The purpose of this package is to demonstrate RPM packaging.
+It has no real-world use value beyond education and testing.
 %end
 
 # unpack sources, without %end this comment would end up in description
