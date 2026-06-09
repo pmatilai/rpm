@@ -79,6 +79,7 @@ times within a package.
 A *Usage* line below denotes various tag properties:
 - *D*efines macro by the same name (uppercase on first encounter,
   lowercase for all except *Patch* and *Source*)
+- *I*nformative, only used for displaying
 - *M*acro settable via *rpmbuild-config*(5)
 - *O*bsolete, do not use
 - *R*equired
@@ -126,7 +127,7 @@ An example is shown in an indented block where applicable.
 	Bug reporting URL for the package.
 	Usually set via *rpmbuild-config*(5).
 
-	Usage: DMS
+	Usage: DMSI
 
 	```
 	BugURL: https://bugzilla.mydistro.org
@@ -213,12 +214,12 @@ An example is shown in an indented block where applicable.
 *Distribution:* _TEXT_
 	Distribution name.
 
-	Usage: DMS
+	Usage: DMSI
 
 *DistTag:* _TEXT_
 	Short label for identifying a distribution and its version.
 
-	Usage: DMS
+	Usage: DMSI
 
 *DocDir:* _PATH_
 	Declare a non-default documentation directory for the package.
@@ -280,7 +281,7 @@ An example is shown in an indented block where applicable.
 *Group*[*(*_LANG_*)*]*:* _TEXT_
 	Group of the package.
 
-	Usage: DS
+	Usage: DSI
 
 	```
 	Group: Development/Libraries
@@ -290,7 +291,7 @@ An example is shown in an indented block where applicable.
 	Short summary of the package license.
 	Use of SPDX license identifiers is recommended.
 
-	Usage: DRS
+	Usage: DRSI
 
 	```
 	License: GPLv3-only
@@ -299,7 +300,7 @@ An example is shown in an indented block where applicable.
 *ModularityLabel:* _TEXT_
 	Obsolete.
 
-	Usage: DMOS
+	Usage: DMOSI
 
 *Name:* _NAME_
 	The full name of the package. A mandatory tag.
@@ -347,7 +348,7 @@ An example is shown in an indented block where applicable.
 *Packager:* _TEXT_
 	Maintainer contact information.
 
-	Usage: DMS
+	Usage: DMSI
 
 *Patch*[_N_]*:* [_URL_/]_FILE_
 	Used to declare patches applied on top of sources.
@@ -461,7 +462,7 @@ An example is shown in an indented block where applicable.
 
 	Use of SPDX license identifiers is recommended.
 
-	Usage: DS
+	Usage: DSI
 
 	```
 	License: GPLv3-only
@@ -475,7 +476,7 @@ An example is shown in an indented block where applicable.
 *Summary*[*(*_LANG_*)*]*:* _TEXT_
 	Short summary of the package.
 
-	Usage: DRS
+	Usage: DRSI
 
 	```
 	Summary: Utility for converting mumbles into giggles
@@ -489,12 +490,12 @@ An example is shown in an indented block where applicable.
 *TranslationURL:* _URL_
 	URL of upstream translation service/repository.
 
-	Usage: DMS
+	Usage: DMSI
 
 *UpstreamReleases:* _URL_
 	URL to upstream releases.
 
-	Usage: DMS
+	Usage: DMSI
 
 *URL:* _URL_
 	URL supplying further information about the package, typically the
@@ -509,12 +510,12 @@ An example is shown in an indented block where applicable.
 *VCS:* _TEXT_
 	Upstream source code version control system location.
 
-	Usage: S
+	Usage: SI
 
 *Vendor:* _TEXT_
 	Vendor name.
 
-	Usage: DMS
+	Usage: DMSI
 
 *Version:* _VERREL_
 	The version of the package, typically the (upstream) software version.
