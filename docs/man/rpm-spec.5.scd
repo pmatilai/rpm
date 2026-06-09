@@ -10,11 +10,7 @@ _TAG_*:* _VALUE_ ...++
 _TAG_[*(*_MODIFIERS_*)*]*:* _VALUE_ ...++
 _TAG_[*(*_LANG_*)*]*:* _VALUE_
 
-*%package* [*-n*] _SUBNAME_++
-_TAG_[...]*:*_VALUE_ [...]++
-​...
-
-## Manifests
+## Package sections
 *%*_SECTION_++
 _LINE_++
 ​...
@@ -23,15 +19,15 @@ _LINE_++
 _LINE_++
 ​...
 
+## Package scriptlets
+*%*_SECTION_ [*-n* _SUBNAME_] [_OPTIONS_]++
+\[_LINE_\]++
+​...
+
 ## Build scriptlets
 ; "." at the start of a line is special to scdoc, work around with unicode hack
 *%*_SECTION_ [{*-a*|*-p*}]++
 _LINE_++
-​...
-
-## Package scriptlets
-*%*_SECTION_ [*-n* _SUBNAME_] [_OPTIONS_]++
-\[_LINE_\]++
 ​...
 
 ## Comments
@@ -39,29 +35,30 @@ _LINE_++
 
 *%dnl* _LINE_ (everywhere)
 
-
 # DESCRIPTION
 An RPM _spec_ file is a recipe for building one or more software packages in the
 RPM format, in an automated and repeateable manner, by using *rpmbuild*(1). See
 also *rpm-design*(7) for some background.
 
 A spec consists of multiple *SECTIONS*, which fall into two categories:
-- *Metadata* contains information either about the build process, such as the
-  sources and patches that form the source package, or the generated package,
-  such as the contained files, dependencies and human-oriented descriptions.
-  There are two distinct types of metadata sections:
-	- The *Preamble*s which follow a tag:value format.
-	- The *Manifests* which are multiline text entries, each with their own
-	  sub-syntax.
-- *Build scriptlets* are literal *sh*(1) scripts, executed by *rpmbuild*(1)
+- *PACKAGE METADATA* primarily contains information about the generated
+  binary and source packages, but also some build-time properties. There
+  are three main types of them:
+	- *Preamble* sections declare new (sub-)packages and define the
+	  main characteristics of them, such as the name.
+	- *Package sections* contain further information about the packages,
+	  such as file contents. These are multiline text-entries, each with
+	  their own
+	  specific subsyntax.
+	- *Package scriptlets* define *rpm-scriptlets*(7) to be executed at
+	  various points of a binary packages life-cycle.
+- *BUILD SCRIPTLETS* are literal *sh*(1) scripts, executed by *rpmbuild*(1)
   when building binary packages.
-- *Package scriptlets* are scripts that are executed at different points of
-  binary package's lifetime by the specified interpreter, by default *sh*(1).
 
 A spec starts with the main package *Preamble* which has no section
 start marker, all other sections have names starting with the percent
-sign *%*. A section implicitly ends when a new section starts, or
-it can be explicitly declared with *%end*.
+sign *%*. A section implicitly ends when another section starts, or
+it can be explicitly terminated with the *%end* directive.
 
 The spec file is parsed linearly from top to bottom.
 In most sections, empty and whitespace-only lines are ignored
@@ -69,8 +66,7 @@ and lines starting with *#* are considered comments.
 Except lines in the false branch of a conditional, every spec line is
 macro-expanded before further processing, including comment lines.
 
-# SECTIONS
-
+# PACKAGE METADATA
 ## Preamble
 A preamble consists of tag:value pairs that either control some aspects of
 the build, or describe the produced binaries.
@@ -529,9 +525,13 @@ An example is shown in an indented block where applicable.
 
 	Usage: DRS
 
-## Manifests
+## Package sections
 
 *%changelog*
+	The changelog is for describing changes to the spec over time.
+	A copy of the changelog is included in all packages built
+	from a spec.
+
 	The general form of the *%changelog* is a header line starting
 	with *\**, followed by one or more message lines starting with
 	*-*:
@@ -749,9 +749,7 @@ An example is shown in an indented block where applicable.
 	*-n*
 		Interpret _SUBNAME_ as the full package name.
 
-	See *Preamble* for the syntax and accepted tags. In particular,
-	*Name* cannot appear in a sub-package preamble. *Version*,
-	*Release* and *Epoch* are permitted but not recommended.
+	See *Preamble* for the syntax and accepted tags.
 
 	```
 	Name: myproj
@@ -812,7 +810,7 @@ See *rpm-scriptlets*(7).
 *%triggerpostun*++
 *%verify*
 
-## Build scriptlets
+# BUILD SCRIPTLETS
 Build scriptlet sections are literal *sh*(1) scripts that are executed
 during different stages of a package build, from unpacking the source through
 configuring, building and testing it to placing the files into their target
