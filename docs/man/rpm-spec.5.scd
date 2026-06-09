@@ -44,12 +44,10 @@ A spec consists of multiple *SECTIONS*, which fall into two categories:
 - *PACKAGE METADATA* primarily contains information about the generated
   binary and source packages, but also some build-time properties. There
   are three main types of them:
-	- *Preamble* sections declare new (sub-)packages and define the
-	  main characteristics of them, such as the name.
-	- *Package sections* contain further information about the packages,
-	  such as file contents. These are multiline text-entries, each with
-	  their own
-	  specific subsyntax.
+	- *Preamble* sections declare new (sub-)packages and define their
+	  identifying characteristics, such as the name.
+	- *Package sections* contain further information about the package(s),
+	  such as file contents.
 	- *Package scriptlets* define *rpm-scriptlets*(7) to be executed at
 	  various points of a binary packages life-cycle.
 - *BUILD SCRIPTLETS* are literal *sh*(1) scripts, executed by *rpmbuild*(1)
@@ -71,8 +69,8 @@ macro-expanded before further processing, including comment lines.
 A preamble consists of tag:value pairs that either control some aspects of
 the build, or describe the produced binaries.
 
-Sub-packages are declared with *%package* sections, which start a preamble
-section specific to that sub-package. Not all tags are available in
+Sub-packages are declared with the *%package* directive, which starts a
+preamble section specific to that sub-package. Not all tags are available in
 sub-packages.
 
 Tags accepting multiple values on one line can also appear multiple
