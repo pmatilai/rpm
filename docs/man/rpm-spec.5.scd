@@ -584,7 +584,7 @@ An example is shown in an indented block where applicable.
 	section needs to be conditionalized.
 
 	The section format is one *glob*(7) entry per line, optionally preceded
-	by attributes that apply to all the matching files:
+	by attribute directives that apply to all the matching files:
 
 	\[_ATTRIBUTE_ ...] _GLOB_
 
