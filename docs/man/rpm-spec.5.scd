@@ -48,7 +48,12 @@ An RPM _spec_ file is a plain-text recipe for building one or more software
 packages in the RPM format, in an automated, non-interactive and repeateable
 manner, by using *rpmbuild*(1). See also *rpm-design*(7) for some background.
 
-A spec consists of multiple _sections_, which fall into two categories:
+A spec consists of multiple named blocks, called _sections_. Each but the first
+section starts with a _marker_ line that consists of the section name prefixed
+with the percent sign (*%*) and followed by optional arguments. A section
+implicitly ends when another section starts, or when explicitly terminated with
+the *%end* directive. Sections fall into two categories:
+
 - *METADATA SECTIONS* primarily contain information about the generated binary
   and source packages, but also some build-time properties. There are three main
   types of them:
@@ -62,15 +67,10 @@ A spec consists of multiple _sections_, which fall into two categories:
 - *BUILD SCRIPTS* are literal *sh*(1) scripts, executed by *rpmbuild*(1) when
   building binary packages.
 
-A spec starts with the main package *Preamble* which has no section
-start marker, all other sections have names starting with the percent
-sign *%*. A section implicitly ends when another section starts, or
-it can be explicitly terminated with the *%end* directive.
-
-The spec file is parsed linearly from top to bottom.
-In most sections, empty and whitespace-only lines are ignored
-and lines starting with *#* are considered comments.
-Except lines in the false branch of a conditional, every spec line is
+A spec starts with the main package *Preamble* which has no marker. The spec
+file is parsed linearly from top to bottom. In most sections, empty and
+whitespace-only lines are ignored and lines starting with *#* are considered
+comments. Except lines in the false branch of a conditional, every spec line is
 macro-expanded before further processing, including comment lines.
 
 # METADATA SECTIONS
@@ -78,7 +78,7 @@ macro-expanded before further processing, including comment lines.
 A preamble consists of tag:value pairs that either control some aspects of
 the build, or describe the produced binaries.
 
-Sub-packages are declared with the *%package* directive, which starts a
+Sub-packages are declared with the *%package* marker, which starts a
 preamble section specific to that sub-package. Not all tags are available in
 sub-packages.
 
