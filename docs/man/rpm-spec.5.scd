@@ -58,10 +58,10 @@ terminated with the *%end* directive. Sections fall into several categories:
   and define their identifying characteristics, such as the name.
 - *CONTENT* sections consist of plain-text blocks that define other properties
   of the package(s), such as file contents.
-- *SCRIPTLETS* define *rpm-scriptlets*(7) to be executed at various points of a
-  binary packages life-cycle.
-- *BUILD SCRIPTS* are literal *sh*(1) scripts, executed by *rpmbuild*(1) when
-  building binary packages.
+- *TRANSACTION SCRIPTLETS* define *rpm-scriptlets*(7) to be executed at
+  various points of a binary packages life-cycle.
+- *BUILD SCRIPTLETS* are literal *sh*(1) scripts, executed by *rpmbuild*(1)
+  at various points of building binary packages.
 
 A spec starts with the main package *Preamble* which has no directive. The spec
 file is parsed linearly from top to bottom. In most sections, empty and
@@ -785,9 +785,9 @@ An example is shown in an indented block where applicable.
 	mysoft-data-1.0.zip
 	```
 
-# SCRIPTLETS
+# TRANSACTION SCRIPTLETS
 
-Package scriplets are used to execute actions at pre-determined times of
+Transaction scriplets are used to execute actions at pre-determined times of
 a binary package lifetime, such as just after install or just before
 uninstall.
 
@@ -813,8 +813,8 @@ See *rpm-scriptlets*(7).
 *%triggerpostun*++
 *%verify*
 
-# BUILD SCRIPTS
-Build script sections are literal *sh*(1) scripts that are executed during
+# BUILD SCRIPTLETS
+Build scriptlet sections are literal *sh*(1) scripts that are executed during
 different stages of a package build, from unpacking the source through
 configuring, building and testing it to placing the files into their target
 directories.
