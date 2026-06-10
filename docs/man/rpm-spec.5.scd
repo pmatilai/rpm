@@ -677,7 +677,7 @@ An example is shown in an indented block where applicable.
 		Used to mark a README file.
 
 	*%verify*[*(*_MODIFIERS_*)*]
-		Tell *-V/–verify* to ignore certain features on files.
+		Tell *-–verify* to ignore certain features on files.
 		Used to avoid false positives from files that are expected
 		to be modified in certain ways.
 
