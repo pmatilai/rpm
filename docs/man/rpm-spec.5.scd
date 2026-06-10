@@ -44,9 +44,9 @@ _LINE_++
 *%dnl* _LINE_ (everywhere)
 
 # DESCRIPTION
-An RPM _spec_ file is a recipe for building one or more software packages in the
-RPM format, in an automated and repeateable manner, by using *rpmbuild*(1). See
-also *rpm-design*(7) for some background.
+An RPM _spec_ file is a plain-text recipe for building one or more software
+packages in the RPM format, in an automated, non-interactive and repeateable
+manner, by using *rpmbuild*(1). See also *rpm-design*(7) for some background.
 
 A spec consists of multiple _sections_, which fall into two categories:
 - *METADATA SECTIONS* primarily contain information about the generated binary
