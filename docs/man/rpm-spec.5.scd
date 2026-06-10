@@ -19,7 +19,7 @@ _LINE_++
 _LINE_++
 ​...
 
-## Scriptlets
+## Transaction scriptlets
 *%*_SCRIPT_ [options] [_NAME_]++
 \[_LINE_\]++
 ​...
@@ -32,7 +32,7 @@ _LINE_++
 \[_LINE_\]++
 ​...
 
-## Build scripts
+## Build scriptlets
 ; "." at the start of a line is special to scdoc, work around with unicode hack
 *%*_SECTION_ [{*-a*|*-p*}]++
 _LINE_++
