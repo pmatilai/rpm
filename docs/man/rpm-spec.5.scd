@@ -52,18 +52,14 @@ A spec consists of multiple named blocks, called _sections_. Each but the first
 section starts with a _marker_ line that consists of the section name prefixed
 with the percent sign (*%*) and followed by optional arguments. A section
 implicitly ends when another section starts, or when explicitly terminated with
-the *%end* directive. Sections fall into two categories:
+the *%end* directive. Sections fall into several categories:
 
-- *METADATA SECTIONS* primarily contain information about the generated binary
-  and source packages, but also some build-time properties. There are three main
-  types of them:
-	- *Preamble* sections consist of tag:value pairs that declare new
-	  (sub-)packages and define their identifying characteristics, such as
-	  the name.
-	- *Content* sections consist of plain-text blocks that define other
-	  properties of the package(s), such as file contents.
-	- *Scriptlets* define *rpm-scriptlets*(7) to be executed at various
-	  points of a binary packages life-cycle.
+- *PREAMBLE* sections consist of tag:value pairs that declare new (sub-)packages
+  and define their identifying characteristics, such as the name.
+- *CONTENT* sections consist of plain-text blocks that define other properties
+  of the package(s), such as file contents.
+- *SCRIPTLETS* define *rpm-scriptlets*(7) to be executed at various points of a
+  binary packages life-cycle.
 - *BUILD SCRIPTS* are literal *sh*(1) scripts, executed by *rpmbuild*(1) when
   building binary packages.
 
@@ -73,8 +69,7 @@ whitespace-only lines are ignored and lines starting with *#* are considered
 comments. Except lines in the false branch of a conditional, every spec line is
 macro-expanded before further processing, including comment lines.
 
-# METADATA SECTIONS
-## Preamble
+# PREAMBLE
 A preamble consists of tag:value pairs that either control some aspects of
 the build, or describe the produced binaries.
 
@@ -533,7 +528,7 @@ An example is shown in an indented block where applicable.
 
 	Usage: DRS
 
-## Content
+# CONTENT
 
 *%changelog*
 	The changelog is for describing changes to the spec over time.
@@ -790,7 +785,7 @@ An example is shown in an indented block where applicable.
 	mysoft-data-1.0.zip
 	```
 
-## Scriptlets
+# SCRIPTLETS
 
 Package scriplets are used to execute actions at pre-determined times of
 a binary package lifetime, such as just after install or just before
