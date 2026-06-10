@@ -10,7 +10,7 @@ _TAG_*:* _VALUE_ ...++
 _TAG_[*(*_MODIFIERS_*)*]*:* _VALUE_ ...++
 _TAG_[*(*_LANG_*)*]*:* _VALUE_
 
-## Package sections
+## Content
 *%*_SECTION_++
 _LINE_++
 ​...
@@ -19,7 +19,7 @@ _LINE_++
 _LINE_++
 ​...
 
-## Package scriptlets
+## Scriptlets
 *%*_SCRIPT_ [options] [_NAME_]++
 \[_LINE_\]++
 ​...
@@ -32,7 +32,7 @@ _LINE_++
 \[_LINE_\]++
 ​...
 
-## Build scriptlets
+## Build scripts
 ; "." at the start of a line is special to scdoc, work around with unicode hack
 *%*_SECTION_ [{*-a*|*-p*}]++
 _LINE_++
@@ -48,18 +48,19 @@ An RPM _spec_ file is a recipe for building one or more software packages in the
 RPM format, in an automated and repeateable manner, by using *rpmbuild*(1). See
 also *rpm-design*(7) for some background.
 
-A spec consists of multiple *SECTIONS*, which fall into two categories:
-- *PACKAGE METADATA* primarily contains information about the generated
-  binary and source packages, but also some build-time properties. There
-  are three main types of them:
-	- *Preamble* sections declare new (sub-)packages and define their
-	  identifying characteristics, such as the name.
-	- *Package sections* contain further information about the package(s),
-	  such as file contents.
-	- *Package scriptlets* define *rpm-scriptlets*(7) to be executed at
-	  various points of a binary packages life-cycle.
-- *BUILD SCRIPTLETS* are literal *sh*(1) scripts, executed by *rpmbuild*(1)
-  when building binary packages.
+A spec consists of multiple _sections_, which fall into two categories:
+- *METADATA SECTIONS* primarily contain information about the generated binary
+  and source packages, but also some build-time properties. There are three main
+  types of them:
+	- *Preamble* sections consist of tag:value pairs that declare new
+	  (sub-)packages and define their identifying characteristics, such as
+	  the name.
+	- *Content* sections consist of plain-text blocks that define other
+	  properties of the package(s), such as file contents.
+	- *Scriptlets* define *rpm-scriptlets*(7) to be executed at various
+	  points of a binary packages life-cycle.
+- *BUILD SCRIPTS* are literal *sh*(1) scripts, executed by *rpmbuild*(1) when
+  building binary packages.
 
 A spec starts with the main package *Preamble* which has no section
 start marker, all other sections have names starting with the percent
@@ -72,7 +73,7 @@ and lines starting with *#* are considered comments.
 Except lines in the false branch of a conditional, every spec line is
 macro-expanded before further processing, including comment lines.
 
-# PACKAGE METADATA
+# METADATA SECTIONS
 ## Preamble
 A preamble consists of tag:value pairs that either control some aspects of
 the build, or describe the produced binaries.
@@ -532,7 +533,7 @@ An example is shown in an indented block where applicable.
 
 	Usage: DRS
 
-## Package sections
+## Content
 
 *%changelog*
 	The changelog is for describing changes to the spec over time.
@@ -789,7 +790,7 @@ An example is shown in an indented block where applicable.
 	mysoft-data-1.0.zip
 	```
 
-## Package scriptlets
+## Scriptlets
 
 Package scriplets are used to execute actions at pre-determined times of
 a binary package lifetime, such as just after install or just before
@@ -817,9 +818,9 @@ See *rpm-scriptlets*(7).
 *%triggerpostun*++
 *%verify*
 
-# BUILD SCRIPTLETS
-Build scriptlet sections are literal *sh*(1) scripts that are executed
-during different stages of a package build, from unpacking the source through
+# BUILD SCRIPTS
+Build script sections are literal *sh*(1) scripts that are executed during
+different stages of a package build, from unpacking the source through
 configuring, building and testing it to placing the files into their target
 directories.
 
