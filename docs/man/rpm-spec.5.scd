@@ -10,33 +10,19 @@ _TAG_*:* _VALUE_ ...++
 _TAG_[*(*_MODIFIERS_*)*]*:* _VALUE_ ...++
 _TAG_[*(*_LANG_*)*]*:* _VALUE_
 
-## Content
+## Sections
 *%*_SECTION_++
-_LINE_++
-​...
+​...++
+\[*%end*]
 
 *%*_SECTION_ [*-n* _SUBNAME_] [options]++
-_LINE_++
-​...
+​...++
+\[*%end*]
 
-## Transaction scriptlets
-*%*_SCRIPT_ [options] [_NAME_]++
-\[_LINE_\]++
-​...
-
-*%*_TRIGGER_ [options] [_NAME_] *--* _TRIGGERCOND_ ...++
-\[_LINE_\]++
-​...
-
-*%*_FILETRIGGER_ [options] [filetrigger-options] [_NAME_] *--* _PATH_ ...++
-\[_LINE_\]++
-​...
-
-## Build scriptlets
 ; "." at the start of a line is special to scdoc, work around with unicode hack
 *%*_SECTION_ [{*-a*|*-p*}]++
-_LINE_++
-​...
+​...++
+\[*%end*]
 
 ## Comments
 *#* _LINE_ (preamble and most manifest sections, macros expanded)
@@ -48,35 +34,29 @@ An RPM _spec_ file is a plain-text recipe for building one or more software
 packages in the RPM format, in an automated, non-interactive and repeateable
 manner, by using *rpmbuild*(1). See also *rpm-design*(7) for some background.
 
-A spec consists of multiple named blocks, called _sections_. Each but the first
-section starts with a _directive_ line that consists of the section name
-prefixed with the percent sign (*%*) and followed by optional arguments. A
-section implicitly ends when another section starts, or when explicitly
-terminated with the *%end* directive. Sections fall into several categories:
+Each spec defines at least one package, known as the _main_package_,
+whose name and versioning information both the source and binary packages
+share. The source package contains all the spec file itself, and all
+the sources and patches declared in it. Binary packages are
+produced by building the source package, as instructed by the spec.
+The binary content is commonly split into further _sub-packages_ to make
+packages easier to consume both size and dependency-wise.
 
-- *PREAMBLE* sections consist of tag:value pairs that declare new (sub-)packages
-  and define their identifying characteristics, such as the name.
-- *CONTENT* sections consist of plain-text blocks that define other properties
-  of the package(s), such as file contents.
-- *TRANSACTION SCRIPTLETS* define *rpm-scriptlets*(7) to be executed at
-  various points of a binary packages life-cycle.
-- *BUILD SCRIPTLETS* are literal *sh*(1) scripts, executed by *rpmbuild*(1)
-  at various points of building binary packages.
+The spec consists of multiple different, named blocks. The first block is
+called the *PREAMBLE*, followed by one or more *SECTIONS*.
+Sections start with a _directive_ line that consists of the section name
+prefixed with the percent sign (*%*), followed by optional arguments.
+Each block implicitly ends when another one starts, or when explicitly
+terminated with the *%end* directive.
 
-A spec starts with the main package *Preamble* which has no directive. The spec
-file is parsed linearly from top to bottom. In most sections, empty and
-whitespace-only lines are ignored and lines starting with *#* are considered
-comments. Except lines in the false branch of a conditional, every spec line is
-macro-expanded before further processing, including comment lines.
+The spec file is parsed linearly from top to bottom. In most blocks, empty
+and whitespace-only lines are ignored and lines starting with *#* are
+considered comments. Except lines in the false branch of *CONDITIONALS*,
+every spec line is macro-expanded before further processing, including
+comment lines.
 
 # PREAMBLE
-A preamble consists of tag:value pairs that either control some aspects of
-the build, or describe the produced binaries.
-
-Sub-packages are declared with the *%package* directive, which starts a
-preamble section specific to that sub-package. Not all tags are available in
-sub-packages.
-
+The preamble consists of tag:value pairs, one tag per line.
 Tags accepting multiple values on one line can also appear multiple
 times within a package.
 
@@ -528,12 +508,12 @@ An example is shown in an indented block where applicable.
 
 	Usage: DRS
 
-# CONTENT
+# SECTIONS
 
 *%changelog*
 	The changelog is for describing changes to the spec over time.
 	A copy of the changelog is included in all packages built
-	from a spec.
+	from the spec.
 
 	The general form of the *%changelog* is a header line starting
 	with *\**, followed by one or more message lines starting with
@@ -745,14 +725,15 @@ An example is shown in an indented block where applicable.
 	```
 
 *%package* [*-n*] _SUBNAME_
-	Declare a sub-package. By default, _SUBNAME_ sub-package
+	Declare a sub-package.
+	See *PREAMBLE* for the syntax and accepted tags.
+
+	By default, _SUBNAME_ sub-package
 	names are formed by appending _SUBNAME_ to the main package name,
 	separated by dash: _NAME_*-*_SUBNAME_.
 
 	*-n*
 		Interpret _SUBNAME_ as the full package name.
-
-	See *Preamble* for the syntax and accepted tags.
 
 	```
 	Name: myproj
@@ -785,7 +766,7 @@ An example is shown in an indented block where applicable.
 	mysoft-data-1.0.zip
 	```
 
-# TRANSACTION SCRIPTLETS
+## Transaction scriptlets
 
 Transaction scriplets are used to execute actions at pre-determined times of
 a binary package lifetime, such as just after install or just before
@@ -813,7 +794,7 @@ See *rpm-scriptlets*(7).
 *%triggerpostun*++
 *%verify*
 
-# BUILD SCRIPTLETS
+## Build scriptlets
 Build scriptlet sections are literal *sh*(1) scripts that are executed during
 different stages of a package build, from unpacking the source through
 configuring, building and testing it to placing the files into their target
