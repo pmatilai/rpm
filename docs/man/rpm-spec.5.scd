@@ -71,6 +71,264 @@ A *Usage* line below denotes various tag properties:
 
 An example is shown in an indented block where applicable.
 
+## Package tags
+
+*BugURL*: _URL_
+	Bug reporting URL for the package.
+	Usually set via *rpmbuild-config*(5).
+
+	Usage: DMSIT
+
+	```
+	BugURL: https://bugzilla.mydistro.org
+	```
+
+*Conflicts:* _CAPABILITY_ ...
+	See *rpm-dependencies*(7).
+
+	Usage: ST
+
+	```
+	Conflicts: another-tool <= 4.0
+	```
+
+*Distribution:* _TEXT_
+	Distribution name.
+
+	Usage: DMSIT
+
+*DistTag:* _TEXT_
+	Short label for identifying a distribution and its version.
+
+	Usage: DMSIT
+
+*Enhances*[*(*_MODIFIERS_*)*]*:* _CAPABILITY_ ...
+	See *rpm-dependencies*(7).
+
+	Usage: ST
+
+*Epoch*: _N_
+	Artificial versioning override. See *rpm-version*(7).
+
+	Usage: DST
+
+	```
+	Epoch: 1
+	```
+
+*Group*[*(*_LANG_*)*]*:* _TEXT_
+	Group of the package.
+
+	Usage: DSI
+
+	```
+	Group: Development/Libraries
+	```
+
+*License:* _TEXT_
+	Short summary of the package license.
+	Use of SPDX license identifiers is recommended.
+
+	Usage: DRSI
+
+	```
+	License: GPLv3-only
+	```
+
+*ModularityLabel:* _TEXT_
+	Obsolete.
+
+	Usage: DMOSI
+
+*Name:* _NAME_
+	The full name of the package. A mandatory tag.
+	Permitted characters are alphanumerics and *-*, *\_*, *.*, *+*.
+
+	Usage: DRS
+
+	```
+	Name: mypackage
+	```
+
+*Obsoletes:* _CAPABILITY_ ...
+	See *rpm-dependencies*(7).
+
+	Usage: S
+
+	```
+	Obsoletes: oldtool < 3.0
+	```
+
+*OrderWithRequires:* _CAPABILITY_
+	See *rpm-dependencies*(7).
+
+	Usage: S
+
+*Packager:* _TEXT_
+	Maintainer contact information.
+
+	Usage: DMSI
+
+*PreReq:* _CAPABILITY_ ...
+	Obsolete. Use *Requires(pre,postun)* for a similar effect.
+
+	Usage: OS
+
+*Prefix*: _PATH_
+	Compatibility alias for *Prefixes*.
+
+	Usage: DS
+
+*Prefixes*: _PATH_ ...
+	Specify relocatable prefixes in this package.
+	Such prefixes can be relocated to user-specified directories
+	with *--relocate* option of *rpm*(8) at install time. The
+	prefix information is also available to *rpm-scriptlets*(7).
+
+	Note: most software will only work correctly in the path
+	specified during build.
+
+	Usage: DS
+
+	```
+	Prefixes: /usr /etc
+	```
+
+*Provides:* _CAPABILITY_ ...
+	See *rpm-dependencies*(7).
+
+	Usage: S
+
+*Recommends*[*(*_MODIFIERS_*)*]*:* _CAPABILITY_ ...
+	See *rpm-dependencies*(7).
+
+	Usage: S
+
+*Release:* _VERREL_
+	The downstream packaging revision of a software version.
+	See *rpm-version*(7).
+
+	Usage: DRS
+
+	```
+	Release: 1
+	```
+
+*Requires*[*(*_MODIFIERS_*)*]*:* _CAPABILITY_ ...
+	See *rpm-dependencies*(7).
+
+*Suggests*[*(*_MODIFIERS_*)*]*:* _CAPABILITY_ ...
+	See *rpm-dependencies*(7).
+
+	Usage: S
+
+*Summary*[*(*_LANG_*)*]*:* _TEXT_
+	Short summary of the package.
+
+	Usage: DRSI
+
+	```
+	Summary: Utility for converting mumbles into giggles
+	```
+
+*Supplements*[*(*_MODIFIERS_*)*]*:* _CAPABILITY_ ...
+	See *rpm-dependencies*(7).
+
+	Usage: S
+
+*TranslationURL:* _URL_
+	URL of upstream translation service/repository.
+
+	Usage: DMSI
+
+*UpstreamReleases:* _URL_
+	URL to upstream releases.
+
+	Usage: DMSI
+
+*URL:* _URL_
+	URL supplying further information about the package, typically the
+	project upstream website.
+
+	Usage: S
+
+	```
+	URL: https://rpm.org
+	```
+
+*VCS:* _TEXT_
+	Upstream source code version control system location.
+
+	Usage: SI
+
+*Vendor:* _TEXT_
+	Vendor name.
+
+	Usage: DMSI
+
+*Version:* _VERREL_
+	The version of the package, typically the (upstream) software version.
+	When the version changes, *Release* should be reset.
+	See *rpm-version*(7).
+
+	Usage: DRS
+
+## Source tags
+
+*Patch*[_N_]*:* [_URL_/]_FILE_
+	Used to declare patches applied on top of sources.
+	All declared patches are included in a source RPM, unless excluded
+	with *NoPatch*. The _URL_ part is ignored, _FILE_ is interpreted
+	as a file in the *%{SOURCEDIR}* directory.
+
+	Patch numbers do not need to be consecutive and may include leading
+	zeroes. Non-numbered patch tag *Patch:* is also supported and is
+	automatically assigned the next available patch integer.
+
+	Patch numbers are separate from source numbers.
+
+	Usage: DS
+
+	See also *%patchlist*.
+
+
+*Source*[_N_]*:* [_URL_/]_FILE_
+	Used to declare source(s) used to build the package.
+	All declared sources are included in a source RPM, unless excluded
+	with *NoSource*.  The _URL_ part is ignored, _FILE_ is interpreted
+	as a file in the *%{SOURCEDIR}* directory.
+
+	Arbitrary number of sources may be declared, for example:
+
+	```
+	Source0: mysoft-1.0.tar.gz
+	Source1: mysoft-data-1.0.zip
+	```
+
+	Source numbers do not need to be consecutive and may include leading
+	zeroes. Non-numbered source tag *Source:* is also supported and is
+	automatically assigned the next available source integer.
+
+	Source numbers are separate from patch numbers.
+
+	Usage: DS
+
+	See also *%sourcelist*.
+
+*SourceLicense*: _TEXT_
+	Short summary of the source license if it differs
+	from the binary package license.
+
+	Use of SPDX license identifiers is recommended.
+
+	Usage: DSI
+
+	```
+	License: GPLv3-only
+	```
+
+## Build tags
+
 *AutoReq:* _BOOLEAN_
 	Control per-package automatic dependency generation for *Requires*
 	dependencies. Defaults to on.
@@ -105,16 +363,6 @@ An example is shown in an indented block where applicable.
 
 	```
 	AutoReqProv: no
-	```
-
-*BugURL*: _URL_
-	Bug reporting URL for the package.
-	Usually set via *rpmbuild-config*(5).
-
-	Usage: DMSI
-
-	```
-	BugURL: https://bugzilla.mydistro.org
 	```
 
 *BuildArch*: _ARCH_ ...
@@ -186,42 +434,9 @@ An example is shown in an indented block where applicable.
 	Buildsystem: cmake
 	```
 
-*Conflicts:* _CAPABILITY_ ...
-	See *rpm-dependencies*(7).
-
-	Usage: S
-
-	```
-	Conflicts: another-tool <= 4.0
-	```
-
-*Distribution:* _TEXT_
-	Distribution name.
-
-	Usage: DMSI
-
-*DistTag:* _TEXT_
-	Short label for identifying a distribution and its version.
-
-	Usage: DMSI
-
 *DocDir:* _PATH_
 	Declare a non-default documentation directory for the package.
 	Rarely needed.
-
-*Enhances*[*(*_MODIFIERS_*)*]*:* _CAPABILITY_ ...
-	See *rpm-dependencies*(7).
-
-	Usage: S
-
-*Epoch*: _N_
-	Artificial versioning override. See *rpm-version*(7).
-
-	Usage: DS
-
-	```
-	Epoch: 1
-	```
 
 *ExcludeArch:* _ARCH_ ...
 	Package is not buildable on architectures listed here.
@@ -262,40 +477,6 @@ An example is shown in an indented block where applicable.
 	ExclusiveOS: Linux
 	```
 
-*Group*[*(*_LANG_*)*]*:* _TEXT_
-	Group of the package.
-
-	Usage: DSI
-
-	```
-	Group: Development/Libraries
-	```
-
-*License:* _TEXT_
-	Short summary of the package license.
-	Use of SPDX license identifiers is recommended.
-
-	Usage: DRSI
-
-	```
-	License: GPLv3-only
-	```
-
-*ModularityLabel:* _TEXT_
-	Obsolete.
-
-	Usage: DMOSI
-
-*Name:* _NAME_
-	The full name of the package. A mandatory tag.
-	Permitted characters are alphanumerics and *-*, *\_*, *.*, *+*.
-
-	Usage: DRS
-
-	```
-	Name: mypackage
-	```
-
 *NoPatch*: _N_ ...
 	Exclude patch number _N_ from being included in source RPMs
 	generated from this spec. Causes the source RPM to be called *nosrc*.
@@ -313,86 +494,6 @@ An example is shown in an indented block where applicable.
 	Source1: proprietary-tool-3.0.zip
 	Source2: proprietary-data-3.0.zip
 	NoSource: 1 2
-	```
-
-*Obsoletes:* _CAPABILITY_ ...
-	See *rpm-dependencies*(7).
-
-	Usage: S
-
-	```
-	Obsoletes: oldtool < 3.0
-	```
-
-*OrderWithRequires:* _CAPABILITY_
-	See *rpm-dependencies*(7).
-
-	Usage: S
-
-*Packager:* _TEXT_
-	Maintainer contact information.
-
-	Usage: DMSI
-
-*Patch*[_N_]*:* [_URL_/]_FILE_
-	Used to declare patches applied on top of sources.
-	All declared patches are included in a source RPM, unless excluded
-	with *NoPatch*. The _URL_ part is ignored, _FILE_ is interpreted
-	as a file in the *%{SOURCEDIR}* directory.
-
-	Patch numbers do not need to be consecutive and may include leading
-	zeroes. Non-numbered patch tag *Patch:* is also supported and is
-	automatically assigned the next available patch integer.
-
-	Patch numbers are separate from source numbers.
-
-	Usage: DS
-
-	See also *%patchlist*.
-
-*PreReq:* _CAPABILITY_ ...
-	Obsolete. Use *Requires(pre,postun)* for a similar effect.
-
-	Usage: OS
-
-*Prefix*: _PATH_
-	Compatibility alias for *Prefixes*.
-
-	Usage: DS
-
-*Prefixes*: _PATH_ ...
-	Specify relocatable prefixes in this package.
-	Such prefixes can be relocated to user-specified directories
-	with *--relocate* option of *rpm*(8) at install time. The
-	prefix information is also available to *rpm-scriptlets*(7).
-
-	Note: most software will only work correctly in the path
-	specified during build.
-
-	Usage: DS
-
-	```
-	Prefixes: /usr /etc
-	```
-
-*Provides:* _CAPABILITY_ ...
-	See *rpm-dependencies*(7).
-
-	Usage: S
-
-*Recommends*[*(*_MODIFIERS_*)*]*:* _CAPABILITY_ ...
-	See *rpm-dependencies*(7).
-
-	Usage: S
-
-*Release:* _VERREL_
-	The downstream packaging revision of a software version.
-	See *rpm-version*(7).
-
-	Usage: DRS
-
-	```
-	Release: 1
 	```
 
 *RemovePathPostfixes:* _POSTFIX1_[;_POSTFIX2_ ...]
@@ -414,99 +515,6 @@ An example is shown in an indented block where applicable.
 	RemovePathPostfixes: .full
 	```
 
-*Requires*[*(*_MODIFIERS_*)*]*:* _CAPABILITY_ ...
-	See *rpm-dependencies*(7).
-
-*Source*[_N_]*:* [_URL_/]_FILE_
-	Used to declare source(s) used to build the package.
-	All declared sources are included in a source RPM, unless excluded
-	with *NoSource*.  The _URL_ part is ignored, _FILE_ is interpreted
-	as a file in the *%{SOURCEDIR}* directory.
-
-	Arbitrary number of sources may be declared, for example:
-
-	```
-	Source0: mysoft-1.0.tar.gz
-	Source1: mysoft-data-1.0.zip
-	```
-
-	Source numbers do not need to be consecutive and may include leading
-	zeroes. Non-numbered source tag *Source:* is also supported and is
-	automatically assigned the next available source integer.
-
-	Source numbers are separate from patch numbers.
-
-	Usage: DS
-
-	See also *%sourcelist*.
-
-*SourceLicense*: _TEXT_
-	Short summary of the source license if it differs
-	from the binary package license.
-
-	Use of SPDX license identifiers is recommended.
-
-	Usage: DSI
-
-	```
-	License: GPLv3-only
-	```
-
-*Suggests*[*(*_MODIFIERS_*)*]*:* _CAPABILITY_ ...
-	See *rpm-dependencies*(7).
-
-	Usage: S
-
-*Summary*[*(*_LANG_*)*]*:* _TEXT_
-	Short summary of the package.
-
-	Usage: DRSI
-
-	```
-	Summary: Utility for converting mumbles into giggles
-	```
-
-*Supplements*[*(*_MODIFIERS_*)*]*:* _CAPABILITY_ ...
-	See *rpm-dependencies*(7).
-
-	Usage: S
-
-*TranslationURL:* _URL_
-	URL of upstream translation service/repository.
-
-	Usage: DMSI
-
-*UpstreamReleases:* _URL_
-	URL to upstream releases.
-
-	Usage: DMSI
-
-*URL:* _URL_
-	URL supplying further information about the package, typically the
-	project upstream website.
-
-	Usage: S
-
-	```
-	URL: https://rpm.org
-	```
-
-*VCS:* _TEXT_
-	Upstream source code version control system location.
-
-	Usage: SI
-
-*Vendor:* _TEXT_
-	Vendor name.
-
-	Usage: DMSI
-
-*Version:* _VERREL_
-	The version of the package, typically the (upstream) software version.
-	When the version changes, *Release* should be reset.
-	See *rpm-version*(7).
-
-	Usage: DRS
 
 # SECTIONS
 
