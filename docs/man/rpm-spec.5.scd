@@ -71,7 +71,55 @@ A *Usage* line below denotes various tag properties:
 
 An example is shown in an indented block where applicable.
 
-## Package tags
+## Required package tags
+*Name:* _NAME_
+	The full name of the package. A mandatory tag.
+	Permitted characters are alphanumerics and *-*, *\_*, *.*, *+*.
+
+	Usage: DRS
+
+	```
+	Name: mypackage
+	```
+
+*Version:* _VERREL_
+	The version of the package, typically the (upstream) software version.
+	When the version changes, *Release* should be reset.
+	See *rpm-version*(7).
+
+	Usage: DRS
+
+
+*Release:* _VERREL_
+	The downstream packaging revision of a software version.
+	See *rpm-version*(7).
+
+	Usage: DRS
+
+	```
+	Release: 1
+	```
+
+*Summary*[*(*_LANG_*)*]*:* _TEXT_
+	Short summary of the package.
+
+	Usage: DRSI
+
+	```
+	Summary: Utility for converting mumbles into giggles
+	```
+
+*License:* _TEXT_
+	Short summary of the package license.
+	Use of SPDX license identifiers is recommended.
+
+	Usage: DRSI
+
+	```
+	License: GPLv3-only
+	```
+
+## Optional package tags
 
 *BugURL*: _URL_
 	Bug reporting URL for the package.
@@ -125,29 +173,28 @@ An example is shown in an indented block where applicable.
 	Group: Development/Libraries
 	```
 
-*License:* _TEXT_
-	Short summary of the package license.
-	Use of SPDX license identifiers is recommended.
-
-	Usage: DRSI
-
-	```
-	License: GPLv3-only
-	```
-
 *ModularityLabel:* _TEXT_
 	Obsolete.
 
 	Usage: DMOSI
 
-*Name:* _NAME_
-	The full name of the package. A mandatory tag.
-	Permitted characters are alphanumerics and *-*, *\_*, *.*, *+*.
-
-	Usage: DRS
+*NoPatch*: _N_ ...
+	Exclude patch number _N_ from being included in source RPMs
+	generated from this spec. Causes the source RPM to be called *nosrc*.
 
 	```
-	Name: mypackage
+	Patch5: proprietary-tool-3.0-memleak.patch
+	NoPatch: 5
+	```
+
+*NoSource*: _N_ ...
+	Exclude source number _N_ from being included in source RPMs
+	generated from this spec. Causes the source RPM to be called *nosrc*.
+
+	```
+	Source1: proprietary-tool-3.0.zip
+	Source2: proprietary-data-3.0.zip
+	NoSource: 1 2
 	```
 
 *Obsoletes:* _CAPABILITY_ ...
@@ -168,6 +215,23 @@ An example is shown in an indented block where applicable.
 	Maintainer contact information.
 
 	Usage: DMSI
+
+*Patch*[_N_]*:* [_URL_/]_FILE_
+	Used to declare patches applied on top of sources.
+	All declared patches are included in a source RPM, unless excluded
+	with *NoPatch*. The _URL_ part is ignored, _FILE_ is interpreted
+	as a file in the *%{SOURCEDIR}* directory.
+
+	Patch numbers do not need to be consecutive and may include leading
+	zeroes. Non-numbered patch tag *Patch:* is also supported and is
+	automatically assigned the next available patch integer.
+
+	Patch numbers are separate from source numbers.
+
+	Usage: DS
+
+	See also *%patchlist*.
+
 
 *PreReq:* _CAPABILITY_ ...
 	Obsolete. Use *Requires(pre,postun)* for a similar effect.
@@ -204,93 +268,8 @@ An example is shown in an indented block where applicable.
 
 	Usage: S
 
-*Release:* _VERREL_
-	The downstream packaging revision of a software version.
-	See *rpm-version*(7).
-
-	Usage: DRS
-
-	```
-	Release: 1
-	```
-
 *Requires*[*(*_MODIFIERS_*)*]*:* _CAPABILITY_ ...
 	See *rpm-dependencies*(7).
-
-*Suggests*[*(*_MODIFIERS_*)*]*:* _CAPABILITY_ ...
-	See *rpm-dependencies*(7).
-
-	Usage: S
-
-*Summary*[*(*_LANG_*)*]*:* _TEXT_
-	Short summary of the package.
-
-	Usage: DRSI
-
-	```
-	Summary: Utility for converting mumbles into giggles
-	```
-
-*Supplements*[*(*_MODIFIERS_*)*]*:* _CAPABILITY_ ...
-	See *rpm-dependencies*(7).
-
-	Usage: S
-
-*TranslationURL:* _URL_
-	URL of upstream translation service/repository.
-
-	Usage: DMSI
-
-*UpstreamReleases:* _URL_
-	URL to upstream releases.
-
-	Usage: DMSI
-
-*URL:* _URL_
-	URL supplying further information about the package, typically the
-	project upstream website.
-
-	Usage: S
-
-	```
-	URL: https://rpm.org
-	```
-
-*VCS:* _TEXT_
-	Upstream source code version control system location.
-
-	Usage: SI
-
-*Vendor:* _TEXT_
-	Vendor name.
-
-	Usage: DMSI
-
-*Version:* _VERREL_
-	The version of the package, typically the (upstream) software version.
-	When the version changes, *Release* should be reset.
-	See *rpm-version*(7).
-
-	Usage: DRS
-
-## Source tags
-
-*Patch*[_N_]*:* [_URL_/]_FILE_
-	Used to declare patches applied on top of sources.
-	All declared patches are included in a source RPM, unless excluded
-	with *NoPatch*. The _URL_ part is ignored, _FILE_ is interpreted
-	as a file in the *%{SOURCEDIR}* directory.
-
-	Patch numbers do not need to be consecutive and may include leading
-	zeroes. Non-numbered patch tag *Patch:* is also supported and is
-	automatically assigned the next available patch integer.
-
-	Patch numbers are separate from source numbers.
-
-	Usage: DS
-
-	See also *%patchlist*.
-
 
 *Source*[_N_]*:* [_URL_/]_FILE_
 	Used to declare source(s) used to build the package.
@@ -326,6 +305,31 @@ An example is shown in an indented block where applicable.
 	```
 	License: GPLv3-only
 	```
+
+*Suggests*[*(*_MODIFIERS_*)*]*:* _CAPABILITY_ ...
+	See *rpm-dependencies*(7).
+
+	Usage: S
+
+*Supplements*[*(*_MODIFIERS_*)*]*:* _CAPABILITY_ ...
+	See *rpm-dependencies*(7).
+
+	Usage: S
+
+*TranslationURL:* _URL_
+	URL of upstream translation service/repository.
+
+	Usage: DMSI
+
+*UpstreamReleases:* _URL_
+	URL to upstream releases.
+
+	Usage: DMSI
+
+*Vendor:* _TEXT_
+	Vendor name.
+
+	Usage: DMSI
 
 ## Build tags
 
@@ -475,25 +479,6 @@ An example is shown in an indented block where applicable.
 
 	```
 	ExclusiveOS: Linux
-	```
-
-*NoPatch*: _N_ ...
-	Exclude patch number _N_ from being included in source RPMs
-	generated from this spec. Causes the source RPM to be called *nosrc*.
-
-	```
-	Patch5: proprietary-tool-3.0-memleak.patch
-	NoPatch: 5
-	```
-
-*NoSource*: _N_ ...
-	Exclude source number _N_ from being included in source RPMs
-	generated from this spec. Causes the source RPM to be called *nosrc*.
-
-	```
-	Source1: proprietary-tool-3.0.zip
-	Source2: proprietary-data-3.0.zip
-	NoSource: 1 2
 	```
 
 *RemovePathPostfixes:* _POSTFIX1_[;_POSTFIX2_ ...]
