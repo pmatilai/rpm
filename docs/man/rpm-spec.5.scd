@@ -60,23 +60,12 @@ The preamble consists of tag:value pairs, one tag per line.
 Tags accepting multiple values on one line can also appear multiple
 times within a package.
 
-A *Usage* line below denotes various tag properties:
-- *D*efines macro by the same name (uppercase on first encounter,
-  lowercase for all except *Patch* and *Source*)
-- *I*nformative, only used for displaying
-- *M*acro settable via *rpmbuild-config*(5)
-- *O*bsolete, do not use
-- *R*equired
-- *S*ub-package usable
-
 An example is shown in an indented block where applicable.
 
-## Required package tags
+## Required tags
 *Name:* _NAME_
-	The full name of the package. A mandatory tag.
+	The full name of the main package.
 	Permitted characters are alphanumerics and *-*, *\_*, *.*, *+*.
-
-	Usage: DRS
 
 	```
 	Name: mypackage
@@ -87,14 +76,13 @@ An example is shown in an indented block where applicable.
 	When the version changes, *Release* should be reset.
 	See *rpm-version*(7).
 
-	Usage: DRS
-
+	```
+	Version: 1.0.2
+	```
 
 *Release:* _VERREL_
 	The downstream packaging revision of a software version.
 	See *rpm-version*(7).
-
-	Usage: DRS
 
 	```
 	Release: 1
@@ -102,8 +90,6 @@ An example is shown in an indented block where applicable.
 
 *Summary*[*(*_LANG_*)*]*:* _TEXT_
 	Short summary of the package.
-
-	Usage: DRSI
 
 	```
 	Summary: Utility for converting mumbles into giggles
@@ -113,52 +99,34 @@ An example is shown in an indented block where applicable.
 	Short summary of the package license.
 	Use of SPDX license identifiers is recommended.
 
-	Usage: DRSI
 
 	```
 	License: GPLv3-only
 	```
 
-## Optional package tags
+## Dependency tags
+Binary package dependencies, resolved during transactions.
 
-*BugURL*: _URL_
-	Bug reporting URL for the package.
-	Usually set via *rpmbuild-config*(5).
+See *rpm-dependencies*(7).
 
-	Usage: DMSIT
+*Provides:* _CAPABILITY_ ...++
+*Requires*[*(*_MODIFIERS_*)*]*:* _CAPABILITY_ ...++
+*Conflicts:* _CAPABILITY_ ...++
+*Obsoletes:* _CAPABILITY_ ...
 
-	```
-	BugURL: https://bugzilla.mydistro.org
-	```
+*Enhances*[*(*_MODIFIERS_*)*]*:* _CAPABILITY_ ...++
+*Recommends*[*(*_MODIFIERS_*)*]*:* _CAPABILITY_ ...++
+*Suggests*[*(*_MODIFIERS_*)*]*:* _CAPABILITY_ ...++
+*Supplements*[*(*_MODIFIERS_*)*]*:* _CAPABILITY_ ...++
+*OrderWithRequires:* _CAPABILITY_
 
-*Conflicts:* _CAPABILITY_ ...
-	See *rpm-dependencies*(7).
+*PreReq:* _CAPABILITY_ ...
+	Obsolete.
 
-	Usage: ST
-
-	```
-	Conflicts: another-tool <= 4.0
-	```
-
-*Distribution:* _TEXT_
-	Distribution name.
-
-	Usage: DMSIT
-
-*DistTag:* _TEXT_
-	Short label for identifying a distribution and its version.
-
-	Usage: DMSIT
-
-*Enhances*[*(*_MODIFIERS_*)*]*:* _CAPABILITY_ ...
-	See *rpm-dependencies*(7).
-
-	Usage: ST
+## Miscellaneous tags
 
 *Epoch*: _N_
 	Artificial versioning override. See *rpm-version*(7).
-
-	Usage: DST
 
 	```
 	Epoch: 1
@@ -167,54 +135,65 @@ An example is shown in an indented block where applicable.
 *Group*[*(*_LANG_*)*]*:* _TEXT_
 	Group of the package.
 
-	Usage: DSI
-
 	```
 	Group: Development/Libraries
 	```
 
+*Prefix*: _PATH_
+	Compatibility alias for *Prefixes*.
+
+*Prefixes*: _PATH_ ...
+	Specify relocatable prefixes in this package.
+	Such prefixes can be relocated to user-specified directories
+	with *--relocate* option of *rpm*(8) at install time. The
+	prefix information is also available to *rpm-scriptlets*(7).
+
+	Note: most software will only work correctly in the path
+	specified during build.
+
+	```
+	Prefixes: /usr /etc
+	```
+
+## Informational tags
+These tags are stored in the packages, but only used by rpm for display
+purposes.
+
+Normally used in the *PREAMBLE* but allowed in *%package* sections as well.
+These values can be populated through corresponding lowercase macros set in
+*rpmbuild-config*(5), eg. *%bugurl* for *BugURL*.
+Distributions usually define these centrally via macros for all their packages.
+
+*BugURL*: _URL_
+	Bug reporting URL for the package.
+	Usually set via *rpmbuild-config*(5).
+
+*Distribution:* _TEXT_
+	Distribution name.
+
+*DistTag:* _TEXT_
+	Short label for identifying a distribution and its version.
+
 *ModularityLabel:* _TEXT_
 	Obsolete.
-
-	Usage: DMOSI
-
-*NoPatch*: _N_ ...
-	Exclude patch number _N_ from being included in source RPMs
-	generated from this spec. Causes the source RPM to be called *nosrc*.
-
-	```
-	Patch5: proprietary-tool-3.0-memleak.patch
-	NoPatch: 5
-	```
-
-*NoSource*: _N_ ...
-	Exclude source number _N_ from being included in source RPMs
-	generated from this spec. Causes the source RPM to be called *nosrc*.
-
-	```
-	Source1: proprietary-tool-3.0.zip
-	Source2: proprietary-data-3.0.zip
-	NoSource: 1 2
-	```
-
-*Obsoletes:* _CAPABILITY_ ...
-	See *rpm-dependencies*(7).
-
-	Usage: S
-
-	```
-	Obsoletes: oldtool < 3.0
-	```
-
-*OrderWithRequires:* _CAPABILITY_
-	See *rpm-dependencies*(7).
-
-	Usage: S
 
 *Packager:* _TEXT_
 	Maintainer contact information.
 
-	Usage: DMSI
+*TranslationURL:* _URL_
+	URL of upstream translation service/repository.
+
+*UpstreamReleases:* _URL_
+	URL to upstream releases.
+
+*VCS:* _URL_:
+	URL of upstream project repository.
+
+*Vendor:* _TEXT_
+	Vendor name.
+
+## Source tags
+Tags affecting only the source package.
 
 *Patch*[_N_]*:* [_URL_/]_FILE_
 	Used to declare patches applied on top of sources.
@@ -228,48 +207,8 @@ An example is shown in an indented block where applicable.
 
 	Patch numbers are separate from source numbers.
 
-	Usage: DS
-
 	See also *%patchlist*.
 
-
-*PreReq:* _CAPABILITY_ ...
-	Obsolete. Use *Requires(pre,postun)* for a similar effect.
-
-	Usage: OS
-
-*Prefix*: _PATH_
-	Compatibility alias for *Prefixes*.
-
-	Usage: DS
-
-*Prefixes*: _PATH_ ...
-	Specify relocatable prefixes in this package.
-	Such prefixes can be relocated to user-specified directories
-	with *--relocate* option of *rpm*(8) at install time. The
-	prefix information is also available to *rpm-scriptlets*(7).
-
-	Note: most software will only work correctly in the path
-	specified during build.
-
-	Usage: DS
-
-	```
-	Prefixes: /usr /etc
-	```
-
-*Provides:* _CAPABILITY_ ...
-	See *rpm-dependencies*(7).
-
-	Usage: S
-
-*Recommends*[*(*_MODIFIERS_*)*]*:* _CAPABILITY_ ...
-	See *rpm-dependencies*(7).
-
-	Usage: S
-
-*Requires*[*(*_MODIFIERS_*)*]*:* _CAPABILITY_ ...
-	See *rpm-dependencies*(7).
 
 *Source*[_N_]*:* [_URL_/]_FILE_
 	Used to declare source(s) used to build the package.
@@ -290,8 +229,6 @@ An example is shown in an indented block where applicable.
 
 	Source numbers are separate from patch numbers.
 
-	Usage: DS
-
 	See also *%sourcelist*.
 
 *SourceLicense*: _TEXT_
@@ -300,38 +237,56 @@ An example is shown in an indented block where applicable.
 
 	Use of SPDX license identifiers is recommended.
 
-	Usage: DSI
-
 	```
 	License: GPLv3-only
 	```
 
-*Suggests*[*(*_MODIFIERS_*)*]*:* _CAPABILITY_ ...
-	See *rpm-dependencies*(7).
+*NoPatch*: _N_ ...
+	Exclude patch number _N_ from being included in source RPMs
+	generated from this spec. Causes the source RPM to be called *nosrc*.
 
-	Usage: S
+	```
+	Patch5: proprietary-tool-3.0-memleak.patch
+	NoPatch: 5
+	```
 
-*Supplements*[*(*_MODIFIERS_*)*]*:* _CAPABILITY_ ...
-	See *rpm-dependencies*(7).
+*NoSource*: _N_ ...
+	Exclude source number _N_ from being included in source RPMs
+	generated from this spec. Causes the source RPM to be called *nosrc*.
 
-	Usage: S
+	```
+	Source1: proprietary-tool-3.0.zip
+	Source2: proprietary-data-3.0.zip
+	NoSource: 1 2
+	```
 
-*TranslationURL:* _URL_
-	URL of upstream translation service/repository.
+## Build dependency tags
+Build dependencies, stored in the source package and resolved during
+package build. See *rpm-dependencies*(7).
 
-	Usage: DMSI
+*BuildConflicts:* _CAPABILITY_ ...
+	Capabilities which cannot be installed during the
+	package build. Stored as *Conflicts* in the source RPM.
 
-*UpstreamReleases:* _URL_
-	URL to upstream releases.
+	```
+	BuildConflicts: somelib-devel
+	```
 
-	Usage: DMSI
+*BuildPreReq:* _CAPABILITY_ ...
+	Obsolete. Use *BuildRequires* instead.
 
-*Vendor:* _TEXT_
-	Vendor name.
+*BuildRequires:* _CAPABILITY_ ...
+	Capabilities required to build the package. Stored as
+	*Requires* in the source RPM.
 
-	Usage: DMSI
+	```
+	BuildRequires: e2fsprogs-devel >= 1.17-1
+	```
+
 
 ## Build tags
+Build tags control various aspects of the build, and are not directly
+stored in the resulting packages.
 
 *AutoReq:* _BOOLEAN_
 	Control per-package automatic dependency generation for *Requires*
@@ -339,8 +294,6 @@ An example is shown in an indented block where applicable.
 
 	Usually it's better to disable/filter specific problematic
 	dependencies than everything. See *rpm-dependency-generators*(7).
-
-	Usage: S
 
 	```
 	AutoReq: 0
@@ -353,8 +306,6 @@ An example is shown in an indented block where applicable.
 	Usually it's better to disable/filter specific problematic
 	dependencies than everything. See *rpm-dependency-generators*(7).
 
-	Usage: S
-
 	```
 	AutoProv: 0
 	```
@@ -362,8 +313,6 @@ An example is shown in an indented block where applicable.
 *AutoReqProv:* _BOOLEAN_
 	*AutoReqProv* is equal to specifying both *AutoReq* and *AutoProv*
 	to the same value.
-
-	Usage: S
 
 	```
 	AutoReqProv: no
@@ -384,36 +333,8 @@ An example is shown in an indented block where applicable.
 	For historical reasons, this field accepts multiple values but
 	only the first one is used.
 
-	Usage: S
-
 	```
 	BuildArch: noarch
-	```
-
-*BuildConflicts:* _CAPABILITY_ ...
-	Capabilities which cannot be installed during the
-	package build.
-	Resolved before building the package.
-
-	Usage: S
-
-	```
-	BuildConflicts: somelib-devel
-	```
-
-*BuildPreReq:* _CAPABILITY_ ...
-	Obsolete. Use *BuildRequires* instead.
-
-	Usage: O
-
-*BuildRequires:* _CAPABILITY_ ...
-	Capabilities required to build the package.
-	Resolved before building the package.
-
-	Usage: S
-
-	```
-	BuildRequires: e2fsprogs-devel >= 1.17-1
 	```
 
 *BuildRoot:* _PATH_
@@ -432,8 +353,6 @@ An example is shown in an indented block where applicable.
 	Use declarative buildsystem _NAME_ to build the package.
 	Buildsystems are inherently distribution specific.
 
-	Usage: D
-
 	```
 	Buildsystem: cmake
 	```
@@ -447,8 +366,6 @@ An example is shown in an indented block where applicable.
 	Used when software is portable across most architectures except some,
 	for example due to endianness issues.
 
-	Usage: S
-
 	```
 	ExcludeArch: s390x
 	```
@@ -457,8 +374,6 @@ An example is shown in an indented block where applicable.
 	Package is only buildable on architectures listed here.
 	Used for software that is inherently architecture specific.
 
-	Usage: S
-
 	```
 	ExclusiveArch: s390x
 	```
@@ -466,16 +381,12 @@ An example is shown in an indented block where applicable.
 *ExcludeOS:* _OS_ ...
 	Package is not buildable on operating systems listed here.
 
-	Usage: S
-
 	```
 	ExcludeOS: AIX
 	```
 
 *ExclusiveOS:* _OS_ ...
 	Package is only buildable on operating systems listed here.
-
-	Usage: S
 
 	```
 	ExclusiveOS: Linux
@@ -489,8 +400,6 @@ An example is shown in an indented block where applicable.
 	Used for creating sub-packages with conflicting files, such as
 	different variants of the same content (eg minimal and full versions
 	of the same software).
-
-	Usage: S
 
 	```
 	%package minimal
@@ -541,8 +450,6 @@ An example is shown in an indented block where applicable.
 
 	*-n*
 		Interpret _SUBNAME_ as the full package name.
-
-	Usage: R
 
 *%files* [*-n*] [_SUBNAME_] [*-f* _FILE_ [*-f* _FILE_ ...]]
 	A manifest describing the files in the (sub-)package.
