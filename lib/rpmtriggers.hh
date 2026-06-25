@@ -1,9 +1,6 @@
 #ifndef _RPMTRIGGERS_H
 #define _RPMTRIGGERS_H
 
-#include <set>
-#include <tuple>
-
 #include <rpm/rpmutil.h>
 #include "rpmscript.hh"
 
@@ -13,20 +10,12 @@ struct triggerInfo_s {
     unsigned int hdrNum;
     unsigned int tix;
     unsigned int priority;
-
-    bool operator < (const triggerInfo_s & o) const
-    {
-	return std::tie(priority, hdrNum, tix) <
-	       std::tie(o.priority, o.hdrNum, o.tix);
-    }
-    triggerInfo_s(unsigned int _hnum, unsigned int _tix, unsigned int _prio) :
-		hdrNum(_hnum), tix(_tix), priority(_prio)
-    {
-    }
 };
 
 typedef struct rpmtriggers_s {
-    std::set<triggerInfo_s> triggerInfo;
+    struct triggerInfo_s *triggerInfo;
+    int count;
+    int alloced;
 } *rpmtriggers;
 
 RPM_GNUC_INTERNAL
