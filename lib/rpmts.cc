@@ -566,7 +566,6 @@ void rpmtsEmpty(rpmts ts)
 	return;
 
     rpmtsClean(ts);
-    ts->trigs2run.clear();
 
     for (auto & te : tsmem->order) {
 	rpmtsNotifyChange(ts, RPMTS_EVENT_DEL, te, NULL);
@@ -644,6 +643,7 @@ rpmts rpmtsFree(rpmts ts)
 
     ts->plugins = rpmpluginsFree(ts->plugins);
 
+    rpmtriggersFree(ts->trigs2run);
     rpmlogReset((uint64_t) ts);
 
     if (_rpmts_stats)
@@ -1042,6 +1042,9 @@ rpmts rpmtsCreate(void)
     ts->nrefs = 0;
 
     ts->plugins = NULL;
+
+    ts->trigs2run = rpmtriggersCreate(10);
+
     ts->min_writes = (rpmExpandNumeric("%{?_minimize_writes}") > 0);
 
     return rpmtsLink(ts);
