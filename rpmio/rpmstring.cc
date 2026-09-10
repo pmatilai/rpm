@@ -79,8 +79,8 @@ int rvasprintf(char **strp, const char *fmt, va_list ap)
     n = vsnprintf(NULL, 0, fmt, aq);
     va_end(aq);
 
-    if (n >= -1) {
-	size_t nb = n + 1;
+    if (n >= 0) {
+	size_t nb = (size_t)n + 1;
 	p = (char *)xmalloc(nb);
 	va_copy(aq, ap);
         n = vsnprintf(p, nb, fmt, aq);
